@@ -1,0 +1,13 @@
+[I 16:26:06.390 NotebookApp] The port 8908 is already in use, trying another port.
+[I 16:26:06.390 NotebookApp] The port 8909 is already in use, trying another port.
+[I 16:26:06.390 NotebookApp] The port 8910 is already in use, trying another port.
+[I 16:26:06.391 NotebookApp] The port 8911 is already in use, trying another port.
+[I 16:26:06.391 NotebookApp] Serving notebooks from local directory: /home/lab08/git/noise-data-platform
+[I 16:26:06.391 NotebookApp] Jupyter Notebook 6.4.10 is running at:
+[I 16:26:06.391 NotebookApp] http://ip-172-31-11-83:8912/
+[I 16:26:06.391 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 16:31:41.399 NotebookApp] Serving notebooks from local directory: /home/lab08/git/noise-data-platform
+[I 16:31:41.399 NotebookApp] Jupyter Notebook 6.4.10 is running at:
+[I 16:31:41.399 NotebookApp] http://ip-172-31-11-83:8908/
+[I 16:31:41.399 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 16:31:45.955 NotebookApp] 302 GET / (118.219.28.24) 0.490000ms
