@@ -182,3 +182,91 @@ Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
 [I 18:58:07.826 NotebookApp] Saving file at /EB/Untitled.ipynb
+[I 13:58:06.177 NotebookApp] [nb_conda_kernels] enabled, 11 kernels found
+[I 13:58:06.413 NotebookApp] Loading IPython parallel extension
+[W 2025-02-12 13:58:06.518 LabApp] Config option `kernel_spec_manager_class` not recognized by `LabApp`.
+[W 2025-02-12 13:58:06.521 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:58:06.521 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:58:06.521 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:58:06.521 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:58:06.521 LabApp] 'password' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:58:06.522 LabApp] Config option `kernel_spec_manager_class` not recognized by `LabApp`.
+[I 2025-02-12 13:58:06.528 LabApp] JupyterLab extension loaded from /home/ubuntu/anaconda3/envs/python3/lib/python3.8/site-packages/jupyterlab
+[I 2025-02-12 13:58:06.528 LabApp] JupyterLab application directory is /home/ubuntu/anaconda3/envs/python3/share/jupyter/lab
+[I 13:58:06.688 NotebookApp] [nb_conda] enabled
+[I 13:58:06.688 NotebookApp] Serving notebooks from local directory: /home/lab08/git/noise-data-platform
+[I 13:58:06.689 NotebookApp] Jupyter Notebook 6.4.6 is running at:
+[I 13:58:06.689 NotebookApp] http://ip-172-31-11-83:8908/
+[I 13:58:06.689 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 13:58:14.496 NotebookApp] Kernel started: fd530838-558b-40ea-a8d7-5a5e69d1511b, name: conda-env-python3-py
+[I 13:59:21.568 NotebookApp] Starting buffering for fd530838-558b-40ea-a8d7-5a5e69d1511b:86d9ff7800144e848ff152dd27fd808e
+[I 13:59:28.431 NotebookApp] Starting buffering for fd530838-558b-40ea-a8d7-5a5e69d1511b:456650c6d132472b82bfae8257056dc6
+[C 13:59:37.616 NotebookApp] received signal 15, stopping
+[I 13:59:37.617 NotebookApp] Shutting down 1 kernel
+[I 13:59:37.617 NotebookApp] Kernel shutdown: fd530838-558b-40ea-a8d7-5a5e69d1511b
+[I 13:59:37.720 NotebookApp] Shutting down 0 terminals
+[I 13:59:44.213 NotebookApp] [nb_conda_kernels] enabled, 11 kernels found
+[I 13:59:44.449 NotebookApp] Loading IPython parallel extension
+[W 2025-02-12 13:59:44.552 LabApp] Config option `kernel_spec_manager_class` not recognized by `LabApp`.
+[W 2025-02-12 13:59:44.554 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:59:44.554 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:59:44.555 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:59:44.555 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:59:44.555 LabApp] 'password' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-12 13:59:44.555 LabApp] Config option `kernel_spec_manager_class` not recognized by `LabApp`.
+[I 2025-02-12 13:59:44.561 LabApp] JupyterLab extension loaded from /home/ubuntu/anaconda3/envs/python3/lib/python3.8/site-packages/jupyterlab
+[I 2025-02-12 13:59:44.561 LabApp] JupyterLab application directory is /home/ubuntu/anaconda3/envs/python3/share/jupyter/lab
+[I 13:59:44.719 NotebookApp] [nb_conda] enabled
+[I 13:59:44.720 NotebookApp] Serving notebooks from local directory: /home/lab08/git/noise-data-platform
+[I 13:59:44.720 NotebookApp] Jupyter Notebook 6.4.6 is running at:
+[I 13:59:44.720 NotebookApp] http://ip-172-31-11-83:8908/
+[I 13:59:44.720 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 13:59:54.349 NotebookApp] Kernel started: ae5cdd9f-ca3a-43b1-9944-af5d82db5e4c, name: conda-env-python3-py
+[I 13:59:57.947 NotebookApp] Starting buffering for ae5cdd9f-ca3a-43b1-9944-af5d82db5e4c:a2fee474bc864e9f9f7339fe81973c85
+[I 13:59:57.949 NotebookApp] Kernel shutdown: ae5cdd9f-ca3a-43b1-9944-af5d82db5e4c
+[I 13:59:58.098 NotebookApp] Kernel started: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728, name: python3
+[I 14:01:54.348 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:21:54.485 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:23:28.966 NotebookApp] Kernel interrupted: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+[I 14:23:54.405 NotebookApp] Saving file at /ES/Untitled.ipynb
+25/02/12 14:24:01 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+25/02/12 14:24:02 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+[I 14:25:54.510 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:27:54.449 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:31:54.511 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:32:03.039 NotebookApp] Kernel interrupted: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+[I 14:32:27.496 NotebookApp] Starting buffering for 2dc6debc-1b3b-40dd-8e92-45ac7bc53728:a2fee474bc864e9f9f7339fe81973c85
+[I 14:32:27.735 NotebookApp] Kernel restarted: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+[I 14:32:27.824 NotebookApp] Restoring connection for 2dc6debc-1b3b-40dd-8e92-45ac7bc53728:a2fee474bc864e9f9f7339fe81973c85
+[I 14:32:28.829 NotebookApp] Replaying 3 buffered messages
+25/02/12 14:32:36 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+25/02/12 14:32:36 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+[I 14:32:42.830 NotebookApp] Kernel interrupted: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+[I 14:33:54.469 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:35:06.993 NotebookApp] Starting buffering for 2dc6debc-1b3b-40dd-8e92-45ac7bc53728:a2fee474bc864e9f9f7339fe81973c85
+[I 14:35:07.237 NotebookApp] Kernel restarted: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+[I 14:35:07.308 NotebookApp] Restoring connection for 2dc6debc-1b3b-40dd-8e92-45ac7bc53728:a2fee474bc864e9f9f7339fe81973c85
+[I 14:35:07.805 NotebookApp] Replaying 15 buffered messages
+25/02/12 14:35:11 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+25/02/12 14:35:12 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+25/02/12 14:35:24 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+[Stage 0:>                                                          (0 + 1) / 1]                                                                                [I 14:35:54.448 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:36:33.812 NotebookApp] Saving file at /ES/Untitled.ipynb
+[I 14:37:07.699 NotebookApp] 302 GET /notebooks/ES/json%ED%8C%8C%EC%9D%BC%EC%97%85%EB%A1%9C%EB%93%9C%ED%85%8C%EC%8A%A4%ED%8A%B8.ipynb (52.23.236.252) 0.610000ms
+[W 14:37:53.595 NotebookApp] Notebook ES/json파일업로드테스트.ipynb is not trusted
+[I 14:38:33.311 NotebookApp] Kernel restarted: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+25/02/12 14:38:43 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+25/02/12 14:38:43 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+[Stage 0:>                                                          (0 + 1) / 1]                                                                                [I 14:39:54.504 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
