@@ -11,3 +11,174 @@
 [I 16:31:41.399 NotebookApp] http://ip-172-31-11-83:8908/
 [I 16:31:41.399 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
 [I 16:31:45.955 NotebookApp] 302 GET / (118.219.28.24) 0.490000ms
+[I 10:54:25.728 NotebookApp] Using EnvironmentKernelSpecManager...
+[I 10:54:25.728 NotebookApp] Started periodic updates of the kernel list (every 3 minutes).
+[I 10:54:25.938 NotebookApp] The port 8906 is already in use, trying another port.
+[I 10:54:25.938 NotebookApp] Serving notebooks from local directory: /home/ubuntu/git/noise-data-platform
+[I 10:54:25.939 NotebookApp] Jupyter Notebook 6.4.10 is running at:
+[I 10:54:25.939 NotebookApp] http://ip-172-31-11-83:8907/
+[I 10:54:25.939 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 10:54:25.944 NotebookApp] Starting initial scan of virtual environments...
+[I 10:54:29.902 NotebookApp] Found new kernels in environments: conda_pytorch_p38, conda_mxnet_p37, conda_spark_start, conda_anaconda3, conda_python3, conda_tensorflow2_p38, conda_aws_neuron_pytorch_p36, conda_amazonei_mxnet_p36, conda_sample_test, conda_aws_neuron_tensorflow_p36, conda_aws_neuron_mxnet_p36
+[I 10:59:03.751 NotebookApp] Using EnvironmentKernelSpecManager...
+[I 10:59:03.751 NotebookApp] Started periodic updates of the kernel list (every 3 minutes).
+[I 10:59:03.962 NotebookApp] Serving notebooks from local directory: /home/ubuntu/git/noise-data-platform
+[I 10:59:03.962 NotebookApp] Jupyter Notebook 6.4.10 is running at:
+[I 10:59:03.962 NotebookApp] http://ip-172-31-11-83:8905/
+[I 10:59:03.962 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 10:59:03.966 NotebookApp] Starting initial scan of virtual environments...
+[I 10:59:05.869 NotebookApp] Found new kernels in environments: conda_aws_neuron_pytorch_p36, conda_mxnet_p37, conda_anaconda3, conda_amazonei_mxnet_p36, conda_aws_neuron_mxnet_p36, conda_aws_neuron_tensorflow_p36, conda_tensorflow2_p38, conda_spark_start, conda_pytorch_p38, conda_sample_test, conda_python3
+[I 10:59:09.657 NotebookApp] 302 GET / (175.118.53.87) 0.670000ms
+[W 10:59:09.682 NotebookApp] Clearing invalid/expired login cookie username-15-168-145-74-8905
+[W 10:59:09.683 NotebookApp] Clearing invalid/expired login cookie username-15-168-145-74-8905
+[I 10:59:09.683 NotebookApp] 302 GET /tree? (175.118.53.87) 1.880000ms
+[W 10:59:21.303 NotebookApp] 401 POST /login?next=%2Ftree%3F (175.118.53.87) 50.420000ms referer=http://15.168.145.74:8905/login?next=%2Ftree%3F
+[I 10:59:24.193 NotebookApp] 302 POST /login?next=%2Ftree%3F (175.118.53.87) 36.980000ms
+[W 10:59:24.768 NotebookApp] Kernelspec name conda_aws_neuron_pytorch_p36 cannot be found!
+[W 10:59:24.768 NotebookApp] Kernelspec name conda_mxnet_p37 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_anaconda3 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_amazonei_mxnet_p36 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_aws_neuron_mxnet_p36 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_aws_neuron_tensorflow_p36 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_tensorflow2_p38 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_spark_start cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_pytorch_p38 cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_sample_test cannot be found!
+[W 10:59:24.769 NotebookApp] Kernelspec name conda_python3 cannot be found!
+[W 17:44:42.241 NotebookApp] Kernelspec name conda_aws_neuron_pytorch_p36 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_mxnet_p37 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_anaconda3 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_amazonei_mxnet_p36 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_aws_neuron_mxnet_p36 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_aws_neuron_tensorflow_p36 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_tensorflow2_p38 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_spark_start cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_pytorch_p38 cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_sample_test cannot be found!
+[W 17:44:42.242 NotebookApp] Kernelspec name conda_python3 cannot be found!
+[I 17:44:58.194 NotebookApp] 302 GET / (175.118.53.87) 0.450000ms
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_aws_neuron_pytorch_p36 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_mxnet_p37 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_anaconda3 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_amazonei_mxnet_p36 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_aws_neuron_mxnet_p36 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_aws_neuron_tensorflow_p36 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_tensorflow2_p38 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_spark_start cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_pytorch_p38 cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_sample_test cannot be found!
+[W 17:44:58.498 NotebookApp] Kernelspec name conda_python3 cannot be found!
+[I 18:46:04.049 NotebookApp] Creating new notebook in /EB
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_aws_neuron_pytorch_p36 cannot be found!
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_mxnet_p37 cannot be found!
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_anaconda3 cannot be found!
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_amazonei_mxnet_p36 cannot be found!
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_aws_neuron_mxnet_p36 cannot be found!
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_aws_neuron_tensorflow_p36 cannot be found!
+[W 18:46:07.567 NotebookApp] Kernelspec name conda_tensorflow2_p38 cannot be found!
+[W 18:46:07.568 NotebookApp] Kernelspec name conda_spark_start cannot be found!
+[W 18:46:07.568 NotebookApp] Kernelspec name conda_pytorch_p38 cannot be found!
+[W 18:46:07.568 NotebookApp] Kernelspec name conda_sample_test cannot be found!
+[W 18:46:07.568 NotebookApp] Kernelspec name conda_python3 cannot be found!
+[W 18:46:07.743 NotebookApp] Kernelspec name conda_spark_start cannot be found!
+[W 18:46:08.054 NotebookApp] Kernelspec name conda_spark_start cannot be found!
+[I 18:46:08.063 NotebookApp] Kernel started: 7a5feb5c-200f-42e6-855e-4c1fff113407, name: conda_spark_start
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+25/02/08 18:47:47 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[I 18:48:07.781 NotebookApp] Saving file at /EB/Untitled.ipynb
+[I 18:50:07.774 NotebookApp] Saving file at /EB/Untitled.ipynb
+[I 18:51:55.835 NotebookApp] Starting buffering for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:51:56.472 NotebookApp] Kernel restarted: 7a5feb5c-200f-42e6-855e-4c1fff113407
+[I 18:51:56.525 NotebookApp] Restoring connection for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:51:56.918 NotebookApp] Replaying 7 buffered messages
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+25/02/08 18:52:00 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[I 18:52:07.785 NotebookApp] Saving file at /EB/Untitled.ipynb
+[I 18:52:52.331 NotebookApp] Starting buffering for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:52:53.267 NotebookApp] Kernel restarted: 7a5feb5c-200f-42e6-855e-4c1fff113407
+[I 18:52:53.330 NotebookApp] Restoring connection for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:52:53.838 NotebookApp] Replaying 7 buffered messages
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+25/02/08 18:53:04 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[I 18:54:03.226 NotebookApp] Starting buffering for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:54:04.059 NotebookApp] Kernel restarted: 7a5feb5c-200f-42e6-855e-4c1fff113407
+[I 18:54:04.105 NotebookApp] Restoring connection for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:54:04.547 NotebookApp] Replaying 7 buffered messages
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+25/02/08 18:54:06 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[I 18:54:07.784 NotebookApp] Saving file at /EB/Untitled.ipynb
+[I 18:54:59.030 NotebookApp] Starting buffering for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:54:59.465 NotebookApp] Kernel restarted: 7a5feb5c-200f-42e6-855e-4c1fff113407
+[I 18:54:59.521 NotebookApp] Restoring connection for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:54:59.977 NotebookApp] Replaying 4 buffered messages
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+25/02/08 18:55:01 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[I 18:56:07.789 NotebookApp] Saving file at /EB/Untitled.ipynb
+[I 18:57:23.922 NotebookApp] Kernel interrupted: 7a5feb5c-200f-42e6-855e-4c1fff113407
+[I 18:57:27.551 NotebookApp] Starting buffering for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:57:30.183 NotebookApp] Kernel restarted: 7a5feb5c-200f-42e6-855e-4c1fff113407
+[I 18:57:30.232 NotebookApp] Restoring connection for 7a5feb5c-200f-42e6-855e-4c1fff113407:a14ba4ee622f48fa85bae8c6dc8dd12b
+[I 18:57:30.233 NotebookApp] Replaying 1 buffered messages
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: _moduleraw: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `_moduleraw'
+bash: switchml: line 1: syntax error: unexpected end of file
+bash: error importing function definition for `switchml'
+25/02/08 18:57:32 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[I 18:58:07.826 NotebookApp] Saving file at /EB/Untitled.ipynb
