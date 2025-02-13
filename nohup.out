@@ -340,3 +340,45 @@ To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other ope
 2025-02-13 13:57:18.921056: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 [I 13:57:56.037 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
 [W 13:57:56.037 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[W 14:14:53.339 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[I 14:16:53.961 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 14:16:53.962 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[W 14:52:46.997 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[I 14:54:47.907 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 14:54:47.908 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+25/02/13 16:07:50 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+25/02/13 16:07:51 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+25/02/13 16:07:51 WARN Utils: Service 'SparkUI' could not bind on port 4041. Attempting port 4042.
+25/02/13 16:07:51 WARN Utils: Service 'SparkUI' could not bind on port 4042. Attempting port 4043.
+[I 16:08:55.628 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[W 16:53:45.320 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[I 16:55:46.247 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 16:55:46.248 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[I 16:57:46.339 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 16:57:46.339 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: e824a5ad-a956-434e-be25-02fbf0edcd2e
+[I 17:21:45.926 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 17:21:45.927 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[I 17:23:46.079 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 17:23:46.079 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[W 17:27:24.210 NotebookApp] Notebook EB/1.자동차_2_json.ipynb is not trusted
+[I 17:27:24.305 NotebookApp] Kernel started: 57141624-6a5a-496a-969b-307c2a481615, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 582276dc-fa84-4b96-b2d8-a85a042a5032
+[Stage 0:>                                                          (0 + 1) / 1][I 17:28:52.135 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+                                                                                [I 17:29:24.902 NotebookApp] Saving file at /EB/1.자동차_2_json.ipynb
+[I 17:30:52.880 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[I 17:38:56.446 NotebookApp] Starting buffering for 57141624-6a5a-496a-969b-307c2a481615:6f12eaf4cc8543098899a803c7025f22
+[I 17:39:22.836 NotebookApp] Starting buffering for 2372fb0f-0a0f-4e55-84c7-a43a6eb7c36c:cc2efbe9f83d469f8f7f3ec0acac8ba6
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: e68fba93-8c36-4a77-9fac-84ba4cb55fec
+[I 17:39:29.562 NotebookApp] Starting buffering for 57141624-6a5a-496a-969b-307c2a481615:576c6cb39d8c4943803e982c7beb7908
+[W 17:39:33.323 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 4ade94c2-eb17-4ab4-93ef-f45edc2af508
+[I 17:41:34.120 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
+[W 17:41:34.121 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
