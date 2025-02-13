@@ -270,3 +270,19 @@ Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
 25/02/12 14:38:43 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
 [Stage 0:>                                                          (0 + 1) / 1]                                                                                [I 14:39:54.504 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[I 14:59:54.372 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[I 15:01:54.479 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[I 15:05:54.480 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[I 15:07:54.465 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[I 15:29:54.477 NotebookApp] Saving file at /ES/json파일업로드테스트.ipynb
+[W 15:40:22.187 NotebookApp] Notebook ES/json파일업로드테스트.ipynb is not trusted
+[W 15:41:06.221 NotebookApp] 404 GET /api/contents/git/noise-data-platform/ES?type=directory&_=1739261180316 (118.219.28.24): No such file or directory: git/noise-data-platform/ES
+[W 15:41:06.221 NotebookApp] No such file or directory: git/noise-data-platform/ES
+[W 15:41:06.221 NotebookApp] 404 GET /api/contents/git/noise-data-platform/ES?type=directory&_=1739261180316 (118.219.28.24) 0.820000ms referer=http://15.168.145.74:8908/tree/git/noise-data-platform/ES
+[I 16:45:18.821 NotebookApp] Starting buffering for 2dc6debc-1b3b-40dd-8e92-45ac7bc53728:a2fee474bc864e9f9f7339fe81973c85
+[W 16:45:20.085 NotebookApp] Notebook ES/json파일업로드테스트.ipynb is not trusted
+[I 17:49:19.379 NotebookApp] Starting buffering for 2dc6debc-1b3b-40dd-8e92-45ac7bc53728:48b9e38414bc4f8c87e1647eb64bd99b
+[C 19:00:01.139 NotebookApp] received signal 15, stopping
+[I 19:00:01.140 NotebookApp] Shutting down 1 kernel
+[I 19:00:01.141 NotebookApp] Kernel shutdown: 2dc6debc-1b3b-40dd-8e92-45ac7bc53728
+[I 19:00:01.245 NotebookApp] Shutting down 0 terminals
