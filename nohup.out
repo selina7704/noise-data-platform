@@ -340,3 +340,26 @@ To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other ope
 2025-02-13 13:57:18.921056: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 [I 13:57:56.037 NotebookApp] Saving file at /ES/1. Sample_test (음성파일적재).ipynb
 [W 13:57:56.037 NotebookApp] Notebook ES/1. Sample_test (음성파일적재).ipynb is not trusted
+[I 2025-02-14 09:44:51.253 ServerApp] jupyter_lsp | extension was successfully linked.
+[I 2025-02-14 09:44:51.257 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2025-02-14 09:44:51.261 ServerApp] jupyterlab | extension was successfully linked.
+[W 2025-02-14 09:44:51.263 JupyterNotebookApp] 'password' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2025-02-14 09:44:51.266 ServerApp] ServerApp.password config is deprecated in 2.0. Use PasswordIdentityProvider.hashed_password.
+[I 2025-02-14 09:44:51.266 ServerApp] notebook | extension was successfully linked.
+[I 2025-02-14 09:44:51.459 ServerApp] notebook_shim | extension was successfully linked.
+[I 2025-02-14 09:44:51.494 ServerApp] notebook_shim | extension was successfully loaded.
+[I 2025-02-14 09:44:51.496 ServerApp] jupyter_lsp | extension was successfully loaded.
+[I 2025-02-14 09:44:51.498 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2025-02-14 09:44:51.499 LabApp] JupyterLab extension loaded from /home/ubuntu/anaconda3/envs/ml_env/lib/python3.8/site-packages/jupyterlab
+[I 2025-02-14 09:44:51.499 LabApp] JupyterLab application directory is /home/ubuntu/anaconda3/envs/ml_env/share/jupyter/lab
+[I 2025-02-14 09:44:51.500 LabApp] Extension Manager is 'pypi'.
+[I 2025-02-14 09:44:51.549 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2025-02-14 09:44:51.553 ServerApp] notebook | extension was successfully loaded.
+[I 2025-02-14 09:44:51.553 ServerApp] The port 8909 is already in use, trying another port.
+[I 2025-02-14 09:44:51.553 ServerApp] Serving notebooks from local directory: /home/lab09/git/noise-data-platform
+[I 2025-02-14 09:44:51.554 ServerApp] Jupyter Server 2.14.2 is running at:
+[I 2025-02-14 09:44:51.554 ServerApp] http://ip-172-31-11-83:8910/tree
+[I 2025-02-14 09:44:51.554 ServerApp]     http://127.0.0.1:8910/tree
+[I 2025-02-14 09:44:51.554 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 2025-02-14 09:44:51.570 ServerApp] Skipped non-installed server(s): bash-language-server, dockerfile-language-server-nodejs, javascript-typescript-langserver, jedi-language-server, julia-language-server, pyright, python-language-server, python-lsp-server, r-languageserver, sql-language-server, texlab, typescript-language-server, unified-language-server, vscode-css-languageserver-bin, vscode-html-languageserver-bin, vscode-json-languageserver-bin, yaml-language-server
+[I 2025-02-14 09:45:25.939 ServerApp] Interrupted...
