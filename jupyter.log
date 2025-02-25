@@ -1,0 +1,153 @@
+nohup: ignoring input
+[I 2025-02-25 13:53:02.003 ServerApp] jupyterlab | extension was successfully linked.
+[W 2025-02-25 13:53:02.006 NotebookApp] 'password' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[I 2025-02-25 13:53:02.227 ServerApp] nbclassic | extension was successfully linked.
+[I 2025-02-25 13:53:02.250 ServerApp] nbclassic | extension was successfully loaded.
+[I 2025-02-25 13:53:02.251 LabApp] JupyterLab extension loaded from /home/lab05/.local/lib/python3.6/site-packages/jupyterlab
+[I 2025-02-25 13:53:02.251 LabApp] JupyterLab application directory is /home/lab05/.local/share/jupyter/lab
+[I 2025-02-25 13:53:02.254 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2025-02-25 13:53:02.254 ServerApp] Serving notebooks from local directory: /home/lab05/git/noise-data-platform
+[I 2025-02-25 13:53:02.254 ServerApp] Jupyter Server 1.13.1 is running at:
+[I 2025-02-25 13:53:02.254 ServerApp] http://ip-172-31-11-83:8905/lab
+[I 2025-02-25 13:53:02.254 ServerApp]  or http://127.0.0.1:8905/lab
+[I 2025-02-25 13:53:02.254 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[W 2025-02-25 13:53:05.836 ServerApp] 404 GET /api/kernels/8373a7cb-1e0d-4988-bdfc-9b83cf7f5548/channels?session_id=2dffaeea-da54-46f2-b978-ab7e8cf3d6c2 (175.118.53.87): Kernel does not exist: 8373a7cb-1e0d-4988-bdfc-9b83cf7f5548
+[W 2025-02-25 13:53:05.851 ServerApp] 404 GET /api/kernels/8373a7cb-1e0d-4988-bdfc-9b83cf7f5548/channels?session_id=2dffaeea-da54-46f2-b978-ab7e8cf3d6c2 (175.118.53.87) 16.48ms referer=None
+[W 2025-02-25 13:53:19.529 ServerApp] 404 GET /api/kernels/8373a7cb-1e0d-4988-bdfc-9b83cf7f5548/channels?session_id=ae06c014-4b8c-41f2-8492-bd85745ca3f6 (175.118.53.87): Kernel does not exist: 8373a7cb-1e0d-4988-bdfc-9b83cf7f5548
+[W 2025-02-25 13:53:19.530 ServerApp] 404 GET /api/kernels/8373a7cb-1e0d-4988-bdfc-9b83cf7f5548/channels?session_id=ae06c014-4b8c-41f2-8492-bd85745ca3f6 (175.118.53.87) 2.21ms referer=None
+[I 2025-02-25 13:54:13.654 ServerApp] Kernel started: 9f840f3a-f15d-48f5-b96e-f8887a5d5df9
+[I 2025-02-25 13:54:25.477 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 13:54:25.481 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+2025-02-25 14:10:38.775871: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-25 14:10:38.847429: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-02-25 14:10:39.970514: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2025-02-25 14:10:41.070609: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:41.084491: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:41.086237: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:41.088595: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:41.090236: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:41.091920: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:42.131843: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:42.133423: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:42.134753: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:10:42.135942: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 12733 MB memory:  -> device: 0, name: Tesla T4, pci bus id: 0000:00:1e.0, compute capability: 7.5
+2025-02-25 14:10:44.037550: E tensorflow/compiler/xla/stream_executor/cuda/cuda_dnn.cc:425] Loaded runtime CuDNN library: 8.0.5 but source was compiled with: 8.6.0.  CuDNN library needs to have matching major version and equal or higher minor version. If using a binary install, upgrade your CuDNN library.  If building from sources, make sure the library loaded at runtime is compatible with the version specified during compile configuration.
+2025-02-25 14:10:44.038782: W tensorflow/core/framework/op_kernel.cc:1828] OP_REQUIRES failed at conv_ops_impl.h:770 : UNIMPLEMENTED: DNN library is not found.
+[I 2025-02-25 14:12:25.750 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:12:25.751 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:12:26.533 ServerApp] Kernel shutdown: 9f840f3a-f15d-48f5-b96e-f8887a5d5df9
+[I 2025-02-25 14:12:28.008 ServerApp] Kernel started: e01cf069-6ed6-4f2b-bc36-2ebe3b14229a
+[I 2025-02-25 14:13:08.543 ServerApp] Kernel restarted: e01cf069-6ed6-4f2b-bc36-2ebe3b14229a
+[I 2025-02-25 14:13:08.570 ServerApp] Starting buffering for e01cf069-6ed6-4f2b-bc36-2ebe3b14229a:9c3c5b4c-4579-4cc2-bbcc-fb1c0fa3232c
+[I 2025-02-25 14:13:08.613 ServerApp] Restoring connection for e01cf069-6ed6-4f2b-bc36-2ebe3b14229a:9c3c5b4c-4579-4cc2-bbcc-fb1c0fa3232c
+2025-02-25 14:13:30.350576: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-02-25 14:13:30.431279: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-02-25 14:13:31.534532: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2025-02-25 14:13:32.596582: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:13:32.610271: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:13:32.611926: I tensorflow/compiler/xla/stream_executor/cuda/cuda_gpu_executor.cc:995] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+2025-02-25 14:13:41.388579: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x7f6a44009040 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2025-02-25 14:13:41.388631: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2025-02-25 14:13:41.395391: I tensorflow/compiler/mlir/tensorflow/utils/dump_mlir_util.cc:255] disabling MLIR crash reproducer, set env var `MLIR_CRASH_REPRODUCER_DIRECTORY` to enable.
+2025-02-25 14:13:41.430936: I ./tensorflow/compiler/jit/device_compiler.h:186] Compiled cluster using XLA!  This line is logged at most once for the lifetime of the process.
+[I 2025-02-25 14:14:25.948 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:14:25.949 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:16:26.164 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:16:26.165 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:18:26.448 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:18:26.449 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:20:27.123 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:20:27.124 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:22:27.336 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:22:27.336 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:24:27.539 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:24:27.540 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:26:27.772 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:26:27.773 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:28:28.321 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:28:28.322 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:30:28.585 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:30:28.586 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:32:28.799 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:32:28.800 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:34:29.011 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:34:29.011 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:36:29.271 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:36:29.272 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:38:29.950 ServerApp] Saving file at /EB/CNN_model.ipynb
+[W 2025-02-25 14:38:29.951 ServerApp] Notebook EB/CNN_model.ipynb is not trusted
+[I 2025-02-25 14:42:30.236 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:44:30.423 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:46:30.659 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:46:33.875 ServerApp] Creating new notebook in /EB
+[I 2025-02-25 14:46:34.731 ServerApp] Kernel started: 3a409b2f-3c05-4ada-98b5-b09c60bd47ab
+[I 2025-02-25 14:48:30.870 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:48:34.476 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 14:50:31.066 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:50:34.590 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 14:52:31.297 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:54:31.501 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:56:31.691 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 14:58:31.923 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:02:32.118 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:04:32.332 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:06:32.535 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:08:32.750 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:08:34.744 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:12:33.029 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:12:34.850 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:14:33.221 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:14:34.969 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:16:33.410 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:16:35.579 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:18:33.592 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:18:35.725 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:20:33.781 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:20:35.845 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:22:33.982 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:22:35.974 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:24:34.412 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:24:36.094 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:26:08.098 ServerApp] Kernel interrupted: 3a409b2f-3c05-4ada-98b5-b09c60bd47ab
+[I 2025-02-25 15:26:36.225 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:26:59.350 ServerApp] Kernel shutdown: 3a409b2f-3c05-4ada-98b5-b09c60bd47ab
+[E 2025-02-25 15:27:00.160 ServerApp] Uncaught exception GET /api/kernels?1740464820442 (175.118.53.87)
+    HTTPServerRequest(protocol='http', host='15.168.145.74:8905', method='GET', uri='/api/kernels?1740464820442', version='HTTP/1.1', remote_ip='175.118.53.87')
+    Traceback (most recent call last):
+      File "/home/ubuntu/anaconda3/envs/ml_env_python3.6/lib/python3.6/site-packages/tornado/web.py", line 1704, in _execute
+        result = await result
+      File "/home/lab05/.local/lib/python3.6/site-packages/jupyter_server/services/kernels/handlers.py", line 35, in get
+        kernels = await ensure_async(km.list_kernels())
+      File "/home/lab05/.local/lib/python3.6/site-packages/jupyter_server/services/kernels/kernelmanager.py", line 480, in list_kernels
+        model = self.kernel_model(kernel_id)
+      File "/home/lab05/.local/lib/python3.6/site-packages/jupyter_server/services/kernels/kernelmanager.py", line 466, in kernel_model
+        "last_activity": isoformat(kernel.last_activity),
+    AttributeError: 'AsyncIOLoopKernelManager' object has no attribute 'last_activity'
+[W 2025-02-25 15:27:00.165 ServerApp] Unhandled error
+[E 2025-02-25 15:27:00.166 ServerApp] {
+      "Host": "15.168.145.74:8905",
+      "Connection": "keep-alive",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+      "Content-Type": "application/json",
+      "X-Xsrftoken": "2|683bec47|5c37ce828dcf28fa5e3c5792fc09691f|1738629513",
+      "Accept": "*/*",
+      "Referer": "http://15.168.145.74:8905/lab/tree/EB/model_test.ipynb",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+      "Cookie": "_xsrf=2|683bec47|5c37ce828dcf28fa5e3c5792fc09691f|1738629513; username-15-168-145-74-8906=\"2|1:0|10:1739839180|27:username-15-168-145-74-8906|44:MTJkOWE2NzE2NzEzNDcyOWI1ZmQ4Y2E3NTQwMzhiOTg=|0396869176dc55c1431ea8e1a23c8f7169a14bc22d0cc52c2583c8ab14be34d9\"; username-15-168-145-74-8905=\"2|1:0|10:1740443381|27:username-15-168-145-74-8905|44:YjZkMTU3NjJhOTRkNDg2Mjk1OTMxMTQwNjNhOGE4YzM=|fc7bd9d7bb44ec470cd9d7cc302b8c737a933b6c76201c68c5b599612b316a8f\"; username-15-168-145-74-8908=\"2|1:0|10:1740456800|27:username-15-168-145-74-8908|184:eyJ1c2VybmFtZSI6ICI2NjM3N2RhYjBhNTk0ODQ2YjcwYzQxN2YyYWZjMzJhZCIsICJuYW1lIjogIkFub255bW91cyBJbyIsICJkaXNwbGF5X25hbWUiOiAiQW5vbnltb3VzIElvIiwgImluaXRpYWxzIjogIkFJIiwgImNvbG9yIjogbnVsbH0=|21cecf129376fafe357670679c1b4ef8dc6cdebfc98f0b025e6f7eeb85e1ed83\""
+    }
+[E 2025-02-25 15:27:00.166 ServerApp] 500 GET /api/kernels?1740464820442 (175.118.53.87) 7.44ms referer=http://15.168.145.74:8905/lab/tree/EB/model_test.ipynb
+[I 2025-02-25 15:27:00.172 ServerApp] Kernel started: 3f52608e-0e84-43f1-9c63-bfb20c5b9d57
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 950f4db1-9eda-4fea-aa1c-549a62281093
+[I 2025-02-25 15:28:34.619 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:28:36.366 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:30:36.548 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:32:34.994 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:32:36.744 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:33:25.202 ServerApp] Kernel interrupted: e01cf069-6ed6-4f2b-bc36-2ebe3b14229a
+[I 2025-02-25 15:34:35.322 ServerApp] Saving file at /EB/CNN_model.ipynb
+[I 2025-02-25 15:34:36.911 ServerApp] Saving file at /EB/model_test.ipynb
+[I 2025-02-25 15:35:24.016 ServerApp] Saving file at /EB/model_test.ipynb
