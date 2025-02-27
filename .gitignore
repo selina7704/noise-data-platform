@@ -3,3 +3,11 @@
 
 
 nohup.out
+
+
+.env
+
+# 설정 파일 제외
+config.py
+
+
