@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 소음 감지</title>
+    <style>
+        /* 버튼 스타일 */
+        #recordButton {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #recordButton:active {
+            background-color: #45a049;
+        }
+
+        /* 버튼 비활성화 스타일 */
+        #recordButton.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>소음 감지 테스트</h1>
+
+    <!-- 동그란 버튼 -->
+    <button id="recordButton">녹음 시작</button>
+
+    <script>
+        let isRecording = false;
+        let audioContext, analyser, source, stream;
+        let audioChunks = [];
+
+        const recordButton = document.getElementById('recordButton');
+
+        // 버튼 클릭 시 녹음 시작/중지
+        recordButton.addEventListener('click', function() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+
+        function startRecording() {
+            // 버튼 비활성화
+            recordButton.classList.add('disabled');
+            recordButton.textContent = '녹음 중...';
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+              .then(function(userStream) {
+                  stream = userStream;
+                  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                  analyser = audioContext.createAnalyser();
+                  source = audioContext.createMediaStreamSource(stream);
+                  source.connect(analyser);
+
+                  isRecording = true;
+                  recordButton.textContent = '녹음 중...';
+
+                  // 실시간 오디오 처리
+                  processAudio();
+              })
+              .catch(function(err) {
+                  console.log("오디오 스트림을 가져오지 못했습니다: " + err);
+                  recordButton.classList.remove('disabled');
+              });
+        }
+
+        function stopRecording() {
+            // 버튼 재활성화
+            recordButton.classList.remove('disabled');
+            recordButton.textContent = '녹음 시작';
+            isRecording = false;
+
+            // 음성 스트림 정지
+            if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+        }
+
+        function processAudio() {
+            if (!isRecording) return;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            analyser.getByteFrequencyData(dataArray);
+
+            // 일정 시간 간격으로 서버로 데이터 전송
+            const volume = dataArray.reduce((acc, value) => acc + value, 0) / dataArray.length;
+
+            if (volume > 30) {  // 소음 기준 설정
+                sendDataToAPI(volume);
+            }
+
+            // 계속해서 음성 데이터를 처리
+            requestAnimationFrame(processAudio);
+        }
+
+        function sendDataToAPI(volume) {
+            fetch('/noise', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ volume: volume })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Server response:', data))
+            .catch((error) => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
