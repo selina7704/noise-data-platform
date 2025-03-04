@@ -991,3 +991,20 @@ To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other ope
 [I 2025-02-27 16:49:01.331 ServerApp] Saving file at /EB/LightGBM_ODD_mfcc50.ipynb
 [I 2025-02-27 16:51:01.665 ServerApp] Saving file at /EB/LightGBM_ODD_mfcc50.ipynb
 [I 2025-02-27 17:10:39.329 ServerApp] Saving file at /EB/LightGBM_ODD_mfcc50.ipynb
+[I 2025-02-27 17:33:02.038 ServerApp] Saving file at /EB/LightGBM_ODD_mfcc50.ipynb
+[C 2025-02-27 17:49:12.181 ServerApp] received signal 15, stopping
+[I 2025-02-27 17:49:12.187 ServerApp] Shutting down 2 extensions
+[I 2025-02-27 17:49:12.191 ServerApp] Shutting down 12 kernels
+[I 2025-02-27 17:49:12.207 ServerApp] Kernel shutdown: 783e56a8-4e40-4dda-ae26-14a09b8d6e1e
+[I 2025-02-27 17:49:12.208 ServerApp] Kernel shutdown: 8a32d787-3cab-4403-a278-6d9555b96d18
+[I 2025-02-27 17:49:12.211 ServerApp] Kernel shutdown: 393cc4a4-86ad-4c60-b0ae-b7158b738493
+[I 2025-02-27 17:49:12.211 ServerApp] Kernel shutdown: 1e55fa80-ebcf-4202-8ed9-30e22899d846
+[I 2025-02-27 17:49:12.230 ServerApp] Kernel shutdown: 5ed3e06a-521b-43fc-98d0-0be69dc2444c
+[I 2025-02-27 17:49:12.236 ServerApp] Kernel shutdown: c87eb18a-691f-4b99-b2d4-d60dd00b9129
+[I 2025-02-27 17:49:12.243 ServerApp] Kernel shutdown: 2cfeeb08-30c6-4050-899a-33b7a97c816d
+[I 2025-02-27 17:49:12.272 ServerApp] Kernel shutdown: a642711e-2402-473f-b45a-fb026b101140
+[I 2025-02-27 17:49:12.278 ServerApp] Kernel shutdown: 9a01d70c-88b7-4580-84ee-80af24dcdde2
+[I 2025-02-27 17:49:12.291 ServerApp] Kernel shutdown: 097585d6-7580-4e59-b9e5-f2453a6fa9ca
+[I 2025-02-27 17:49:12.300 ServerApp] Kernel shutdown: 937dc123-da16-4f03-aba9-b3e42b15c755
+[I 2025-02-27 17:49:12.302 ServerApp] Kernel shutdown: b93c85c1-edd1-4a8c-8a40-512f7a40566e
+[I 2025-02-27 17:49:12.437 ServerApp] Shutting down 0 terminals
