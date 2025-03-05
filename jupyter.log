@@ -356,3 +356,22 @@ To enable them in other operations, rebuild TensorFlow with the appropriate comp
 [I 2025-03-04 17:49:51.777 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
 [I 2025-03-04 17:51:52.757 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
 [I 2025-03-04 17:53:53.780 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 17:55:54.799 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 17:57:55.076 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 17:59:55.338 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:01:55.596 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:03:55.900 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:05:56.307 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:07:56.583 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:09:56.853 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:11:57.123 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:13:57.388 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:15:57.704 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[I 2025-03-04 18:17:57.943 ServerApp] Saving file at /EB/etc_classfied_CNN.ipynb
+[C 2025-03-04 18:50:32.780 ServerApp] received signal 15, stopping
+[I 2025-03-04 18:50:32.781 ServerApp] Shutting down 2 extensions
+[I 2025-03-04 18:50:32.781 ServerApp] Shutting down 3 kernels
+[I 2025-03-04 18:50:32.831 ServerApp] Kernel shutdown: 7ac27eda-911f-485c-a2eb-3143c19cf187
+[I 2025-03-04 18:50:32.837 ServerApp] Kernel shutdown: 8a56006a-0a73-492e-8f6c-d7228d56d883
+[I 2025-03-04 18:50:32.851 ServerApp] Kernel shutdown: b39d150c-9ae5-47e3-895c-c8723f70260a
+[I 2025-03-04 18:50:33.069 ServerApp] Shutting down 0 terminals

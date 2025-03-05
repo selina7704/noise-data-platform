@@ -13,7 +13,7 @@ File,Predicted Label
 1.car_siren_70781_1.wav,차량사이렌
 1.car_siren_70727_1.wav,차량사이렌
 1.car_siren_70784_1.wav,차량사이렌
-1.car_siren_498_1.wav,차량사이렌
+1.car_siren_498_1.wav,기타소음
 1.car_siren_11917_1.wav,차량사이렌
 1.car_siren_70419_1.wav,차량사이렌
 1.car_siren_70335_1.wav,차량사이렌
@@ -91,7 +91,7 @@ File,Predicted Label
 1.car_siren_34389_1.wav,차량사이렌
 1.car_siren_467_1.wav,차량사이렌
 1.car_siren_71116_1.wav,차량사이렌
-1.car_siren_11612_1.wav,차량사이렌
+1.car_siren_11612_1.wav,차량주행음
 1.car_siren_12047_1.wav,차량사이렌
 1.car_siren_76841_1.wav,차량사이렌
 1.car_siren_71318_1.wav,차량사이렌
@@ -115,14 +115,14 @@ File,Predicted Label
 1.car_siren_12126_1.wav,차량사이렌
 1.car_siren_70260_1.wav,차량사이렌
 1.car_siren_356_1.wav,차량사이렌
-1.car_siren_470_1.wav,차량사이렌
+1.car_siren_470_1.wav,차량주행음
 1.car_siren_506_1.wav,차량사이렌
 1.car_siren_11819_1.wav,차량사이렌
 1.car_siren_442_1.wav,차량사이렌
 1.car_siren_11630_1.wav,차량사이렌
 1.car_siren_410_1.wav,차량사이렌
 1.car_siren_76752_1.wav,차량사이렌
-1.car_siren_367_1.wav,차량경적
+1.car_siren_367_1.wav,이륜차경적
 1.car_siren_71379_1.wav,차량사이렌
 1.car_siren_71367_1.wav,차량사이렌
 1.car_siren_23630_1.wav,차량사이렌
