@@ -17,8 +17,8 @@ app = FastAPI()
 tf.config.set_visible_devices([], 'GPU')
 
 # 모델 로드 
-model = tf.keras.models.load_model('../ES/cnn_model_6classfication.h5')
-#model = tf.keras.models.load_model('../ES/cnn_model_6classfication.h5')
+# model = tf.keras.models.load_model('../ES/cnn_model_6classfication.h5')  #레이블 6개
+model = tf.keras.models.load_model('../ES/resnet_model_mfcc50.h5') #레이블 5개 
         
 
 @app.get("/")
@@ -28,10 +28,10 @@ def read_root():
 
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
-    # 업로드된 파일을 바이트로 읽어오기
-    file_bytes = await file.read()
 
-    # 디버깅: 파일 크기 및 파일 이름 출력
+    file_bytes = await file.read() # 업로드된 파일을 바이트로 읽어오기
+
+    # 디버깅
     print(f"파일 이름: {file.filename}")
     print(f"파일 크기: {len(file_bytes)} 바이트")
 
@@ -42,10 +42,12 @@ async def predict(file: UploadFile = File(...)):
 
     # 모델 예측
     prediction = model.predict(np.array([features]))  
-    predicted_label = np.argmax(prediction)  # 예측된 클래스 인덱스
+    predicted_label = np.argmax(prediction)  
 
     # 소음 종류 라벨
+    # noise_labels = ['이륜차경적', '이륜차주행음', '차량경적', '차량사이렌', '차량주행음', '기타소음']
     noise_labels = ['이륜차경적', '이륜차주행음', '차량경적', '차량사이렌', '차량주행음']
+    # detected_noise = noise_labels[predicted_label]
     if predicted_label < len(noise_labels):
         detected_noise = noise_labels[predicted_label]
     else:
