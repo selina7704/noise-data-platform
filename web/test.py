@@ -1,27 +1,23 @@
-import sounddevice as sd
-import numpy as np
+import streamlit as st
+import os
 
-# 샘플 레이트 (초당 샘플 개수)
-samplerate = 44100
-# 녹음 시간 (초 단위)
-duration = 5  # 5초 녹음
+# 저장할 디렉토리 생성
+audio_save_path = "recorded_audio"
+os.makedirs(audio_save_path, exist_ok=True)
 
-# 녹음 함수
-def record_audio(duration, samplerate):
-    print("녹음 시작...")
-    # 음성 녹음
-    audio_data = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='float32')
-    sd.wait()  # 녹음이 끝날 때까지 기다림
-    print("녹음 종료")
-    return audio_data
+st.title("🎙️ 음성 녹음 테스트")
 
-# 녹음 후 바로 재생
-def play_audio(audio_data, samplerate):
-    print("재생 시작...")
-    sd.play(audio_data, samplerate)
-    sd.wait()  # 재생이 끝날 때까지 기다림
-    print("재생 종료")
+# 사용자 오디오 입력 받기
+audio_value = st.audio_input("음성을 녹음하세요!")
 
-# 녹음하고 바로 재생
-audio_data = record_audio(duration, samplerate)
-play_audio(audio_data, samplerate)
+if audio_value:
+    st.audio(audio_value, format='audio/wav')  # 녹음된 오디오 재생
+    
+    # 저장할 파일 경로 설정
+    file_path = os.path.join(audio_save_path, "recorded_audio.wav")
+    
+    # 파일 저장
+    with open(file_path, "wb") as f:
+        f.write(audio_value.getvalue())
+    
+    st.success(f"✅ 녹음된 오디오가 저장되었습니다: {file_path}")
