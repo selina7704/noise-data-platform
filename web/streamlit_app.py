@@ -4,41 +4,15 @@ import numpy as np
 import librosa
 import io
 import pyaudio
+import os 
 
 # FastAPI 서버 주소
 FASTAPI_URL = "http://localhost:8000/predict/"
 
-# 실시간 음성 녹음 설정
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 22050
-CHUNK = 1024
-RECORD_SECONDS = 5
 
-
-# 실시간 녹음 함수
-def record_audio():
-    p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT,
-                    channels=CHANNELS,
-                    rate=RATE,
-                    input=True,
-                    frames_per_buffer=CHUNK)
-    
-    frames = []
-    for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
-        frames.append(data)
-    
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-    
-    # 녹음된 오디오 데이터를 numpy 배열로 변환
-    audio_data = np.frombuffer(b''.join(frames), dtype=np.int16)
-    return audio_data
-
-
+# 저장할 디렉토리 생성
+audio_save_path = "recorded_audio"
+os.makedirs(audio_save_path, exist_ok=True)
 
 
 def main():
@@ -63,25 +37,30 @@ def main():
             else:
                 st.write("예측 실패. 다시 시도해 주세요.")
                 
-    # 실시간 음성 녹음 기능
-    if st.button("소음 예측 시작 (실시간 녹음)"):
-        st.write("녹음을 시작합니다... 5초 동안 녹음 후 예측합니다.")
+    # 사용자 오디오 입력 받기
+    audio_value = st.audio_input("음성을 녹음하세요!")
+
+    if audio_value:
+        st.audio(audio_value, format='audio/wav')  # 녹음된 오디오 재생
         
-        # 실시간 녹음
-        audio_data = record_audio()
+        # 저장할 파일 경로 설정
+        file_path = os.path.join(audio_save_path, "recorded_audio.wav")
         
-        # 음성을 FastAPI 서버로 전송
-        audio_data_io = io.BytesIO()
-        librosa.output.write_wav(audio_data_io, audio_data, RATE)  # 녹음된 데이터를 BytesIO로 저장
+        # 파일 저장
+        with open(file_path, "wb") as f:
+            f.write(audio_value.getvalue())
         
-        files = {"file": ("recorded.wav", audio_data_io.getvalue(), "audio/wav")}
+        st.success(f"녹음된 오디오가 저장되었습니다: {file_path}")
+
+        # 녹음된 오디오 파일을 FastAPI 서버로 전송하여 예측 수행
+        files = {"file": ("recorded_audio.wav", audio_value.getvalue(), "audio/wav")}
         response = requests.post(FASTAPI_URL, files=files)
-        
+
         if response.status_code == 200:
             prediction = response.json().get("prediction")
             st.write(f"예측된 소음 유형: {prediction}")
         else:
-            st.write("예측 실패. 다시 시도해 주세요.")
-
+            st.write("예측 실패. 다시 시도해 주세요.") 
+                    
 if __name__ == "__main__":
     main()
