@@ -32,8 +32,17 @@ def main():
             response = requests.post(FASTAPI_URL, files=files)
 
             if response.status_code == 200:
-                prediction = response.json().get("prediction")
+                result = response.json()
+                prediction = result.get("prediction")
+                distance = result.get("estimated_distance")
+                direction = result.get("direction")
+                alert = result.get("distance_alert")
+                
+                # 예측된 소음 유형과 분석 결과 출력
                 st.write(f"예측된 소음 유형: {prediction}")
+                st.write(f"추정 거리: {distance} 미터")
+                st.write(f"추정 방향: {direction if direction else '알 수 없음'}")
+                st.write(f"알람: {alert}")
             else:
                 st.write("예측 실패. 다시 시도해 주세요.")
                 
@@ -61,6 +70,21 @@ def main():
             st.write(f"예측된 소음 유형: {prediction}")
         else:
             st.write("예측 실패. 다시 시도해 주세요.") 
-                    
+        
+        if response.status_code == 200:
+            result = response.json()
+            prediction = result.get("prediction")
+            distance = result.get("estimated_distance")
+            direction = result.get("direction")
+            alert = result.get("distance_alert")
+                
+            # 예측된 소음 유형과 분석 결과 출력
+            st.write(f"예측된 소음 유형: {prediction}")
+            st.write(f"추정 거리: {distance} 미터")
+            st.write(f"추정 방향: {direction if direction else '알 수 없음'}")
+            st.write(f"알람: {alert}")
+        else:
+            st.write("예측 실패. 다시 시도해 주세요.")   
+                 
 if __name__ == "__main__":
     main()
