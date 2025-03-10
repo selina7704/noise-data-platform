@@ -12,6 +12,7 @@ from fastapi import Request
 from tensorflow.keras.models import load_model
 import logging 
 
+
 app = FastAPI()
 
 # GPU 비활성화 (CPU로만 실행)

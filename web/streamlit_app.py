@@ -6,6 +6,7 @@ import io
 import pyaudio
 import os 
 import time 
+import json
 
 # FastAPI 서버 주소
 FASTAPI_URL = "http://localhost:8000/predict/"
@@ -48,12 +49,12 @@ def main():
             elapsed_time = time.time() - start_time
             
             if response.status_code == 200:
-                prediction = response.json().get("prediction")
+                # prediction = response.json().get("prediction")
             #     st.write(f"예측된 소음 유형: {prediction}")
             #     st.write(f"⏱️ 예측 소요 시간: {elapsed_time:.2f}초")
             # else:
             #     st.write("예측 실패. 다시 시도해 주세요.") 
-
+                prediction = response.json()
                 if "error" in prediction:
                     st.error("오디오 분석 중 오류 발생! 🚨")
                 else:
