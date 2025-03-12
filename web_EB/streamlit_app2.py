@@ -5,6 +5,8 @@ import time
 import streamlit.components.v1 as components
 from gtts import gTTS
 import base64
+import smtplib
+from email.mime.text import MIMEText
 
 # FastAPI 서버 주소
 FASTAPI_URL = "http://localhost:8001/predict/"
@@ -36,29 +38,31 @@ def autoplay_audio(file_path):
         st.markdown(audio_html, unsafe_allow_html=True)
 
 
-# import smtplib
-# from email.mime.text import MIMEText
+def send_email(to_email, subject, message):
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587 #465
+    sender_email = "itmomdan0328@gmail.com"  # 자신의 Gmail 주소
+    sender_password = "dhvfbjqqhkxlkhzt" #os.environ.get("dhvfbjqqhkxlkhzt")  # 앱 비밀번호 사용 (구글 계정 보안 설정 필요)
 
-# def send_email(to_email, subject, message):
-#     smtp_server = "smtp.gmail.com"
-#     smtp_port = 587
-#     sender_email = "your_email@gmail.com"  # 자신의 Gmail 주소
-#     sender_password = "your_app_password"  # 앱 비밀번호 사용 (구글 계정 보안 설정 필요)
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = sender_email
+    msg['To'] = to_email
 
-#     msg = MIMEText(message)
-#     msg['Subject'] = subject
-#     msg['From'] = sender_email
-#     msg['To'] = to_email
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+        server.quit()
+        print("✅ 이메일 전송 완료!")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"❌ 이메일 전송 실패: 인증 오류 - {e}")
+    except smtplib.SMTPException as e:
+        print(f"❌ 이메일 전송 실패: SMTP 오류 - {e}")
+    except Exception as e:
+        print(f"❌ 이메일 전송 실패: 기타 오류 - {e}")
 
-#     try:
-#         server = smtplib.SMTP(smtp_server, smtp_port)
-#         server.starttls()
-#         server.login(sender_email, sender_password)
-#         server.sendmail(sender_email, to_email, msg.as_string())
-#         server.quit()
-#         print("✅ 이메일 전송 완료!")
-#     except Exception as e:
-#         print(f"❌ 이메일 전송 실패: {e}")
 
 
 
@@ -99,7 +103,7 @@ def show_alert(message, level="warning"):
         alert_sound = generate_tts(message)
         autoplay_audio(alert_sound)
         os.remove(alert_sound)  # 임시 파일 정리
-        time.sleep(4)
+        time.sleep(3)
 
 # 예측 결과 처리 함수
 def process_prediction(response):
@@ -123,11 +127,14 @@ def process_prediction(response):
         # 위험도 평가
         if spl >= 70:
             show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
-#            send_email("admin@example.com", "소음 경고", alert_message)  # 이메일 전송
+            alert_message = f"🚨위험 수준 소음 감지!🚨 소음 유형: {noise_type}, 강도: {spl}dB, 위치: {distance}m, 방향: {direction}"
+            send_email("itmomdan0328@gmail.com", "소음 경고", alert_message)  # 이메일 전송
            
         elif spl >= 50:
             show_alert("주의 요함: 지속적 노출 위험", "warning")
-           
+            alert_message = f"⚠️주의 요함!⚠️ 소음 유형: {noise_type}, 강도: {spl}dB, 위치: {distance}m, 방향: {direction}"
+            send_email("itmomdan0328@gmail.com", "소음 경고", alert_message)  # 이메일 전송
+        
         # 경고 후 항상 소음 유형 안내
         if not st.session_state['stop_audio']:
             info_text = f"소음 유형은 {noise_type}입니다. 현재 소음 강도는 {spl} 데시벨로 측정되었으며, 약 {distance} 미터 거리에서 발생하고 있습니다."
