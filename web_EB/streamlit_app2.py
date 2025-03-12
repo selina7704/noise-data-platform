@@ -7,7 +7,7 @@ from gtts import gTTS
 import base64
 
 # FastAPI 서버 주소
-FASTAPI_URL = "http://localhost:8000/predict/"
+FASTAPI_URL = "http://localhost:8001/predict/"
 
 # 저장 디렉토리 설정
 upload_folder = "uploads"
@@ -34,6 +34,33 @@ def autoplay_audio(file_path):
             <audio autoplay src="data:audio/wav;base64,{b64}" type="audio/wav"></audio>
         """
         st.markdown(audio_html, unsafe_allow_html=True)
+
+
+# import smtplib
+# from email.mime.text import MIMEText
+
+# def send_email(to_email, subject, message):
+#     smtp_server = "smtp.gmail.com"
+#     smtp_port = 587
+#     sender_email = "your_email@gmail.com"  # 자신의 Gmail 주소
+#     sender_password = "your_app_password"  # 앱 비밀번호 사용 (구글 계정 보안 설정 필요)
+
+#     msg = MIMEText(message)
+#     msg['Subject'] = subject
+#     msg['From'] = sender_email
+#     msg['To'] = to_email
+
+#     try:
+#         server = smtplib.SMTP(smtp_server, smtp_port)
+#         server.starttls()
+#         server.login(sender_email, sender_password)
+#         server.sendmail(sender_email, to_email, msg.as_string())
+#         server.quit()
+#         print("✅ 이메일 전송 완료!")
+#     except Exception as e:
+#         print(f"❌ 이메일 전송 실패: {e}")
+
+
 
 # 경고 메시지 + 음성 알림 통합 함수
 def show_alert(message, level="warning"):
@@ -96,6 +123,7 @@ def process_prediction(response):
         # 위험도 평가
         if spl >= 70:
             show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
+#            send_email("admin@example.com", "소음 경고", alert_message)  # 이메일 전송
            
         elif spl >= 50:
             show_alert("주의 요함: 지속적 노출 위험", "warning")
@@ -154,3 +182,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

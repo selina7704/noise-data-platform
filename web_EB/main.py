@@ -4,11 +4,11 @@ import time
 
 # FastAPI 서버 실행
 def run_fastapi():
-    subprocess.Popen(["uvicorn", "fastapi_app:app", "--reload"])
+    subprocess.Popen(["uvicorn", "fastapi_app2:app", "--reload"])
 
 # Streamlit 서버 실행
 def run_streamlit():
-    subprocess.Popen(["streamlit", "run", "streamlit_app.py"])
+    subprocess.Popen(["streamlit", "run", "streamlit_app2.py"])
 
 if __name__ == "__main__":
     # FastAPI 서버 실행

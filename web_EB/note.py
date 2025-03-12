@@ -1,112 +1,127 @@
+# import streamlit as st
+# import requests
+# import os
+# import time
+# from gtts import gTTS
+# import base64
 
-import streamlit as st
-import requests
-import os 
-import time 
-import sounddevice as sd
-import numpy as np
-import wave
+# # FastAPI 서버 주소
+# FASTAPI_URL = "http://localhost:8000/predict/"
 
-# FastAPI 서버 주소
-FASTAPI_URL = "http://localhost:8000/predict/"
+# # 저장 디렉토리 설정
+# upload_folder = "uploads"
+# audio_save_path = "recorded_audio"
+# os.makedirs(upload_folder, exist_ok=True)
+# os.makedirs(audio_save_path, exist_ok=True)
 
-# 저장할 디렉토리 생성
-upload_folder = "uploads"  # 업로드한 파일 저장 폴더
-audio_save_path = "recorded_audio"  # 녹음된 파일 저장 폴더
-os.makedirs(upload_folder, exist_ok=True)
-os.makedirs(audio_save_path, exist_ok=True)
+# # TTS 음성 알림 생성 함수
+# def generate_tts(text, filename="alert.mp3"):
+#     tts = gTTS(text=text, lang='ko', slow=False)
+#     tts.save(filename)
+#     return filename
 
-# 경고 메시지 표시 함수
-def show_alert(message, level="warning"):
-    if level == "danger":
-        st.markdown(
-            f"""
-            <div style="background-color:#ff4d4d; padding:15px; border-radius:10px; text-align:center;">
-                <h2 style="color:white;">🚨 경고! {message} 🚨</h2>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    elif level == "warning":
-        st.markdown(
-            f"""
-            <div style="background-color:#ffcc00; padding:15px; border-radius:10px; text-align:center;">
-                <h2 style="color:black;">⚠️ 주의! {message} ⚠️</h2>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    else:
-        st.success(message)
+# # 오디오 자동 재생 컴포넌트
+# def autoplay_audio(file_path):
+#     with open(file_path, "rb") as f:
+#         data = f.read()
+#         b64 = base64.b64encode(data).decode()
+#         audio_html = f"""
+#             <audio autoplay>
+#             <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+#             </audio>
+#         """
+#         st.markdown(audio_html, unsafe_allow_html=True)
 
-# 오디오 녹음 함수
-def record_audio(filename, duration=5, samplerate=44100):
-    st.write("🎤 녹음 중...")
-    recording = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype=np.int16)
-    sd.wait()
+# # 경고 메시지 + 음성 알림 통합 함수
+# def show_alert(message, level="warning"):
+#     # 시각적 경고
+#     color = "#ffcc00" if level == "warning" else "#ff4d4d"
+#     text_color = "black" if level == "warning" else "white"
+#     icon = "⚠️" if level == "warning" else "🚨"
     
-    filepath = os.path.join(audio_save_path, filename)
-    with wave.open(filepath, 'wb') as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(samplerate)
-        wf.writeframes(recording.tobytes())
+#     st.markdown(
+#         f"""
+#         <style>
+#         @keyframes blink {{
+#             0% {{ background-color: {color}; }}
+#             50% {{ background-color: transparent; }}
+#             100% {{ background-color: {color}; }}
+#         }}
+#         .blink-alert {{
+#             animation: blink 1s linear infinite;
+#             padding: 25px;
+#             border-radius: 15px;
+#             text-align: center;
+#             color: {text_color};
+#             font-size: 1.5em;
+#             margin: 20px 0;
+#         }}
+#         </style>
+#         <div class="blink-alert">
+#             {icon} {message} {icon}
+#         </div>
+#         """,
+#         unsafe_allow_html=True,
+#     )
     
-    st.success(f"✅ 녹음이 완료되었습니다: {filepath}")
-    return filepath
+#     # 음성 알림
+#     alert_sound = generate_tts(message)
+#     autoplay_audio(alert_sound)
+#     os.remove(alert_sound)  # 임시 파일 정리
 
-def main():
-    st.title("🔊 소음 분류기")
-
-    # 파일 업로드
-    uploaded_file = st.file_uploader("📂 음성 파일을 업로드하세요", type=["wav"])
-
-    # 녹음 버튼
-    if st.button("🎙️ 녹음 시작 (5초)"):
-        recorded_file = record_audio("recorded.wav")
-        st.audio(recorded_file, format='audio/wav')
-        uploaded_file = recorded_file  # 녹음 파일을 업로드 파일 변수로 설정
-
-    if uploaded_file is not None:
-        st.audio(uploaded_file, format='audio/wav')  
-        st.write(f"파일 이름: {uploaded_file if isinstance(uploaded_file, str) else uploaded_file.name}")
+# # 예측 결과 처리 함수
+# def process_prediction(response):
+#     if response.status_code == 200:
+#         result = response.json()
+#         if "error" in result:
+#             show_alert("오디오 분석에 실패했습니다", "danger")
+#             return
         
-        # 파일 저장
-        if isinstance(uploaded_file, str):
-            upload_path = uploaded_file  # 녹음된 파일 경로 유지
-        else:
-            upload_path = os.path.join(upload_folder, uploaded_file.name)
-            with open(upload_path, "wb") as f:
-                f.write(uploaded_file.getvalue())
+#         st.success("✅ 분석 결과")
+#         st.write(f"**유형**: {result.get('prediction', '알 수 없음')}")
+#         st.write(f"**소음 강도**: {result.get('spl', 0)} dB")
+#         st.write(f"**추정 위치**: {result.get('estimated_distance', 'N/A')}m 방향")
+        
+#         # 음성 설명 자동 재생
+#         tts_text = f"""소음 유형은 {result['prediction']}입니다. 
+#         현재 소음 강도는 {result['spl']}데시벨로 측정되었으며, 
+#         약 {result['estimated_distance']}미터 거리에서 발생하고 있습니다."""
+#         info_sound = generate_tts(tts_text)
+#         autoplay_audio(info_sound)
+#         os.remove(info_sound)
+        
+#         # 위험도 평가
+#         spl = result.get('spl', 0)
+#         if spl >= 70:
+#             show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
+#         elif spl >= 50:
+#             show_alert("주의 요함: 지속적 노출 위험", "warning")
 
-        st.success(f"📂 업로드된 파일이 저장되었습니다: {upload_path}")
+#     else:
+#         show_alert("서버 연결 오류 발생", "danger")
 
-        if st.button('🔍 예측하기'):
-            start_time = time.time()
-            with open(upload_path, "rb") as f:
-                files = {"file": (os.path.basename(upload_path), f, "audio/wav")}
-                response = requests.post(FASTAPI_URL, files=files)
-            elapsed_time = time.time() - start_time
+# # 메인 앱 인터페이스
+# def main():
+#     st.title("🔊 스마트 소음 감지 시스템")
+#     st.markdown("**청각 지원 모드 활성화** 🦻")
+    
+#     # 파일 업로드 섹션
+#     with st.expander("📁 파일 업로드 방식", expanded=True):
+#         uploaded_file = st.file_uploader("WAV 파일 선택", type=["wav"])
+#         if uploaded_file and st.button("업로드 파일 분석"):
+#             with st.spinner("분석 중..."):
+#                 # 파일 처리 및 분석 로직
+#                 response = requests.post(FASTAPI_URL, files={"file": uploaded_file})
+#                 process_prediction(response)
+    
+#     # 실시간 녹음 섹션
+#     with st.expander("🎙 실시간 녹음 방식", expanded=True):
+#         audio_data = st.audio_input("실시간 음성 입력")
+#         if audio_data and st.button("녹음 데이터 분석"):
+#             with st.spinner("실시간 분석 진행 중..."):
+#                 # 녹음 데이터 처리
+#                 response = requests.post(FASTAPI_URL, files={"file": audio_data})
+#                 process_prediction(response)
 
-            if response.status_code == 200:
-                prediction = response.json()
-                if "error" in prediction:
-                    st.error("🚨 오디오 분석 중 오류 발생!")
-                else:
-                    st.success("✅ 분석 완료!")
-                    st.write(f"**예측된 소음 유형:** {prediction.get('prediction', '알 수 없음')}")
-                    spl = prediction.get('spl', 0)
-                    st.write(f"**소음 크기:** {spl} dB")
-                    st.write(f"**추정 거리:** {prediction.get('estimated_distance', 'N/A')} 미터")
-                    st.write(f"**방향:** {prediction.get('direction', '알 수 없음')}")
-
-                    # 소음 강도에 따른 경고 표시
-                    if spl >= 70:
-                        show_alert("소음이 매우 큽니다!\n즉시 조치가 필요합니다.", level="danger")
-                    elif spl >= 50:
-                        show_alert("소음이 다소 큽니다.\n주의하세요!", level="warning")
-            else:
-                st.error("❌ 서버와의 통신 오류 발생!")
-
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
