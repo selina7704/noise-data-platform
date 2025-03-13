@@ -7,13 +7,14 @@ import logging
 from fastapi import FastAPI, File, UploadFile, WebSocket
 from tensorflow.keras.models import load_model
 
+
 app = FastAPI()
 
 # GPU 비활성화
 tf.config.set_visible_devices([], 'GPU')
 
 # 모델 로드
-model = load_model('resnet_model_modified_v6.h5')
+model = load_model('../model/resnet_model_modified_v6.h5')
 print("모델 로드 완료: resnet_model_modified_v6.h5")
 
 # 고정값 설정

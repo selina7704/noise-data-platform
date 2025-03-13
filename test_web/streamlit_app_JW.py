@@ -11,12 +11,17 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 import seaborn as sns
 import matplotlib.pyplot as plt
 import logging
+from gtts import gTTS
+import base64
+import smtplib
+from email.mime.text import MIMEText
+
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # FastAPI 서버 주소
-FASTAPI_URL = "http://localhost:8006/predict/"
+FASTAPI_URL = "http://localhost:8008/predict/"
 
 # 저장 디렉토리
 upload_folder = "uploads"
@@ -43,7 +48,7 @@ unknown_label_index = label_dict['기타소음']
 tf.config.run_functions_eagerly(True)
 
 # 모델 초기화 (CSV용)
-def initialize_models(model_path='resnet_model_modified_v6.h5'):
+def initialize_models(model_path='../model/resnet_model_modified_v6.h5'):
     global MODEL, LOGITS_MODEL
     if MODEL is None:
         MODEL = load_model(model_path)
@@ -221,6 +226,9 @@ def show_alert(message, level="warning"):
 
 # 예측 결과 처리 함수
 def process_prediction(response):
+    # start_time = time.time()
+    # elapsed_time = time.time() - start_time
+    # st.write(f"**예측 소요 시간**: {elapsed_time:.2f}초")
     if response.status_code == 200:
         result = response.json()
         if "error" in result:
@@ -232,7 +240,8 @@ def process_prediction(response):
         st.write(f"**소음 강도**: {result.get('spl', 0)} dB")
         st.write(f"**추정 위치**: {result.get('estimated_distance', 'N/A')}m")
         st.write(f"**추정 방향**: {result.get('direction', '알 수 없음')}")
-
+        
+        
         noise_type = result.get('prediction', '알 수 없음')
         spl = result.get('spl', 0)
         distance = result.get('estimated_distance', 'N/A')
@@ -260,68 +269,128 @@ def process_prediction(response):
 
 def main():
     st.title("소음 분류기")
+    
+    # 배경색 애니메이션
+    animation_html = """
+    <script>
+        document.body.style.transition = "background-color 2s";
+        document.body.style.backgroundColor = "#ffcc00";
+        setTimeout(() => {
+            document.body.style.backgroundColor = "white";
+        }, 2000);
+    </script>
+    """
+    st.components.v1.html(animation_html, height=0)
 
-    # 실시간 녹음
-    audio_value = st.audio_input("음성을 녹음하세요!")
-    if audio_value:
-        st.audio(audio_value, format='audio/wav')
-        file_path = os.path.join(audio_save_path, "recorded_audio.wav")
-        with open(file_path, "wb") as f:
-            f.write(audio_value.getvalue())
-        st.success(f"녹음된 오디오가 저장되었습니다: {file_path}")
+    # # 실시간 녹음
+    # audio_value = st.audio_input("음성을 녹음하세요!")
+    # if audio_value:
+    #     st.audio(audio_value, format='audio/wav')
+    #     file_path = os.path.join(audio_save_path, "recorded_audio.wav")
+    #     with open(file_path, "wb") as f:
+    #         f.write(audio_value.getvalue())
+    #     st.success(f"녹음된 오디오가 저장되었습니다: {file_path}")
 
-        if st.button("녹음 예측하기"):
-            start_time = time.time()
-            files = {"file": ("recorded_audio.wav", audio_value.getvalue(), "audio/wav")}
-            response = requests.post(FASTAPI_URL, files=files)
-            elapsed_time = time.time() - start_time
+    #     if st.button("녹음 예측하기"):
+        
+    #         files = {"file": ("recorded_audio.wav", audio_value.getvalue(), "audio/wav")}
+    #         response = requests.post(FASTAPI_URL, files=files)
+            
+    #         process_prediction(response)
+            
 
-            if response.status_code == 200:
-                prediction = response.json()
-                if "error" in prediction:
-                    st.error("오디오 분석 중 오류 발생! 🚨")
-                else:
-                    st.success("분석 완료 ✅")
-                    st.write(f"**예측된 소음 유형:** {prediction.get('prediction', '알 수 없음')}")
-                    st.write(f"**소음 크기 (dB):** {prediction.get('spl', 'N/A')} dB")
-                    st.write(f"**추정 거리:** {prediction.get('estimated_distance', 'N/A')} 미터")
-                    st.write(f"**방향:** {prediction.get('direction', '알 수 없음')}")
-                    st.write(f"**신뢰도:** {prediction.get('confidence', 'N/A')}")
-                    st.write(f"⏱️ 예측 소요 시간: {elapsed_time:.2f}초")
-            else:
-                st.error("서버와의 통신 오류 발생! ❌")
+            # if response.status_code == 200:
+            #     prediction = response.json()
+            #     if "error" in prediction:
+            #         st.error("오디오 분석 중 오류 발생! 🚨")
+            #     else:
+            #         st.success("분석 완료 ✅")
+            #         st.write(f"**예측된 소음 유형:** {prediction.get('prediction', '알 수 없음')}")
+            #         st.write(f"**소음 크기 (dB):** {prediction.get('spl', 'N/A')} dB")
+            #         st.write(f"**추정 거리:** {prediction.get('estimated_distance', 'N/A')} 미터")
+            #         st.write(f"**방향:** {prediction.get('direction', '알 수 없음')}")
+            #         st.write(f"⏱️ 예측 소요 시간: {elapsed_time:.2f}초")
+            # else:
+            #     st.error("서버와의 통신 오류 발생! ❌")
+    
+     # 실시간 녹음 섹션
+    with st.expander("🎙 녹음 방식", expanded=True):
+        audio_data = st.audio_input("음성 입력")
+                
+        if audio_data:
+            file_path = os.path.join(audio_save_path, "recorded_audio.wav")
+            with open(file_path, "wb") as f:
+                f.write(audio_data.getvalue())
+                st.success(f"📂 녹음된 오디오가 저장되었습니다: {file_path}")
 
-    # WAV 파일 업로드
-    uploaded_file = st.file_uploader("음성 파일을 업로드하세요", type=["wav"])
-    if uploaded_file is not None:
-        st.audio(uploaded_file, format='audio/wav')
-        st.write(f"파일 이름: {uploaded_file.name}")
+            if  st.button("녹음 데이터 분석"):
+                with st.spinner("분석 진행 중..."):
+                    # 녹음 데이터 처리
+                    response = requests.post(FASTAPI_URL, files={"file": audio_data})
+                    process_prediction(response)   
+                    
+                    
+    
+    # 파일 업로드 섹션
+    with st.expander("📁 파일 업로드 방식", expanded=True):
+        uploaded_file = st.file_uploader("음성 파일을 업로드하세요", type=["wav"])
+        
+        if uploaded_file is not None:
+            st.audio(uploaded_file, format='audio/wav')
+            st.write(f"파일 이름: {uploaded_file.name}")
 
-        upload_path = os.path.join(upload_folder, uploaded_file.name)
-        with open(upload_path, "wb") as f:
-            f.write(uploaded_file.getvalue())
-        st.success(f"📂 업로드된 파일이 저장되었습니다: {upload_path}")
+            upload_path = os.path.join(upload_folder, uploaded_file.name)
+            with open(upload_path, "wb") as f:
+                f.write(uploaded_file.getvalue())
+            st.success(f"📂 업로드된 파일이 저장되었습니다: {upload_path}")
+        
+            if uploaded_file and st.button("음성 예측하기"):
+                with st.spinner("분석 중..."):
+                        # 파일 처리 및 분석 로직
+                    response = requests.post(FASTAPI_URL, files={"file": uploaded_file})
+                    process_prediction(response)
+    
+    # Stop Audio 버튼: 실시간 녹음 섹션 바깥으로 이동
+    st.session_state['stop_audio'] = st.button("🛑 Stop Audio")                
+    
+    
+    # # WAV 파일 업로드
+    # uploaded_file = st.file_uploader("음성 파일을 업로드하세요", type=["wav"])
+    # if uploaded_file is not None:
+    #     st.audio(uploaded_file, format='audio/wav')
+    #     st.write(f"파일 이름: {uploaded_file.name}")
 
-        if st.button('업로드 예측하기'):
-            start_time = time.time()
-            files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "audio/wav")}
-            response = requests.post(FASTAPI_URL, files=files)
-            elapsed_time = time.time() - start_time
+    #     upload_path = os.path.join(upload_folder, uploaded_file.name)
+    #     with open(upload_path, "wb") as f:
+    #         f.write(uploaded_file.getvalue())
+    #     st.success(f"📂 업로드된 파일이 저장되었습니다: {upload_path}")
 
-            if response.status_code == 200:
-                prediction = response.json()
-                if "error" in prediction:
-                    st.error("오디오 분석 중 오류 발생! 🚨")
-                else:
-                    st.success("분석 완료 ✅")
-                    st.write(f"**예측된 소음 유형:** {prediction.get('prediction', '알 수 없음')}")
-                    st.write(f"**소음 크기 (dB):** {prediction.get('spl', 'N/A')} dB")
-                    st.write(f"**추정 거리:** {prediction.get('estimated_distance', 'N/A')} 미터")
-                    st.write(f"**방향:** {prediction.get('direction', '알 수 없음')}")
-                    st.write(f"**신뢰도:** {prediction.get('confidence', 'N/A')}")
-                    st.write(f"⏱️ 예측 소요 시간: {elapsed_time:.2f}초")
-            else:
-                st.error("서버와의 통신 오류 발생! ❌")
+    #     if st.button('업로드 예측하기'):
+    #         # start_time = time.time()
+    #         files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "audio/wav")}
+    #         response = requests.post(FASTAPI_URL, files=files)
+    #         process_prediction(response)
+            # elapsed_time = time.time() - start_time
+
+            # if response.status_code == 200:
+            #     prediction = response.json()
+            #     if "error" in prediction:
+            #         st.error("오디오 분석 중 오류 발생! 🚨")
+            #     else:
+            #         st.success("분석 완료 ✅")
+            #         st.write(f"**예측된 소음 유형:** {prediction.get('prediction', '알 수 없음')}")
+            #         st.write(f"**소음 크기 (dB):** {prediction.get('spl', 'N/A')} dB")
+            #         st.write(f"**추정 거리:** {prediction.get('estimated_distance', 'N/A')} 미터")
+            #         st.write(f"**방향:** {prediction.get('direction', '알 수 없음')}")
+            #         st.write(f"**신뢰도:** {prediction.get('confidence', 'N/A')}")
+            #         st.write(f"⏱️ 예측 소요 시간: {elapsed_time:.2f}초")
+            # else:
+            #     st.error("서버와의 통신 오류 발생! ❌")
+            
+
+
+
+##################################
 
     # CSV 업로드 및 평가
     st.title("소음 분류 성능 평가")
