@@ -9,7 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 # FastAPI 서버 주소
-FASTAPI_URL = "http://localhost:8001/predict/"
+FASTAPI_URL = "http://localhost:8005/predict/"
 
 # 저장 디렉토리 설정
 upload_folder = "uploads"
@@ -141,7 +141,6 @@ def process_prediction(response):
             info_sound = generate_tts(info_text)
             autoplay_audio(info_sound)
             os.remove(info_sound)
-
     else:
         show_alert("서버 연결 오류 발생", "danger")
 
@@ -171,15 +170,15 @@ def main():
                 process_prediction(response)
     
     # 실시간 녹음 섹션
-    with st.expander("🎙 실시간 녹음 방식", expanded=True):
-        audio_data = st.audio_input("실시간 음성 입력")
+    with st.expander("🎙 녹음 방식", expanded=True):
+        audio_data = st.audio_input("음성 입력")
                 
         if audio_data:
 
             st.success(f"📂 녹음된 오디오가 저장되었습니다: ")
 
             if  st.button("녹음 데이터 분석"):
-                with st.spinner("실시간 분석 진행 중..."):
+                with st.spinner("분석 진행 중..."):
                     # 녹음 데이터 처리
                     response = requests.post(FASTAPI_URL, files={"file": audio_data})
                     process_prediction(response)
@@ -189,4 +188,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
