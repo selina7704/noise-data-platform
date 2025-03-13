@@ -235,15 +235,15 @@ def process_prediction(response):
             show_alert("오디오 분석에 실패했습니다", "danger")
             return
         
-        st.success("✅ 분석 결과")
-        st.write(f"**유형**: {result.get('prediction', '알 수 없음')}")
-        st.write(f"**소음 강도**: {result.get('spl', 0)} dB")
-        st.write(f"**추정 위치**: {result.get('estimated_distance', 'N/A')}m")
-        st.write(f"**추정 방향**: {result.get('direction', '알 수 없음')}")
+        st.write(f"🔊 **예측된 소음 유형:** {result.get('prediction', '알 수 없음')}")
+        st.write(f"📊 **Peak SPL (dB):** {result.get('spl_peak', 'N/A')}")
+        st.write(f"📊 **RMS SPL (dB):** {result.get('spl_rms', 'N/A')}")
+        st.write(f"📏 **추정 거리:** {result.get('estimated_distance', 'N/A')} 미터")
+        st.write(f"📡 **방향:** {result.get('direction', '알 수 없음')}")
         
         
         noise_type = result.get('prediction', '알 수 없음')
-        spl = result.get('spl', 0)
+        spl = result.get('spl_peak', 0) #spl_peak
         distance = result.get('estimated_distance', 'N/A')
         direction = result.get('direction', '알 수 없음')
 
