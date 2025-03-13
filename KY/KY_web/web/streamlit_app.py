@@ -3,7 +3,7 @@ import requests
 import io
 
 # FastAPI 서버 URL (서버가 로컬에서 실행 중이면 localhost 사용)
-FASTAPI_URL = "http://localhost:8000/predict/"
+FASTAPI_URL = "http://localhost:8001/predict/"
 
 def main():
     st.title("소음 분류기 및 분석기")
