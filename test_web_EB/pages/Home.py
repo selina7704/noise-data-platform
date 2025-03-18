@@ -1,8 +1,34 @@
 import streamlit as st
+import Home, Dashboard, Mypage
 
 def run():
     st.title("🔊 Noise Classifier")
     st.write("🔍 **소음 분석 AI**에 오신 것을 환영합니다!\n이곳에서 다양한 소음을 분석하고, 그 유형을 예측해볼 수 있어요.")
+
+
+    # # 사이드바에 버튼 생성
+    # col1, col2, col3 = st.sidebar.columns(3)
+    # with col1:
+    #     if st.button("🏠 Home"):
+    #         Home.run()
+    # with col2:
+    #     if st.button("📊 Dashboard"):
+    #         Dashboard.run()
+    # with col3:
+    #     if st.button("👤 My Page"):
+    #         Mypage.run()
+    if st.sidebar.button("🏠 Home"):
+        Home.run()
+
+    st.sidebar.empty()
+
+    if st.sidebar.button("📊 Dashboard"):
+        Dashboard.run()
+
+    st.sidebar.empty()
+
+    if st.sidebar.button("👤 My Page"):
+        Mypage.run()
 
     # 사용 설명서
     st.header("📖 소음 분류기 사용 설명서")

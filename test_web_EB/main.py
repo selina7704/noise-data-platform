@@ -8,8 +8,8 @@ def run_fastapi():
 
 # Streamlit 서버 실행
 def run_streamlit():
-    subprocess.Popen(["streamlit", "run", "streamlit_app_JW.py", "--server.port", "8505"])
-    #subprocess.Popen(["streamlit", "run", "pages/Home.py", "--server.port", "8505"])
+    #subprocess.Popen(["streamlit", "run", "streamlit_app_JW.py", "--server.port", "8505"])
+    subprocess.Popen(["streamlit", "run", "pages/Home.py", "--server.port", "8505"])
 
 if __name__ == "__main__":
     # FastAPI 서버 실행
