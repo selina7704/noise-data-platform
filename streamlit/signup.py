@@ -3,8 +3,10 @@ import streamlit as st
 class Signup_page():
     def __init__(self):
         pass
-
+    
     def run(self):
+        from home import Home_page 
+        
         st.header("📝 회원가입")
         
         # 회원가입 폼 구현
@@ -36,7 +38,12 @@ class Signup_page():
                     'phone_number': phone_number,
                     'usage_purpose': usage_purpose
                 }
+                # 자동 로그인 처리
+                st.session_state.logged_in = True
+                st.session_state.page = 'Home'  # 홈 페이지로 이동
                 st.success(f'{name}님, 회원가입을 축하합니다!')
+                st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)
+                
                 # st.query_params.update(page="Home")
             else:
                 st.error('비밀번호가 일치하지 않습니다.')

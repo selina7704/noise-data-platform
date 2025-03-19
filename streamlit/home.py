@@ -19,11 +19,6 @@ class Home_page:
         self.NoiseModel = NoiseModel_page()
         self.Statistics = Statistics_page()
         self.Edit = Edit_page()
-        #####################################
-        # 초기 페이지 설정
-        if 'page' not in st.session_state:
-            st.session_state.page = 'Home'
-        #####################################
 
     def main(self, choose=None):
         menu = ["홈","로그인","회원가입", "마이페이지"]
