@@ -19,6 +19,11 @@ class Home_page:
         self.NoiseModel = NoiseModel_page()
         self.Statistics = Statistics_page()
         self.Edit = Edit_page()
+        #####################################
+        # 초기 페이지 설정
+        if 'page' not in st.session_state:
+            st.session_state.page = 'Home'
+        #####################################
 
     def main(self, choose=None):
         menu = ["홈","로그인","회원가입", "마이페이지"]
@@ -32,7 +37,11 @@ class Home_page:
             self.Signup.run()   
         elif choose == menu[3]:  # 마이페이지 선택
             self.Edit.run()  # Mypage_page 실행
-
+            if 'user_info' in st.session_state:  #로그인 되었을때만
+                self.Edit.run()  # Mypage_page 실행
+            else:
+                st.warning('로그인이 필요합니다.')
+                
     def bar(self):
         col, col1, col2, col3 = st.columns([2, 3, 1.5, 1])
         # 상단 중앙: 로고
