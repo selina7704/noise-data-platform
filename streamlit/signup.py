@@ -37,6 +37,6 @@ class Signup_page():
                     'usage_purpose': usage_purpose
                 }
                 st.success(f'{name}님, 회원가입을 축하합니다!')
-                st.query_params.update(page="Home")
+                # st.query_params.update(page="Home")
             else:
                 st.error('비밀번호가 일치하지 않습니다.')
