@@ -1,55 +1,35 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from login import login_page
+from login import Login_page
 from Mypage import Mypage_page
 from Dashboard import Dashboard_page
-<<<<<<< HEAD
-from signup import signup_page
-=======
+from signup import Signup_page
 from home_about import About_page
 from home_noisemodel import NoiseModel_page
 from home_statistics import Statistics_page
->>>>>>> 26fe8dcc23664dd4eddc2364c73b846c44b6b109
 
 class Home_page:
     def __init__(self):
-        self.login = login_page()
+        self.login = Login_page()
         self.Mypage = Mypage_page()  # Mypage_page 초기화
         self.Dashboard = Dashboard_page()  # Dashboard_page 초기화
-<<<<<<< HEAD
-        self.signup = signup_page()
-
-    def main(self,choose=None):
-        menu = ["마이페이지", "대시보드", '로그인','회원가입']
-=======
+        self.signup = Signup_page()
         self.About = About_page()
         self.NoiseModel = NoiseModel_page()
         self.Statistics = Statistics_page()
 
     def main(self, choose=None):
-        menu = ["홈","마이페이지", "대시보드", '로그인']
->>>>>>> 26fe8dcc23664dd4eddc2364c73b846c44b6b109
+        menu = ["홈","로그인","회원가입", "마이페이지"]
 
         # 메뉴 선택에 따라 페이지 전환
         if choose == menu[0]: # 메인 홈화면
             self.bar() 
-        elif choose == menu[1]:  # 마이페이지 선택
-            self.Mypage.run()  # Mypage_page 실행
-            st.write('마이페이지 선택')
-        elif choose == menu[2]:  # 대시보드 선택
-            self.Dashboard.run()  # Dashboard_page 실행
-<<<<<<< HEAD
-        elif choose == menu[2]: #login
+        elif choose == menu[1]: #login
             self.login.run()
-        elif choose == menu[3]: #회원가입
+        elif choose == menu[2]: #회원가입
             self.signup.run()   
-
-
-    def run(self):
-        menu = ["마이페이지", "대시보드", '로그인', '회원가입']
-=======
-        elif choose == menu[3]:  # 로그인 선택
-            self.login.run()
+        elif choose == menu[3]:  # 마이페이지 선택
+            self.Mypage.run()  # Mypage_page 실행
 
     def bar(self):
         col, col1, col2, col3 = st.columns([2, 3, 1.5, 1])
@@ -85,8 +65,7 @@ class Home_page:
             self.Statistics.statistics_page()    
 
     def run(self):
-        menu = ["홈","마이페이지", "대시보드", '로그인']
->>>>>>> 26fe8dcc23664dd4eddc2364c73b846c44b6b109
+        menu = ["홈","로그인","회원가입", "마이페이지"]
 
         # 사이드바
         with st.sidebar:

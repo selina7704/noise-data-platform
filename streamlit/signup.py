@@ -1,6 +1,6 @@
 import streamlit as st
 
-class signup_page():
+class Signup_page():
     def __init__(self):
         pass
 

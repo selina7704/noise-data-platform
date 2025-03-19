@@ -25,7 +25,7 @@
 
 import streamlit as st
 
-class login_page:
+class Login_page:
     def __init__(self):
         # 초기화는 객체 생성 시 한 번만 호출되고, run에서 페이지 로직을 처리합니다.
         pass

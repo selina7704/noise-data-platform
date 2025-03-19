@@ -16,7 +16,7 @@ class edit_page:
             password = st.text_input('비밀번호', type='password')
             confirm_password = st.text_input('비밀번호 확인', type='password')
             name = st.text_input('이름')
-            age_options = ["~20", "21-30", "31-40", "41-50", "51-60", "61+"]
+            age_options = ["0-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71+"]
             age = st.selectbox('나이', age_options)
             email = st.text_input('이메일')
             guardian_email = st.text_input('보호자 이메일')
