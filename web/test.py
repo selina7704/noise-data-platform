@@ -1,23 +1,19 @@
 import streamlit as st
-import os
+from streamlit_webrtc import webrtc_streamer
 
-# 저장할 디렉토리 생성
-audio_save_path = "recorded_audio"
-os.makedirs(audio_save_path, exist_ok=True)
+st.title("🎙️ WebRTC 오디오 테스트")
 
-st.title("🎙️ 음성 녹음 테스트")
-
-# 사용자 오디오 입력 받기
-audio_value = st.audio_input("음성을 녹음하세요!")
-
-if audio_value:
-    st.audio(audio_value, format='audio/wav')  # 녹음된 오디오 재생
-    
-    # 저장할 파일 경로 설정
-    file_path = os.path.join(audio_save_path, "recorded_audio.wav")
-    
-    # 파일 저장
-    with open(file_path, "wb") as f:
-        f.write(audio_value.getvalue())
-    
-    st.success(f"✅ 녹음된 오디오가 저장되었습니다: {file_path}")
+webrtc_streamer(
+    key="simple-audio",
+    media_stream_constraints={"video": False, "audio": True},
+    rtc_configuration={
+        "iceServers": [
+            {"urls": "stun:stun.l.google.com:19302"},
+            {
+                "urls": "turn:openrelay.metered.ca:80",
+                "username": "openrelayproject",
+                "credential": "openrelayproject"
+            },
+        ]
+    }
+)

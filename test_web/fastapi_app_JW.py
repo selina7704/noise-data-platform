@@ -97,11 +97,18 @@ def analyze_audio(file_bytes, predicted_label):
     peak_amplitude = np.max(np.abs(y))
     peak_spl = 20 * np.log10(peak_amplitude / SPL_REFERENCE + 1e-6)
 
-    # 🔹 거리 예측 (소음 유형별 SPL 선택)
-    estimated_distance = estimate_distance(peak_spl, rms_spl, predicted_label)
-
-    # 🔹 방향 판별
-    direction = estimate_direction(y, predicted_label) if is_stereo else "알 수 없음"
+    # 무음 감지 (RMS 값이 너무 낮으면 무음으로 처리)
+    if rms_spl < 10:
+        return {
+            "prediction": "무음 감지",
+            "spl_peak": round(peak_spl, 2),
+            "spl_rms": round(rms_spl, 2),
+            "estimated_distance": "알 수 없음",
+            "direction": "알 수 없음"
+        }
+        
+    estimated_distance = estimate_distance(peak_spl, rms_spl, predicted_label) #거리 예측
+    direction = estimate_direction(y, predicted_label) if is_stereo else "알 수 없음" #방향 판별 
 
     return {
         "prediction": predicted_label,
@@ -176,8 +183,12 @@ async def predict(file: UploadFile = File(...)):
 
     audio_bytes = io.BytesIO(file_bytes)
     audio_librosa, sr_librosa = librosa.load(audio_bytes, sr=None)
-    print("librosa로 처리한 샘플링 레이트:", sr_librosa)
+    
+    if len(audio_librosa) == 0:
+        return {"error": "오디오 데이터가 비어 있음"}
 
+    print("librosa로 처리한 샘플링 레이트:", sr_librosa)
+    
     mfccs = librosa.feature.mfcc(y=audio_librosa, sr=sr_librosa, n_mfcc=50)
     features = np.mean(mfccs, axis=1).astype(float)
     print(features)
