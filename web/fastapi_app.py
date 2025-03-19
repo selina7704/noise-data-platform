@@ -122,10 +122,22 @@ async def predict(file: UploadFile = File(...)):
     result = analyze_audio(file_bytes,detected_noise)
     print(result)
     return result 
-
     #return {"prediction": detected_noise}
 
-
+# @app.websocket("/ws/audio")
+# async def audio_stream(websocket: WebSocket):
+#     await websocket.accept()
+#     try:
+#         while True:
+#             audio_data = await websocket.receive_bytes()
+#             # 여기서 audio_data를 처리하는 코드 추가 (예: 분석)
+#             print("Received audio data")
+#             await websocket.send_text("Audio data received")
+#     except Exception as e:
+#         print(f"Error: {e}")
+#     finally:
+#         await websocket.close()
+        
 
 # label_dict = {'이륜차경적': 0, '이륜차주행음': 1, '차량경적': 2, '차량사이렌': 3, '차량주행음': 4, '기타소음': 5}
 # reverse_label_dict = {v: k for k, v in label_dict.items()}
@@ -149,67 +161,7 @@ async def predict(file: UploadFile = File(...)):
     # return {"predictions": predicted_label_names, "csv_result": result_csv}
 
 
-# @app.post("/upload_csv/")
-# async def upload_csv(file: UploadFile = File(...)):
-#     # 업로드된 CSV 파일의 내용을 읽어온다
-#     contents = await file.read()
-    
-#     # CSV 파일을 pandas DataFrame으로 변환
-#     df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
-    
-#     # DataFrame의 상위 5개 행을 반환
-#     return {"head": df.head().to_dict()}
-
-# @app.post("/check_data/")
-# async def check_data(file: UploadFile = File(...)):
-#     contents = await file.read()
-#     df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
-
-#     return {
-#         "columns": df.columns.tolist(),
-#         "head": df.head().to_dict()
-#     }
 
 
-# # 라벨 딕셔너리 (예시로 설정)
-# label_dict = {
-#     '이륜차경적': 0, '이륜차주행음': 1, '차량경적': 2, '차량사이렌': 3, '차량주행음': 4, '기타소음': 5
-# }
-# reverse_label_dict = {v: k for k, v in label_dict.items()}
 
-
-# @app.post("/csv_predict/")
-# async def predict(file: UploadFile = File(...)):
-#     # 업로드된 파일을 읽어들여 pandas DataFrame으로 변환
-#     contents = await file.read()
-    
-    
-#     print(contents)
-#     # 파일 크기 확인
-#     print(f"File size: {len(contents)} bytes")
-    
-    
-#     df = pd.read_csv(io.BytesIO(contents))
-    
-#     # 필요한 MFCC 열을 모델 입력으로 사용
-#     mfcc_columns = [f"mfcc_{i}" for i in range(1, 51)]  # 'mfcc_1'부터 'mfcc_50'까지의 열 이름
-#     features = df[mfcc_columns].values
-    
-#     print(f'mfcc_columns: {mfcc_columns}')
-
-#     # 모델 예측
-#     predictions = model.predict(features)
-#     predicted_labels = np.argmax(predictions, axis=1)
-
-#     # 예측된 라벨을 대응하는 이름으로 변환
-#     predicted_label_names = [reverse_label_dict[label] for label in predicted_labels]
-
-#     # 결과를 DataFrame으로 반환
-#     df['predicted_label'] = predicted_label_names
-#     result_csv = df.to_csv(index=False)
-
-#     return {
-#         "predictions": predicted_label_names,
-#         "csv_result": result_csv
-#     }
 
