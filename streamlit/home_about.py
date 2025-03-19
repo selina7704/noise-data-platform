@@ -33,7 +33,79 @@ class About_page:
 
         # 개발진 소개
         with tab3:
-            st.subheader('개발진 소개')
+
+            # 박은서 소개
+            col1, col2 = st.columns([1, 3])
+
+            with col1:
+                # GitHub 프로필 사진 추가
+                st.image("https://avatars.githubusercontent.com/EunSeo35", width=100)
+
+            with col2:
+                st.markdown("""
+                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">박은서</h3>
+                <a href="https://github.com/EunSeo35" target="_blank">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
+                </a>                   
+                <p style="font-size: 16px;margin-top: 10px;">데이터 엔지니어, 웹 개발자 </p>
+                """, unsafe_allow_html=True)
+
+            st.write("---")
+
+            # 노은비 소개
+            col1, col2 = st.columns([1, 3])
+
+            with col1:
+                # GitHub 프로필 사진 추가
+                st.image("https://avatars.githubusercontent.com/selina7704", width=100)
+
+            with col2:
+                st.markdown("""
+                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">노은비</h3>
+                <a href="https://github.com/selina7704" target="_blank">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
+                </a>                   
+                <p style="font-size: 16px;margin-top: 10px;">데이터 엔지니어, 웹 개발자 </p>
+                """, unsafe_allow_html=True)
+            
+            st.write("---")
+            
+            # 엄기영 소개
+            col1, col2 = st.columns([1, 3])
+
+            with col1:
+                # GitHub 프로필 사진 추가
+                st.image("https://avatars.githubusercontent.com/Eomcoco", width=100)
+
+            with col2:
+                st.markdown("""
+                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">엄기영</h3>
+                <a href="https://github.com/Eomcoco" target="_blank">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
+                </a>               
+                <p style="font-size: 16px;margin-top: 10px;">데이터 분석가, 웹 개발자</p>
+                """, unsafe_allow_html=True)
+                
+                
+                
+            st.write("---")
+            
+            #두지원 소개
+            col1, col2 = st.columns([1, 3])
+
+            with col1:
+                # GitHub 프로필 사진 추가
+                st.image("https://avatars.githubusercontent.com/JiwonDu", width=100)
+
+            with col2:
+                st.markdown("""
+                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">두지원</h3>
+                <a href="https://github.com/JiwonDu" target="_blank">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
+                </a>               
+                <p style="font-size: 16px;margin-top: 10px;">데이터 분석가, 웹 개발자</p>
+                """, unsafe_allow_html=True)
+            
 
 if __name__ == '__main__':
     m = About_page()
