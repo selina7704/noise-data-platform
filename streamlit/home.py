@@ -7,16 +7,18 @@ from signup import Signup_page
 from home_about import About_page
 from home_noisemodel import NoiseModel_page
 from home_statistics import Statistics_page
+from mypage_edit import Edit_page
 
 class Home_page:
     def __init__(self):
-        self.login = Login_page()
+        self.Login = Login_page()
         self.Mypage = Mypage_page()  # Mypage_page 초기화
         self.Dashboard = Dashboard_page()  # Dashboard_page 초기화
-        self.signup = Signup_page()
+        self.Signup = Signup_page()
         self.About = About_page()
         self.NoiseModel = NoiseModel_page()
         self.Statistics = Statistics_page()
+        self.Edit = Edit_page()
 
     def main(self, choose=None):
         menu = ["홈","로그인","회원가입", "마이페이지"]
@@ -25,11 +27,11 @@ class Home_page:
         if choose == menu[0]: # 메인 홈화면
             self.bar() 
         elif choose == menu[1]: #login
-            self.login.run()
+            self.Login.run()
         elif choose == menu[2]: #회원가입
-            self.signup.run()   
+            self.Signup.run()   
         elif choose == menu[3]:  # 마이페이지 선택
-            self.Mypage.run()  # Mypage_page 실행
+            self.Edit.run()  # Mypage_page 실행
 
     def bar(self):
         col, col1, col2, col3 = st.columns([2, 3, 1.5, 1])
