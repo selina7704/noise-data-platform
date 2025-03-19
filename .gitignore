@@ -11,3 +11,4 @@ nohup.out
 config.py
 
 
+__pycache__/
