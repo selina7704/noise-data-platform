@@ -46,94 +46,94 @@ unknown_label_index = label_dict['기타소음']
 # Eager Execution 활성화
 tf.config.run_functions_eagerly(True)
 
-# 모델 초기화 (CSV용)
-def initialize_models(model_path='resnet_model_modified_v6.h5'):
-    global MODEL, LOGITS_MODEL
-    if MODEL is None:
-        MODEL = load_model(model_path)
-        last_layer = MODEL.layers[-1]
-        if last_layer.get_config().get("activation") == "softmax":
-            logits = Model(inputs=MODEL.input, outputs=MODEL.layers[-2].output)
-            new_dense = Dense(last_layer.units, activation=None, name='logits')(logits.output)
-            LOGITS_MODEL = Model(inputs=MODEL.input, outputs=new_dense)
-            LOGITS_MODEL.layers[-1].set_weights(last_layer.get_weights())
-        else:
-            LOGITS_MODEL = MODEL
-        logging.info("모델 로드 완료 for Streamlit")
+# # 모델 초기화 (CSV용)
+# def initialize_models(model_path='resnet_model_modified_v6.h5'):
+#     global MODEL, LOGITS_MODEL
+#     if MODEL is None:
+#         MODEL = load_model(model_path)
+#         last_layer = MODEL.layers[-1]
+#         if last_layer.get_config().get("activation") == "softmax":
+#             logits = Model(inputs=MODEL.input, outputs=MODEL.layers[-2].output)
+#             new_dense = Dense(last_layer.units, activation=None, name='logits')(logits.output)
+#             LOGITS_MODEL = Model(inputs=MODEL.input, outputs=new_dense)
+#             LOGITS_MODEL.layers[-1].set_weights(last_layer.get_weights())
+#         else:
+#             LOGITS_MODEL = MODEL
+#         logging.info("모델 로드 완료 for Streamlit")
 
-def compute_energy(logits, T=TEMPERATURE):
-    exp_vals = np.exp(logits / T)
-    sum_exp = np.sum(exp_vals, axis=1) + 1e-9
-    return -T * np.log(sum_exp)
+# def compute_energy(logits, T=TEMPERATURE):
+#     exp_vals = np.exp(logits / T)
+#     sum_exp = np.sum(exp_vals, axis=1) + 1e-9
+#     return -T * np.log(sum_exp)
 
-def validate_mfcc_data(df):
-    mfcc_columns = [f'mfcc_{i}' for i in range(1, 51)]
-    if not all(col in df.columns for col in mfcc_columns):
-        raise ValueError("MFCC 열이 누락됨")
-    mfcc_data = df[mfcc_columns].values
-    if mfcc_data.shape[0] == 0:
-        raise ValueError("데이터가 비어 있음")
-    if np.any(np.isnan(mfcc_data)) or np.any(np.isinf(mfcc_data)):
-        raise ValueError("MFCC 데이터에 NaN 또는 Inf 값 포함")
-    return mfcc_data.reshape(-1, 50, 1)
+# def validate_mfcc_data(df):
+#     mfcc_columns = [f'mfcc_{i}' for i in range(1, 51)]
+#     if not all(col in df.columns for col in mfcc_columns):
+#         raise ValueError("MFCC 열이 누락됨")
+#     mfcc_data = df[mfcc_columns].values
+#     if mfcc_data.shape[0] == 0:
+#         raise ValueError("데이터가 비어 있음")
+#     if np.any(np.isnan(mfcc_data)) or np.any(np.isinf(mfcc_data)):
+#         raise ValueError("MFCC 데이터에 NaN 또는 Inf 값 포함")
+#     return mfcc_data.reshape(-1, 50, 1)
 
-def update_energy_stats(energy_scores, preds, window_size=1000, max_std_dev=20.0):
-    global MEAN_ENERGY_IND, STD_ENERGY_IND
-    if not hasattr(update_energy_stats, 'buffer'):
-        update_energy_stats.buffer = []
+# def update_energy_stats(energy_scores, preds, window_size=1000, max_std_dev=20.0):
+#     global MEAN_ENERGY_IND, STD_ENERGY_IND
+#     if not hasattr(update_energy_stats, 'buffer'):
+#         update_energy_stats.buffer = []
 
-    ind_scores = energy_scores[preds != unknown_label_index]
-    if len(ind_scores) > 0:
-        update_energy_stats.buffer.extend(ind_scores)
-        if len(update_energy_stats.buffer) > window_size:
-            update_energy_stats.buffer = update_energy_stats.buffer[-window_size:]
+#     ind_scores = energy_scores[preds != unknown_label_index]
+#     if len(ind_scores) > 0:
+#         update_energy_stats.buffer.extend(ind_scores)
+#         if len(update_energy_stats.buffer) > window_size:
+#             update_energy_stats.buffer = update_energy_stats.buffer[-window_size:]
         
-        if len(update_energy_stats.buffer) >= 2:
-            new_mean = np.mean(update_energy_stats.buffer)
-            new_std = np.std(update_energy_stats.buffer)
-            if new_std <= max_std_dev and not np.isnan(new_std):
-                MEAN_ENERGY_IND = new_mean
-                STD_ENERGY_IND = max(new_std, 1e-6)
-                logging.info(f"Updated MEAN_ENERGY_IND: {MEAN_ENERGY_IND:.4f}, STD_ENERGY_IND: {STD_ENERGY_IND:.4f}")
+#         if len(update_energy_stats.buffer) >= 2:
+#             new_mean = np.mean(update_energy_stats.buffer)
+#             new_std = np.std(update_energy_stats.buffer)
+#             if new_std <= max_std_dev and not np.isnan(new_std):
+#                 MEAN_ENERGY_IND = new_mean
+#                 STD_ENERGY_IND = max(new_std, 1e-6)
+#                 logging.info(f"Updated MEAN_ENERGY_IND: {MEAN_ENERGY_IND:.4f}, STD_ENERGY_IND: {STD_ENERGY_IND:.4f}")
 
-def predict_samples(df):
-    initialize_models()
-    X = validate_mfcc_data(df)
-    y_true = df['ood_label'].map(label_dict).fillna(5).astype(int).values
+# def predict_samples(df):
+#     initialize_models()
+#     X = validate_mfcc_data(df)
+#     y_true = df['ood_label'].map(label_dict).fillna(5).astype(int).values
 
-    global ENERGY_THRESHOLD
-    if ENERGY_THRESHOLD is None:
-        logits_temp = LOGITS_MODEL.predict(X, verbose=0)
-        energy_scores_temp = compute_energy(logits_temp)
-        softmax_probs_temp = np.exp(logits_temp) / np.sum(np.exp(logits_temp), axis=1, keepdims=True)
-        threshold_candidates = np.linspace(energy_scores_temp.min(), energy_scores_temp.max(), 100)
-        best_f1 = -1
-        for thr in threshold_candidates:
-            temp_preds = np.where((np.max(softmax_probs_temp, axis=1) < CONFIDENCE_THRESHOLD) & 
-                                  (energy_scores_temp > thr), unknown_label_index, np.argmax(softmax_probs_temp, axis=1))
-            f1 = f1_score(y_true, temp_preds, labels=[unknown_label_index], average='weighted', zero_division=0)
-            if f1 > best_f1:
-                best_f1 = f1
-                ENERGY_THRESHOLD = thr
-        logging.info(f"최적 Energy Threshold: {ENERGY_THRESHOLD:.4f}, F1-score: {best_f1:.4f}")
-    else:
-        logging.info(f"기존 ENERGY_THRESHOLD 사용: {ENERGY_THRESHOLD}")
+#     global ENERGY_THRESHOLD
+#     if ENERGY_THRESHOLD is None:
+#         logits_temp = LOGITS_MODEL.predict(X, verbose=0)
+#         energy_scores_temp = compute_energy(logits_temp)
+#         softmax_probs_temp = np.exp(logits_temp) / np.sum(np.exp(logits_temp), axis=1, keepdims=True)
+#         threshold_candidates = np.linspace(energy_scores_temp.min(), energy_scores_temp.max(), 100)
+#         best_f1 = -1
+#         for thr in threshold_candidates:
+#             temp_preds = np.where((np.max(softmax_probs_temp, axis=1) < CONFIDENCE_THRESHOLD) & 
+#                                   (energy_scores_temp > thr), unknown_label_index, np.argmax(softmax_probs_temp, axis=1))
+#             f1 = f1_score(y_true, temp_preds, labels=[unknown_label_index], average='weighted', zero_division=0)
+#             if f1 > best_f1:
+#                 best_f1 = f1
+#                 ENERGY_THRESHOLD = thr
+#         logging.info(f"최적 Energy Threshold: {ENERGY_THRESHOLD:.4f}, F1-score: {best_f1:.4f}")
+#     else:
+#         logging.info(f"기존 ENERGY_THRESHOLD 사용: {ENERGY_THRESHOLD}")
 
-    logits = LOGITS_MODEL.predict(X, verbose=0)
-    energy_scores = compute_energy(logits)
-    softmax_probs = np.exp(logits) / np.sum(np.exp(logits), axis=1, keepdims=True)
-    max_probs = np.max(softmax_probs, axis=1)
-    basic_preds = np.argmax(softmax_probs, axis=1)
-    z_scores = (energy_scores - MEAN_ENERGY_IND) / STD_ENERGY_IND
+#     logits = LOGITS_MODEL.predict(X, verbose=0)
+#     energy_scores = compute_energy(logits)
+#     softmax_probs = np.exp(logits) / np.sum(np.exp(logits), axis=1, keepdims=True)
+#     max_probs = np.max(softmax_probs, axis=1)
+#     basic_preds = np.argmax(softmax_probs, axis=1)
+#     z_scores = (energy_scores - MEAN_ENERGY_IND) / STD_ENERGY_IND
 
-    final_preds = np.where((max_probs < CONFIDENCE_THRESHOLD) & 
-                           (energy_scores > ENERGY_THRESHOLD),
-                           unknown_label_index, basic_preds)
+#     final_preds = np.where((max_probs < CONFIDENCE_THRESHOLD) & 
+#                            (energy_scores > ENERGY_THRESHOLD),
+#                            unknown_label_index, basic_preds)
 
-    update_energy_stats(energy_scores, final_preds)
-    logging.info(f"Energy 범위: min={np.min(energy_scores):.4f}, max={np.max(energy_scores):.4f}, mean={np.mean(energy_scores):.4f}")
+#     update_energy_stats(energy_scores, final_preds)
+#     logging.info(f"Energy 범위: min={np.min(energy_scores):.4f}, max={np.max(energy_scores):.4f}, mean={np.mean(energy_scores):.4f}")
     
-    return final_preds
+#     return final_preds
 
 # 세션 상태 초기화
 if 'stop_audio' not in st.session_state:
@@ -154,6 +154,33 @@ def autoplay_audio(file_path):
             <audio autoplay src="data:audio/wav;base64,{b64}" type="audio/wav"></audio>
         """
         st.markdown(audio_html, unsafe_allow_html=True)
+
+# 이메일 알림
+def send_email(to_email, subject, message):
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587 #465
+    sender_email = "itmomdan0328@gmail.com"  # 자신의 Gmail 주소
+    sender_password = "dhvfbjqqhkxlkhzt" #os.environ.get("dhvfbjqqhkxlkhzt")  # 앱 비밀번호 사용 (구글 계정 보안 설정 필요)
+
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = sender_email
+    msg['To'] = to_email
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+        server.quit()
+        print("✅ 이메일 전송 완료!")
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"❌ 이메일 전송 실패: 인증 오류 - {e}")
+    except smtplib.SMTPException as e:
+        print(f"❌ 이메일 전송 실패: SMTP 오류 - {e}")
+    except Exception as e:
+        print(f"❌ 이메일 전송 실패: 기타 오류 - {e}")
+
 
 # 경고 메시지 + 음성 알림 통합 함수
 def show_alert(message, level="warning"):
@@ -305,55 +332,55 @@ def main():
     # Stop Audio 버튼
     st.session_state['stop_audio'] = st.button("🛑 Stop Audio")
 
-    # CSV 파일 업로드 및 평가
-    st.title("소음 분류 성능 평가")
-    uploaded_csv = st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
-    if uploaded_csv is not None:
-        try:
-            df = pd.read_csv(uploaded_csv)
-            st.write("📌 **업로드된 데이터 미리보기**:")
-            st.dataframe(df.head())
+    # # CSV 파일 업로드 및 평가
+    # st.title("소음 분류 성능 평가")
+    # uploaded_csv = st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
+    # if uploaded_csv is not None:
+    #     try:
+    #         df = pd.read_csv(uploaded_csv)
+    #         st.write("📌 **업로드된 데이터 미리보기**:")
+    #         st.dataframe(df.head())
 
-            if st.button("예측 실행"):
-                predicted_labels = predict_samples(df)
-                df['predicted_label'] = [reverse_label_dict[label] for label in predicted_labels]
+    #         if st.button("예측 실행"):
+    #             predicted_labels = predict_samples(df)
+    #             df['predicted_label'] = [reverse_label_dict[label] for label in predicted_labels]
 
-                st.write("🎯 **예측 결과**:")
-                st.write(df.head())
+    #             st.write("🎯 **예측 결과**:")
+    #             st.write(df.head())
 
-                y_true = df['ood_label'].map(label_dict).fillna(5).astype(int).values
-                y_pred = predicted_labels
+    #             y_true = df['ood_label'].map(label_dict).fillna(5).astype(int).values
+    #             y_pred = predicted_labels
 
-                report = classification_report(y_true, y_pred, target_names=english_labels, output_dict=True)
-                cm = confusion_matrix(y_true, y_pred, labels=list(label_dict.values()))
-                overall_accuracy = accuracy_score(y_true, y_pred)
+    #             report = classification_report(y_true, y_pred, target_names=english_labels, output_dict=True)
+    #             cm = confusion_matrix(y_true, y_pred, labels=list(label_dict.values()))
+    #             overall_accuracy = accuracy_score(y_true, y_pred)
 
-                st.subheader("클래스별 예측 결과")
-                metrics_df = pd.DataFrame({
-                    'Class': english_labels,
-                    'Precision': [report[label]['precision'] for label in english_labels],
-                    'Recall': [report[label]['recall'] for label in english_labels],
-                    'F1-Score': [report[label]['f1-score'] for label in english_labels],
-                    'Support': [report[label]['support'] for label in english_labels]
-                })
-                st.table(metrics_df.round(4))
-                st.write(f"Overall Accuracy: {overall_accuracy:.4f}")
+    #             st.subheader("클래스별 예측 결과")
+    #             metrics_df = pd.DataFrame({
+    #                 'Class': english_labels,
+    #                 'Precision': [report[label]['precision'] for label in english_labels],
+    #                 'Recall': [report[label]['recall'] for label in english_labels],
+    #                 'F1-Score': [report[label]['f1-score'] for label in english_labels],
+    #                 'Support': [report[label]['support'] for label in english_labels]
+    #             })
+    #             st.table(metrics_df.round(4))
+    #             st.write(f"Overall Accuracy: {overall_accuracy:.4f}")
 
-                st.subheader("Confusion Matrix")
-                plt.figure(figsize=(8, 6))
-                sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-                            xticklabels=english_labels, yticklabels=english_labels)
-                plt.xlabel("Predicted")
-                plt.ylabel("Actual")
-                plt.title("Confusion Matrix")
-                st.pyplot(plt)
+    #             st.subheader("Confusion Matrix")
+    #             plt.figure(figsize=(8, 6))
+    #             sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+    #                         xticklabels=english_labels, yticklabels=english_labels)
+    #             plt.xlabel("Predicted")
+    #             plt.ylabel("Actual")
+    #             plt.title("Confusion Matrix")
+    #             st.pyplot(plt)
 
-                st.write(f"최종 값: ENERGY_THRESHOLD={ENERGY_THRESHOLD:.4f}, MEAN_ENERGY_IND={MEAN_ENERGY_IND:.4f}, STD_ENERGY_IND={STD_ENERGY_IND:.4f}")
+    #             st.write(f"최종 값: ENERGY_THRESHOLD={ENERGY_THRESHOLD:.4f}, MEAN_ENERGY_IND={MEAN_ENERGY_IND:.4f}, STD_ENERGY_IND={STD_ENERGY_IND:.4f}")
 
-                csv = df.to_csv(index=False).encode('utf-8')
-                st.download_button("📥 예측 결과 다운로드", csv, "predictions.csv", "text/csv")
-        except Exception as e:
-            st.error(f"🚨 CSV 읽기 오류: {str(e)}")
+    #             csv = df.to_csv(index=False).encode('utf-8')
+    #             st.download_button("📥 예측 결과 다운로드", csv, "predictions.csv", "text/csv")
+    #     except Exception as e:
+    #         st.error(f"🚨 CSV 읽기 오류: {str(e)}")
 
 if __name__ == "__main__":
     main()
