@@ -84,6 +84,11 @@ class Home_page:
                                  icons=['house', 'bi-clipboard-check', 'gear', 'person lines fill'],
                                  default_index=0
                                  )
+        
+        # 세션 상태에서 사용자 이름 가져오기
+        if 'user_info' in st.session_state:
+            name = st.session_state.user_info['name']
+            st.markdown(f"<p style='text-align: right;'>😊안녕하세요 {name}님</p>", unsafe_allow_html=True)  # 상단 오른쪽에 이름 표시
         # 네비게이션바에 선택된 페이지 출력
         self.main(choose)
 

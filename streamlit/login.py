@@ -6,6 +6,7 @@ class Login_page:
         pass
     def run(self):
         st.header("🔊 로그인")
+
         with st.form(key='login_form'):
             username = st.text_input('아이디')
             password = st.text_input('비밀번호', type='password')
@@ -20,3 +21,6 @@ class Login_page:
             else:
                 st.error('로그인 실패. 아이디 또는 비밀번호를 확인해주세요.')
 
+        if st.button('회원가입하기'):
+            st.session_state.page = 'Signup'
+            st.rerun()
