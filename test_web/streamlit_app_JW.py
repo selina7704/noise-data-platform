@@ -226,9 +226,6 @@ def show_alert(message, level="warning"):
 
 # 예측 결과 처리 함수
 def process_prediction(response):
-    # start_time = time.time()
-    # elapsed_time = time.time() - start_time
-    # st.write(f"**예측 소요 시간**: {elapsed_time:.2f}초")
     if response.status_code == 200:
         result = response.json()
         if "error" in result:
