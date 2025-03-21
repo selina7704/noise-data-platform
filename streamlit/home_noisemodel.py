@@ -6,12 +6,14 @@ from gtts import gTTS
 import base64
 import smtplib
 from email.mime.text import MIMEText
-from dotenv import load_dotenv
 import pandas as pd
 from datetime import datetime
+import config
 
-# .env 파일 로드
-load_dotenv()
+
+# .env 로드 제거하고 config에서 직접 사용
+sender_email = config.SENDER_EMAIL
+sender_password = config.SENDER_PASSWORD
 
 # 저장 디렉토리 설정
 upload_folder = "uploads"
@@ -38,12 +40,15 @@ def autoplay_audio(file_path):
         """
         st.markdown(audio_html, unsafe_allow_html=True)
 
-# 이메일 발송 함수
 def send_email(to_email, subject, message):
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    sender_email = os.getenv("SENDER_EMAIL")
-    sender_password = os.getenv("SENDER_PASSWORD")
+    sender_email = config.SENDER_EMAIL
+    sender_password = config.SENDER_PASSWORD
+
+    if not sender_email or not sender_password:
+        st.error("❌ SENDER_EMAIL 또는 SENDER_PASSWORD가 설정되지 않았습니다!")
+        return
 
     msg = MIMEText(message)
     msg['Subject'] = subject
@@ -52,13 +57,18 @@ def send_email(to_email, subject, message):
 
     try:
         server = smtplib.SMTP(smtp_server, smtp_port)
+        server.ehlo()
         server.starttls()
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, to_email, msg.as_string())
         server.quit()
         st.success("✅ 긴급 이메일이 전송되었습니다!")
+    except smtplib.SMTPAuthenticationError:
+        st.error("❌ 인증 오류: Gmail 앱 비밀번호가 잘못되었거나 계정 설정을 확인해주세요!")
+    except smtplib.SMTPException as e:
+        st.error(f"❌ SMTP 오류: {str(e)}")
     except Exception as e:
-        st.error(f"❌ 이메일 전송 실패: {e}")
+        st.error(f"❌ 기타 오류: {str(e)}")
 
 # 경고 메시지 표시 함수
 def show_alert(message, level="warning", play_tts=True):
@@ -144,7 +154,7 @@ def display_timer(start_time, duration=60):
         
         time.sleep(1)
     
-    if remaining_time <= 0 and not st.session_state['email_sent'] and st.session_state['sos_email_enabled']:
+    if remaining_time <= 1 and not st.session_state['email_sent'] and st.session_state['sos_email_enabled']:
         send_email(
             "itmomdan0328@gmail.com",
             "🚨 긴급 소음 경고",
