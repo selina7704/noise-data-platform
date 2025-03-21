@@ -1,8 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from login import Login_page
-from Mypage import Mypage_page
-from Dashboard import Dashboard_page
 from signup import Signup_page
 from home_about import About_page
 from home_noisemodel import NoiseModel_page
@@ -12,8 +10,6 @@ from mypage_edit import Edit_page
 class Home_page:
     def __init__(self):
         self.Login = Login_page()
-        self.Mypage = Mypage_page()  # Mypage_page 초기화
-        self.Dashboard = Dashboard_page()  # Dashboard_page 초기화
         self.Signup = Signup_page()
         self.About = About_page()
         self.NoiseModel = NoiseModel_page()
