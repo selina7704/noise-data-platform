@@ -1,9 +1,44 @@
 import streamlit as st
+import mysql.connector
+from mysql.connector import Error
+from config import DB_CONFIG
 
 class Signup_page():
     def __init__(self):
-        pass
+        self.db_connection = None
     
+    def connect_db(self):
+        try:
+            self.db_connection = mysql.connector.connect(
+                host=DB_CONFIG['host'],        # MySQL 서버 주소
+                user=DB_CONFIG['user'],        # MySQL 사용자명
+                password=DB_CONFIG['password'],# MySQL 비밀번호
+                database=DB_CONFIG['database'],# 데이터베이스 이름
+                port=DB_CONFIG['port']         # MySQL 포트
+            )
+            if self.db_connection.is_connected():
+                st.success("MySQL 데이터베이스에 연결되었습니다.")
+                # st.write("MySQL 데이터베이스에 연결되었습니다.")  
+                # st.write(f"DB 연결 상태: {self.db_connection.is_connected()}")
+        except Error as e:
+            st.error(f"DB 연결 오류: {e}")
+            self.db_connection = None
+        
+    def save_to_db(self, user_info):
+        if self.db_connection:
+            cursor = self.db_connection.cursor()
+            query = """INSERT INTO users (username, password, name, age, email, guardian_email, phone_number, usage_purpose)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            try:
+                cursor.execute(query, (user_info['username'], user_info['password'], user_info['name'], user_info['age'],
+                                       user_info['email'], user_info['guardian_email'], user_info['phone_number'], user_info['usage_purpose']))
+                self.db_connection.commit()
+                st.success("회원가입 정보가 저장되었습니다.")
+            except Error as e:
+                st.error(f"DB에 저장하는 중 오류 발생: {e}")
+            finally:
+                cursor.close() 
+              
     def run(self):        
         st.header("📝 회원가입")
         
@@ -26,8 +61,8 @@ class Signup_page():
         if signup_button:
             if password == confirm_password:
                 # 세션 상태에 사용자 정보 저장
-                st.session_state.user_info = {
-                    'id': username,
+                user_info = {
+                    'username': username,
                     'password': password,
                     'name': name,
                     'age': age,
@@ -36,12 +71,16 @@ class Signup_page():
                     'phone_number': phone_number,
                     'usage_purpose': usage_purpose
                 }
-                # 자동 로그인 처리
+                
+                # DB에 저장
+                self.connect_db()  # DB 연결
+                self.save_to_db(user_info)  # DB에 회원 정보 저장
+
+                # 세션 상태에 사용자 정보 저장
+                st.session_state.user_info = user_info
                 st.session_state.logged_in = True
                 st.session_state.page = 'Home'  # 홈 페이지로 이동
                 st.success(f'{name}님, 회원가입을 축하합니다!')
                 st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)
-                
-                # st.query_params.update(page="Home")
             else:
                 st.error('비밀번호가 일치하지 않습니다.')
