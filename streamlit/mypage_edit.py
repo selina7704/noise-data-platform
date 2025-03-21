@@ -47,7 +47,22 @@ class Edit_page:
             st.error(f"DB 업데이트 오류: {e}")
             return False
 
+    def delete_user(self, username):
+        """사용자 계정을 데이터베이스에서 삭제"""
+        if not self.db_connection:
+            st.error("데이터베이스 연결이 필요합니다.")
+            return False
 
+        try:
+            query = "DELETE FROM users WHERE username = %s"
+            self.cursor.execute(query, (username,))
+            self.db_connection.commit()
+            st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 삭제되었습니다.")
+            return True
+        except mysql.connector.Error as e:
+            st.error(f"DB 삭제 오류: {e}")
+            return False
+        
     def run(self):
         # 로그인 여부 체크
         if "user_info" not in st.session_state or not st.session_state["user_info"]:
@@ -101,5 +116,27 @@ class Edit_page:
                     st.error("회원 정보 수정 중 오류가 발생했습니다.")
             else:
                 st.error("비밀번호와 비밀번호 확인이 일치하지 않습니다.")
+
+        # 회원 탈퇴 섹션
+        st.write("---")
+        st.subheader("🚫 회원 탈퇴")
+        st.warning("주의: 회원 탈퇴 시 모든 정보가 삭제되며 복구할 수 없습니다.")     
+
+        # 회원 탈퇴 확인을 위한 입력란
+        confirm_delete = st.text_input("탈퇴하려면 비밀번호를 입력하세요", type="password")
+        
+        if st.button("회원 탈퇴"):
+            if confirm_delete == user_info['password']:
+                self.connect_db()
+                if self.delete_user(user_info['username']):
+                    st.success("회원 탈퇴가 완료되었습니다.")
+                    # 세션에서 사용자 정보 삭제
+                    del st.session_state['user_info']
+                else:
+                    st.error("회원 탈퇴 중 오류가 발생했습니다.")
+            else:
+                st.error("올바른 확인 문구를 입력해주세요.")
+
+
         # 디버깅을 위한 세션 상태 출력
         st.write("Current session state:", st.session_state)
