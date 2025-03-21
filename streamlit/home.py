@@ -7,6 +7,7 @@ from home_noisemodel import NoiseModel_page
 from home_statistics import Statistics_page
 from mypage_edit import Edit_page
 
+
 class Home_page:
     def __init__(self):
         self.Login = Login_page()

@@ -1,9 +1,25 @@
 import streamlit as st
+import mysql.connector
+from config import DB_CONFIG
 
 class Login_page:
     def __init__(self):
-        # 초기화는 객체 생성 시 한 번만 호출되고, run에서 페이지 로직을 처리합니다.
-        pass
+        self.db_connection = mysql.connector.connect(
+            host=DB_CONFIG['host'],
+            user=DB_CONFIG['user'],
+            password=DB_CONFIG['password'],
+            database=DB_CONFIG['database'],
+            port=DB_CONFIG['port']
+        )
+        self.cursor = self.db_connection.cursor(dictionary=True)
+
+
+    def user_login(self, username, password):
+        query = "SELECT * FROM users WHERE username = %s AND password = %s"
+        self.cursor.execute(query, (username, password))
+        user = self.cursor.fetchone()
+        return user
+    
     def run(self):
         st.header("🔊 로그인")
 
@@ -13,13 +29,10 @@ class Login_page:
             submit_button = st.form_submit_button('로그인')
 
         if submit_button:
+            user = self.user_login(username, password)
             # 세션 상태에서 사용자 정보 가져오기
-            if 'user_info' in st.session_state:
-                if st.session_state.user_info['username'] == username and st.session_state.user_info['password'] == password:
-                    st.success('로그인 성공!')
-                    st.session_state.page = 'Home'
-                    st.rerun()
-                else:
-                    st.error('로그인 실패. 아이디 또는 비밀번호를 확인해주세요.')
+            if user:
+                st.success('로그인 성공!')
+                st.session_state_user_info = user
             else:
-                st.error('회원가입 후 로그인 해주세요.')
+                st.error('로그인 실패. 아이디 또는 비밀번호를 확인해주세요.')
