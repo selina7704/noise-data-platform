@@ -57,7 +57,12 @@ class Home_page:
                              }, orientation="horizontal"
                              )
         
-        
+        # 로그인 필요 페이지 체크
+        if select in [nav[1], nav[2]]:
+            if "user_info" not in st.session_state or not st.session_state["user_info"]:
+                st.warning("로그인이 필요합니다.")
+                return  # 로그인하지 않으면 함수 종료
+            
         # 네비게이션바
         if select == nav[0]:
             self.About.about_page()
