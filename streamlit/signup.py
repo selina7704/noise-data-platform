@@ -14,7 +14,8 @@ class Signup_page():
                 user=DB_CONFIG['user'],        # MySQL 사용자명
                 password=DB_CONFIG['password'],# MySQL 비밀번호
                 database=DB_CONFIG['database'],# 데이터베이스 이름
-                port=DB_CONFIG['port']         # MySQL 포트
+                port=DB_CONFIG['port'], # MySQL 포트
+                #charset='utf8mb4' 
             )
             if self.db_connection.is_connected():
                 st.success("MySQL 데이터베이스에 연결되었습니다.")
@@ -87,7 +88,7 @@ class Signup_page():
 
             # 세션 상태에 사용자 정보 저장
             st.session_state.user_info = {
-                'id': username,
+                'username': username,
                 'password': password,
                 'name': name,
                 'age': age,
@@ -96,8 +97,11 @@ class Signup_page():
                 'phone_number': phone_number,
                 'usage_purpose': usage_purpose
             }
+            st.write(st.session_state.user_info)  
             
             # DB에 저장
+            user_info = st.session_state.user_info
+            st.write(user_info)
             self.connect_db()  
             self.save_to_db(user_info)  
             

@@ -15,7 +15,7 @@ class Login_page:
         if submit_button:
             # 세션 상태에서 사용자 정보 가져오기
             if 'user_info' in st.session_state:
-                if st.session_state.user_info['id'] == username and st.session_state.user_info['password'] == password:
+                if st.session_state.user_info['username'] == username and st.session_state.user_info['password'] == password:
                     st.success('로그인 성공!')
                     st.session_state.page = 'Home'
                     st.rerun()
