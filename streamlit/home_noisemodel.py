@@ -453,6 +453,68 @@ class NoiseModel_page:
             st.subheader("알람 기준 설정")
             st.write("현재는 기본 설정(위험: 70dB, 주의: 50dB)으로 작동 중입니다.")
 
+            # 🔹 기본 거리 기준 (m) → "중(🟡)" 기준
+            DEFAULT_ALARM_DISTANCE = {
+                "차량 경적": 10,
+                "이륜차 경적": 10,
+                "차량 사이렌": 20,
+                "차량 주행음": 5,
+                "이륜차 주행음": 5,
+                "기타 소음": 10
+            }
+
+            # 🔹 기본 데시벨 기준 (dB) → "중(🟡)" 기준
+            DEFAULT_ALARM_DB = {
+                "차량 경적": 100,
+                "이륜차 경적": 100,
+                "차량 사이렌": 110,
+                "차량 주행음": 90,
+                "이륜차 주행음": 90,
+                "기타 소음": 85
+            }
+
+            # 🔹 감도별 거리 & 데시벨 조정 비율
+            SENSITIVITY_MULTIPLIER = {
+                "약(🔵)": {"distance": 0.5, "db": -10},   # 거리 줄이고 데시벨 낮춤
+                "중(🟡)": {"distance": 1.0, "db": 0},     # 기본값 유지
+                "강(🔴)": {"distance": 1.5, "db": 10}     # 거리 늘리고 데시벨 높임
+            }
+
+            # 📢 알람 감도 설정
+            st.subheader("🔔 알람 감도 설정")
+            selected_sensitivity = st.radio("📢 감도 선택", ["약(🔵)", "중(🟡)", "강(🔴)"], index=1)
+
+            # 🔹 감도에 따른 거리 & 데시벨 자동 조정
+            adjusted_alarm_settings = {
+                noise_type: {
+                    "거리": int(DEFAULT_ALARM_DISTANCE[noise_type] * SENSITIVITY_MULTIPLIER[selected_sensitivity]["distance"]),
+                    "데시벨": DEFAULT_ALARM_DB[noise_type] + SENSITIVITY_MULTIPLIER[selected_sensitivity]["db"]
+                }
+                for noise_type in DEFAULT_ALARM_DISTANCE
+            }
+
+            # 🔹 사용자 커스텀 조정 (추가 옵션) - 하나의 표에서 조정 가능
+            st.subheader("📌 소음 유형별 알람 기준 조정")
+            st.write("감도를 선택하면 거리 & 데시벨 값이 자동 설정됩니다. 필요하면 개별적으로 조정하세요.")
+
+            user_alarm_settings = {}
+            for noise_type, values in adjusted_alarm_settings.items():
+                col1, col2 = st.columns(2)  # 거리와 데시벨을 나란히 배치
+                with col1:
+                    user_distance = st.slider(f"📏 {noise_type} (m)", 1, 25, values["거리"], key=f"{noise_type}_distance")
+                with col2:
+                    user_db = st.slider(f"🔊 {noise_type} (dB)", 50, 120, values["데시벨"], key=f"{noise_type}_db")
+                
+                user_alarm_settings[noise_type] = {"거리": user_distance, "데시벨": user_db}
+
+            # ✅ 설정 저장 버튼
+            if st.button("📌 설정 저장"):
+                st.success("✅ 알람 설정이 저장되었습니다.")
+                st.write(f"📢 **선택한 감도:** {selected_sensitivity}")
+                
+                st.subheader("📌 최종 설정값")
+                st.table(pd.DataFrame(user_alarm_settings).T)
+
 if __name__ == '__main__':
     m = NoiseModel_page()
     m.noisemodel_page()
