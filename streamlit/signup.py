@@ -1,5 +1,4 @@
 import streamlit as st
-from home import Home_page
 
 class Signup_page():
     def __init__(self):
