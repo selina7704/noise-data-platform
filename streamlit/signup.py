@@ -1,5 +1,4 @@
 import streamlit as st
-from home import Home_page
 
 class Signup_page():
     def __init__(self):
@@ -25,24 +24,45 @@ class Signup_page():
             signup_button = st.form_submit_button('가입하기')
 
         if signup_button:
-            if password == confirm_password:
-                # 세션 상태에 사용자 정보 저장
-                st.session_state.user_info = {
-                    'id': username,
-                    'password': password,
-                    'name': name,
-                    'age': age,
-                    'email': email,
-                    'guardian_email': guardian_email,
-                    'phone_number': phone_number,
-                    'usage_purpose': usage_purpose
-                }
-                # 자동 로그인 처리
-                st.session_state.logged_in = True
-                st.session_state.page = 'Home'  # 홈 페이지로 이동
-                st.success(f'{name}님, 회원가입을 축하합니다!')
-                st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)
-                
-                # st.query_params.update(page="Home")
-            else:
+            # 빈 입력 필드 확인
+            missing_fields = []
+            if not username:
+                missing_fields.append("아이디")
+            if not password:
+                missing_fields.append("비밀번호")
+            if not confirm_password:
+                missing_fields.append("비밀번호 확인")
+            if not name:
+                missing_fields.append("이름")
+            if not email:
+                missing_fields.append("이메일")
+            if not guardian_email:
+                missing_fields.append("보호자 이메일")
+            if not phone_number:
+                missing_fields.append("전화번호")
+
+            if missing_fields:
+                st.error(f"{', '.join(missing_fields)} 입력해야 합니다.")
+                return
+
+            # 비밀번호 일치 확인
+            if password != confirm_password:
                 st.error('비밀번호가 일치하지 않습니다.')
+                return
+
+            # 세션 상태에 사용자 정보 저장
+            st.session_state.user_info = {
+                'id': username,
+                'password': password,
+                'name': name,
+                'age': age,
+                'email': email,
+                'guardian_email': guardian_email,
+                'phone_number': phone_number,
+                'usage_purpose': usage_purpose
+            }
+            # 자동 로그인 처리
+            st.session_state.logged_in = True
+            st.session_state.page = 'Home'  # 홈 페이지로 이동
+            st.success(f'{name}님, 회원가입을 축하합니다!')
+            st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)
