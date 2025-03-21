@@ -23,7 +23,3 @@ class Login_page:
                     st.error('로그인 실패. 아이디 또는 비밀번호를 확인해주세요.')
             else:
                 st.error('회원가입 후 로그인 해주세요.')
-
-        if st.button('회원가입하기'):
-            st.session_state.page = 'Signup'
-            st.rerun()
