@@ -127,7 +127,7 @@ def play_tts_queue():
         st.session_state['tts_queue'] = []
 
 # 타이머 표시 함수
-def display_timer(start_time, duration=300):
+def display_timer(start_time, duration=60):
     timer_container = st.empty()
     bar_container = st.empty()
     
@@ -142,13 +142,13 @@ def display_timer(start_time, duration=300):
         with bar_container:
             st.progress(remaining_percentage / 100)
         
-        time.sleep(5)
+        time.sleep(1)
     
     if remaining_time <= 0 and not st.session_state['email_sent'] and st.session_state['sos_email_enabled']:
         send_email(
             "itmomdan0328@gmail.com",
             "🚨 긴급 소음 경고",
-            "위험 수준 소음이 감지되었으나 5분 이상 응답이 없습니다. 안전을 확인해주세요!"
+            "위험 수준 소음이 감지되었으나 1분 이상 응답이 없습니다. 안전을 확인해주세요!"
         )
         st.session_state['email_sent'] = True
         st.session_state['danger_alert_time'] = None
@@ -267,7 +267,7 @@ class NoiseModel_page:
 ⚠️ 주의 요함! 소음이 높습니다 ⚠️
                         """)
                 st.write("📌 TTS (음성 안내 기능) 지원: \n\n - 경고 메시지는 음성으로 자동 안내됩니다. \n\n - '소음 분류기 사용 방법' 아래의 'TTS 알림' 토글로 켜거나 끌 수 있으며, 설정은 다음 분석에도 유지됩니다!")
-                st.write("📌 긴급 메시지 기능: \n\n - 위험 수준 소음이 감지되면 '안전 확인' 버튼이 나타납니다. \n\n - 5분 이상 응답이 없으면 등록된 이메일로 긴급 알림이 자동 발송됩니다.")
+                st.write("📌 긴급 메시지 기능: \n\n - 위험 수준 소음이 감지되면 '안전 확인' 버튼이 나타납니다. \n\n - 1분 이상 응답이 없으면 등록된 이메일로 긴급 알림이 자동 발송됩니다.")
 
                 st.subheader("💡 자주하는 질문 (FAQ)")
                 st.write("**Q1. 분석 결과가 이상해요!**")
@@ -294,7 +294,7 @@ class NoiseModel_page:
                 st.session_state['sos_email_enabled'] = st.toggle(
                     "📧 SOS 메시지 발송", 
                     value=st.session_state['sos_email_enabled'], 
-                    help="경고 후 5분간 반응이 없으면 SOS 메시지가 발송됩니다."
+                    help="경고 후 1분간 반응이 없으면 SOS 메시지가 발송됩니다."
                 )
             st.divider()
 
@@ -356,7 +356,7 @@ class NoiseModel_page:
                                     st.session_state['email_sent'] = False
                                     st.success("✅ 안전 확인됨")
                                 else:
-                                    st.warning("5분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
+                                    st.warning("1분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
                                     display_timer(st.session_state['danger_alert_time'])
 
             with st.expander("📁 파일 업로드 방식", expanded=True):
@@ -405,7 +405,7 @@ class NoiseModel_page:
                                     st.session_state['email_sent'] = False
                                     st.success("✅ 안전 확인됨")
                                 else:
-                                    st.warning("5분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
+                                    st.warning("1분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
                                     display_timer(st.session_state['danger_alert_time'])
 
         with tab2:  # 소음 측정 기록 및 피드백

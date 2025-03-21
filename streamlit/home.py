@@ -19,11 +19,6 @@ class Home_page:
         self.NoiseModel = NoiseModel_page()
         self.Statistics = Statistics_page()
         self.Edit = Edit_page()
-        #####################################
-        # 초기 페이지 설정
-        if 'page' not in st.session_state:
-            st.session_state.page = 'Home'
-        #####################################
 
     def main(self, choose=None):
         menu = ["홈","로그인","회원가입", "마이페이지"]
@@ -80,13 +75,20 @@ class Home_page:
 
         # 사이드바
         with st.sidebar:
+
+            # 세션 상태에서 사용자 이름 가져오기
+            if 'user_info' in st.session_state:
+                name = st.session_state.user_info['name']
+                # 사용자 이름을 사이드바 상단에 표시
+                st.markdown(f"<p style='text-align: center; font-weight: bold;'>😊 안녕하세요, {name}님</p>", unsafe_allow_html=True)
+                st.write("---")  # 구분선 추가
+
             choose = option_menu("", menu,
                                  icons=['house', 'bi-clipboard-check', 'gear', 'person lines fill'],
                                  default_index=0
                                  )
         # 네비게이션바에 선택된 페이지 출력
         self.main(choose)
-
 
 # 앱 실행
 if __name__ == "__main__":
