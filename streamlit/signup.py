@@ -1,12 +1,11 @@
 import streamlit as st
+from home import Home_page
 
 class Signup_page():
     def __init__(self):
         pass
     
-    def run(self):
-        from home import Home_page 
-        
+    def run(self):        
         st.header("📝 회원가입")
         
         # 회원가입 폼 구현
