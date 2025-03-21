@@ -32,7 +32,7 @@ class Login_page:
             user = self.user_login(username, password)
             # 세션 상태에서 사용자 정보 가져오기
             if user:
-                st.success('로그인 성공!')
-                st.session_state_user_info = user
+                st.session_state['user_info'] = user
+                st.success(f"로그인 성공! 환영합니다, {user['name']}님!")
             else:
                 st.error('로그인 실패. 아이디 또는 비밀번호를 확인해주세요.')

@@ -39,7 +39,7 @@ class Signup_page():
                 st.error(f"DB에 저장하는 중 오류 발생: {e}")
             finally:
                 cursor.close() 
-              
+
     def run(self):        
         st.header("📝 회원가입")
         
@@ -54,7 +54,6 @@ class Signup_page():
             email = st.text_input('이메일')
             guardian_email = st.text_input('보호자 이메일')
             phone_number = st.text_input('전화번호')
-
             usage_purpose = st.selectbox('사용 목적', ['노이즈캔슬링 보조 장치', '청각 보조 장치', '기타'])
 
             signup_button = st.form_submit_button('가입하기')

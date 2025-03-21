@@ -73,7 +73,6 @@ class Home_page:
 
         # 사이드바
         with st.sidebar:
-
             # 세션 상태에서 사용자 이름 가져오기
             if 'user_info' in st.session_state:
                 name = st.session_state.user_info['name']
