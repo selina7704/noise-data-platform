@@ -62,7 +62,7 @@ class Signup_page():
                 'usage_purpose': usage_purpose
             }
             # 자동 로그인 처리
-            st.session_state.logged_in = True
-            st.session_state.page = 'Home'  # 홈 페이지로 이동
             st.success(f'{name}님, 회원가입을 축하합니다!')
-            st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)
+            st.session_state.logged_in = True
+            # st.session_state.page = 'Home'  # 홈 페이지로 이동
+            # st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)
