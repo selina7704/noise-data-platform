@@ -9,6 +9,8 @@ from email.mime.text import MIMEText
 import pandas as pd
 from datetime import datetime
 import config
+import mysql.connector
+from config import DB_CONFIG
 
 
 # .env 로드 제거하고 config에서 직접 사용
@@ -112,6 +114,7 @@ def display_noise_gauge(label, value, max_value=120):
         """,
         unsafe_allow_html=True,
     )
+    
 
 # 예측 결과 표시 함수 (오타 수정)
 def display_prediction_result(result, elapsed_time):
@@ -216,7 +219,104 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
+#############
+def get_alarm_settings(user_id, noise_type):
+    # MySQL 연결 설정
+    conn = mysql.connector.connect(
+        host=DB_CONFIG['host'],
+        user=DB_CONFIG['user'],
+        password=DB_CONFIG['password'],
+        database=DB_CONFIG['database'],
+        port=DB_CONFIG['port']
+    )
+    cursor = conn.cursor()
+
+    # 알람 기준 조회 쿼리 실행
+    query = """
+        SELECT alarm_distance, alarm_db, sensitivity_level
+        FROM alarm_settings
+        WHERE user_id = %s AND noise_type = %s
+    """
+    cursor.execute(query, (user_id, noise_type))
+    
+    result = cursor.fetchone()
+    
+    # MySQL 연결 종료
+    conn.close()
+    
+    return result
+
+def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivity_level):
+    # MySQL 연결 설정
+    conn = mysql.connector.connect(
+        host=config.DB_CONFIG['host'],
+        user=config.DB_CONFIG['user'],
+        password=config.DB_CONFIG['password'],
+        database=config.DB_CONFIG['database']
+    )
+    cursor = conn.cursor()
+
+    # 1. `user_id`가 `alarm_settings` 테이블에 존재하는지 확인
+    cursor.execute("SELECT user_id FROM alarm_settings WHERE user_id = %s AND noise_type = %s", (user_id, noise_type))
+    existing_record = cursor.fetchone()
+
+    if existing_record is not None:
+        # 2. 기존 데이터가 있으면 업데이트
+        query = """
+            UPDATE alarm_settings
+            SET alarm_distance = %s, alarm_db = %s, sensitivity_level = %s
+            WHERE user_id = %s AND noise_type = %s
+        """
+        values = (alarm_distance, alarm_db, sensitivity_level, user_id, noise_type)
+        cursor.execute(query, values)
+        conn.commit()
+    else:
+        # 3. 기존 데이터가 없으면 새로운 데이터 삽입
+        query = """
+            INSERT INTO alarm_settings (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        values = (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
+        cursor.execute(query, values)
+        conn.commit()
+
+    # MySQL 연결 종료
+    conn.close()
+
+
+def check_alarm_trigger(spl_peak, user_id, noise_type):
+    # 사용자 알람 기준 가져오기
+    alarm_settings = get_alarm_settings(user_id, noise_type)
+    
+    if alarm_settings:
+        alarm_distance, alarm_db, sensitivity_level = alarm_settings
+        
+        # 소음 강도가 알람 기준 데시벨 이상이면 알람 트리거
+        if spl_peak >= alarm_db:
+            # 경고 메시지 생성
+            if spl_peak >= 70:
+                alert_message = f"🚨 위험 수준 소음 감지! 최대 소음 강도는 {spl_peak} dB입니다."
+                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
+                send_alert(alert_message)
+            elif spl_peak >= 50:
+                alert_message = f"⚠️ 주의 요함! 소음 강도가 {spl_peak} dB입니다."
+                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
+                send_alert(alert_message)
+
+def send_alert(message):
+    # TTS 음성 안내, 이메일 발송 등의 경고 알림 구현
+    print(message)  # 여기서는 알림 메시지를 콘솔에 출력
+
+
+
+###################
+
+
+
+
 class NoiseModel_page:
+    
     def noisemodel_page(self):
         # 상태 초기화
         if 'tts_enabled' not in st.session_state:
@@ -459,10 +559,11 @@ class NoiseModel_page:
                             pd.DataFrame([feedback_data]).to_csv("feedback.csv", mode="a", index=False, header=not pd.io.common.file_exists("feedback.csv"))
                             st.success("피드백이 저장되었습니다!")
 
+
+        # 알람 기준 설정
         with tab3:  # 알람 기준 설정
             st.subheader("알람 기준 설정")
-            st.write("현재는 기본 설정(위험: 70dB, 주의: 50dB)으로 작동 중입니다.")
-
+            
             # 🔹 기본 거리 기준 (m) → "중(🟡)" 기준
             DEFAULT_ALARM_DISTANCE = {
                 "차량 경적": 10,
@@ -491,7 +592,6 @@ class NoiseModel_page:
             }
 
             # 📢 알람 감도 설정
-            st.subheader("🔔 알람 감도 설정")
             selected_sensitivity = st.radio("📢 감도 선택", ["약(🔵)", "중(🟡)", "강(🔴)"], index=1)
 
             # 🔹 감도에 따른 거리 & 데시벨 자동 조정
@@ -519,11 +619,21 @@ class NoiseModel_page:
 
             # ✅ 설정 저장 버튼
             if st.button("📌 설정 저장"):
+                # 사용자가 설정한 알람 기준을 MySQL에 저장
+                for noise_type, settings in user_alarm_settings.items():
+                    save_alarm_settings(
+                        user_id=1,  # 예시: 사용자 ID (나중에 세션 ID로 대체)
+                        noise_type=noise_type,
+                        alarm_distance=settings["거리"],
+                        alarm_db=settings["데시벨"],
+                        sensitivity_level=selected_sensitivity
+                    )
                 st.success("✅ 알람 설정이 저장되었습니다.")
                 st.write(f"📢 **선택한 감도:** {selected_sensitivity}")
                 
                 st.subheader("📌 최종 설정값")
                 st.table(pd.DataFrame(user_alarm_settings).T)
+
 
 if __name__ == '__main__':
     m = NoiseModel_page()
