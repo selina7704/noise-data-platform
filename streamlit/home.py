@@ -18,18 +18,29 @@ class Home_page:
         self.Edit = Edit_page()
 
     def main(self, choose=None):
-        menu = ["홈","로그인","회원가입", "마이페이지"]
+        # menu = ["홈","로그인","회원가입", "마이페이지"]
 
+        # # 메뉴 선택에 따라 페이지 전환
+        # if choose == menu[0]: # 메인 홈화면
+        #     self.bar() 
+        # elif choose == menu[1]: #login
+        #     self.Login.run()
+        # elif choose == menu[2]: #회원가입
+        #     self.Signup.run()   
+        # elif choose == menu[3]:  # 마이페이지 선택
+        #     self.Edit.run()  # Mypage_page 실행
         # 메뉴 선택에 따라 페이지 전환
-        if choose == menu[0]: # 메인 홈화면
-            self.bar() 
-        elif choose == menu[1]: #login
+        if choose == "홈":  # 메인 홈화면
+            self.bar()
+        elif choose == "로그인":  # 로그인
             self.Login.run()
-        elif choose == menu[2]: #회원가입
-            self.Signup.run()   
-        elif choose == menu[3]:  # 마이페이지 선택
+        elif choose == "회원가입":  # 회원가입
+            self.Signup.run()
+        elif choose == "마이페이지":  # 마이페이지 선택
             self.Edit.run()  # Mypage_page 실행
-                
+        elif choose == "로그아웃":
+            self.logout()
+
     def bar(self):
         col, col1, col2, col3 = st.columns([2, 3, 1.5, 1])
         # 상단 중앙: 로고
@@ -68,8 +79,19 @@ class Home_page:
         if select == nav[2]:
             self.Statistics.statistics_page()    
 
+    def logout(self):
+        """로그아웃: 세션 초기화"""
+        st.session_state.clear()
+        st.sidebar.success("로그아웃되었습니다.")
+
     def run(self):
-        menu = ["홈","로그인","회원가입", "마이페이지"]
+        # 로그인 상태에 따라 메뉴 변경
+        if 'user_info' in st.session_state and st.session_state['user_info']:
+            menu = ["홈", "마이페이지", "로그아웃"]
+            icons = ['house', 'person lines fill', 'door-open']
+        else:
+            menu = ["홈", "로그인", "회원가입", "마이페이지"]
+            icons = ['house', 'bi-clipboard-check', 'gear', 'person lines fill']
 
         # 사이드바
         with st.sidebar:

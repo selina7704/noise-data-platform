@@ -8,7 +8,7 @@ import os
 class About_page:
     def about_page(self):
         # 탭 생성
-        tab1, tab2, tab3 = st.tabs(['About', '모델 훈련 데이터셋 통계', '개발진 소개'])
+        tab1, tab2, tab3 = st.tabs(['About', '모델 및 데이터셋 소개', '개발진 소개'])
         
         # 탭 1: About (기존 유지)
         with tab1:
@@ -33,7 +33,7 @@ class About_page:
 
         # 탭 2: 모델 훈련 데이터셋 통계 (expander로 분리)
         with tab2:
-            st.subheader('모델 훈련 데이터셋 통계')
+            st.subheader('모델 및 데이터셋 소개')
 
             # CSS 스타일 정의 (마우스 오버 툴팁)
             st.markdown("""
