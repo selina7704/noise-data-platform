@@ -41,7 +41,7 @@ def autoplay_audio(file_path):
         """
         st.markdown(audio_html, unsafe_allow_html=True)
 
-# 유저 정보 조회 함수
+# 유저 정보 조회 함수 추가
 def get_user_info(user_id):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor(dictionary=True)
@@ -51,7 +51,7 @@ def get_user_info(user_id):
     conn.close()
     return user
 
-# 이메일 발송 함수
+# 이메일 발송 함수 (SOS 메일 포함)
 def send_email(to_email, subject, message):
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
@@ -92,14 +92,18 @@ def send_sos_email(user_id, result, latitude=None, longitude=None):
         st.error("❌ 보호자 이메일이 등록되지 않았습니다.")
         return False
 
+    # 예측 결과에서 정보 추출
     noise_type = result.get('prediction', '알 수 없음')
     spl_peak = result.get('spl_peak', 0)
     spl_rms = result.get('spl_rms', 0)
     distance = result.get('estimated_distance', 'N/A')
     direction = result.get('direction', '알 수 없음')
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    # 위치 정보 (추가 시 반영 가능)
     location = f"위도: {latitude}, 경도: {longitude}" if latitude and longitude else "위치 정보 없음"
 
+    # 이메일 내용
     subject = "📢 긴급 SOS 알림"
     message = f"""
 보호자님, 안녕하세요.
@@ -186,10 +190,10 @@ def play_tts_queue():
             tts_file = generate_tts(text)
             autoplay_audio(tts_file)
             os.remove(tts_file)
-            time.sleep(5)
+            time.sleep(5)  # TTS 간 5초 간격
         st.session_state['tts_queue'] = []
 
-# 타이머 표시 함수
+# 타이머 표시 함수 (SOS 메일 발송 포함)
 def display_timer(start_time, user_id, result, duration=60):
     timer_container = st.empty()
     bar_container = st.empty()
@@ -214,7 +218,7 @@ def display_timer(start_time, user_id, result, duration=60):
         timer_container.empty()
         bar_container.empty()
 
-# 예측 결과 처리 함수
+# 예측 결과 처리 함수 (user_id 추가)
 def process_prediction(response, mode, user_id, audio_data=None, latitude=None, longitude=None):
     if response.status_code == 200:
         result = response.json()
@@ -228,6 +232,7 @@ def process_prediction(response, mode, user_id, audio_data=None, latitude=None, 
         st.session_state[f'{mode}_result'] = result
         st.session_state[f'{mode}_elapsed_time'] = elapsed_time
         
+        # 분류 결과를 세션 상태에 저장
         classification_result = {
             "시간": datetime.now(),
             "소음 유형": result.get('prediction', '알 수 없음'),
@@ -241,7 +246,7 @@ def process_prediction(response, mode, user_id, audio_data=None, latitude=None, 
             st.session_state["classification_results"] = []
         st.session_state["classification_results"].append(classification_result)
         
-        return result, elapsed_time, None
+        return result, elapsed_time, None  # audio_path는 아직 사용 안 함
     return None, None, None
 
 # 커스텀 스타일
@@ -264,50 +269,27 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-#############
 # 알람 설정 관련 함수
 def get_alarm_settings(user_id, noise_type):
-    # MySQL 연결 설정
-    conn = mysql.connector.connect(
-        host=DB_CONFIG['host'],
-        user=DB_CONFIG['user'],
-        password=DB_CONFIG['password'],
-        database=DB_CONFIG['database'],
-        port=DB_CONFIG['port']
-    )
+    conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
-
-    # 알람 기준 조회 쿼리 실행
     query = """
         SELECT alarm_distance, alarm_db, sensitivity_level
         FROM alarm_settings
         WHERE user_id = %s AND noise_type = %s
     """
     cursor.execute(query, (user_id, noise_type))
-    
     result = cursor.fetchone()
-    
-    # MySQL 연결 종료
     conn.close()
-    
     return result
 
 def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivity_level):
-    # MySQL 연결 설정
-    conn = mysql.connector.connect(
-        host=config.DB_CONFIG['host'],
-        user=config.DB_CONFIG['user'],
-        password=config.DB_CONFIG['password'],
-        database=config.DB_CONFIG['database']
-    )
+    conn = mysql.connector.connect(**config.DB_CONFIG)
     cursor = conn.cursor()
-
-    # 1. `user_id`가 `alarm_settings` 테이블에 존재하는지 확인
     cursor.execute("SELECT user_id FROM alarm_settings WHERE user_id = %s AND noise_type = %s", (user_id, noise_type))
     existing_record = cursor.fetchone()
 
-    if existing_record is not None:
-        # 2. 기존 데이터가 있으면 업데이트
+    if existing_record:
         query = """
             UPDATE alarm_settings
             SET alarm_distance = %s, alarm_db = %s, sensitivity_level = %s
@@ -315,60 +297,44 @@ def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivi
         """
         values = (alarm_distance, alarm_db, sensitivity_level, user_id, noise_type)
         cursor.execute(query, values)
-        conn.commit()
     else:
-        # 3. 기존 데이터가 없으면 새로운 데이터 삽입
         query = """
             INSERT INTO alarm_settings (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
             VALUES (%s, %s, %s, %s, %s)
         """
         values = (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
         cursor.execute(query, values)
-        conn.commit()
-
-    # MySQL 연결 종료
+    conn.commit()
     conn.close()
 
-
 def check_alarm_trigger(spl_peak, user_id, noise_type):
-    # 사용자 알람 기준 가져오기
     alarm_settings = get_alarm_settings(user_id, noise_type)
-    
     if alarm_settings:
-        alarm_distance, alarm_db, sensitivity_level = alarm_settings
-        
-        # 소음 강도가 알람 기준 데시벨 이상이면 알람 트리거
+        _, alarm_db, _ = alarm_settings
         if spl_peak >= alarm_db:
-            # 경고 메시지 생성
             if spl_peak >= 70:
                 alert_message = f"🚨 위험 수준 소음 감지! 최대 소음 강도는 {spl_peak} dB입니다."
-                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
                 send_alert(alert_message)
             elif spl_peak >= 50:
                 alert_message = f"⚠️ 주의 요함! 소음 강도가 {spl_peak} dB입니다."
-                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
                 send_alert(alert_message)
 
 def send_alert(message):
-    # TTS 음성 안내, 이메일 발송 등의 경고 알림 구현
-    print(message)  # 여기서는 알림 메시지를 콘솔에 출력
-
-
-
-###################
-
+    print(message)  # 콘솔 출력, 나중에 추가 기능 가능
 
 # NoiseModel_page 클래스
 class NoiseModel_page:
     def noisemodel_page(self):
+        # 로그인 체크
         if 'user_info' not in st.session_state or 'id' not in st.session_state['user_info']:
             st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
             return
 
         user_id = st.session_state['user_info']['id']
         user_info = get_user_info(user_id)
-        st.write(f"{user_info['name']} 님의 소음 분류기")
+        st.write(f"로그인된 사용자: {user_info['name']} (ID: {user_id})")
 
+        # 상태 초기화
         if 'tts_enabled' not in st.session_state:
             st.session_state['tts_enabled'] = True
         if 'sos_email_enabled' not in st.session_state:
@@ -386,7 +352,7 @@ class NoiseModel_page:
 
         tab1, tab2, tab3 = st.tabs(['소음 분류기', '소음 측정 기록', '알람 기준 설정'])
 
-        with tab1:
+        with tab1:  # 소음 분류기
             st.markdown("### 소음 분류기 사용 방법", unsafe_allow_html=True)
             st.write("이곳에서 소음을 녹음하거나 파일을 업로드해 분석할 수 있습니다.")
             st.write("분석 결과로 소음 유형과 강도를 확인할 수 있어요!")
@@ -405,7 +371,7 @@ class NoiseModel_page:
                 st.write("- 기본적인 주변 소음을 녹음하면 분석 정확도를 높일 수 있습니다.")
                 st.write("  ② ***목표 소음 녹음***")
                 st.write("- 분석하고 싶은 소리를 녹음하세요. 50cm~1m 거리에서 녹음하는 것이 가장 정확합니다.")
-                st.info("""📌 녹음할 때 유의할 점\n\n        ✔ 녹음 환경: 너무 시끄러운 곳에서는 원하는 소음이 묻힐 수 있어요.\n\n        ✔ 마이크 품질: 이어폰 마이크보다는 스마트폰 내장 마이크를 사용하는 것이 더 좋아요.""")
+                st.warning("""📌 녹음할 때 유의할 점\n\n        ✔ 녹음 환경: 너무 시끄러운 곳에서는 원하는 소음이 묻힐 수 있어요.\n\n        ✔ 마이크 품질: 이어폰 마이크보다는 스마트폰 내장 마이크를 사용하는 것이 더 좋아요.""")
                 
                 st.subheader("3️⃣ 분석 결과 확인하기")
                 st.code("""
@@ -417,7 +383,7 @@ class NoiseModel_page:
 📡 방향: 중앙
 ⏱️ 분석 소요 시간: 0.20 초
             """)
-                st.info("📌 참고: '방향'은 소리가 어디서 들리는지를 알려줍니다. \n\n- 하지만 한쪽 소리만 들리는 파일(모노 타입)로는 방향을 알 수 없어요. \n\n -  양쪽 소리가 모두 담긴 파일(스테레오 타입)을 사용하면 소리가 왼쪽, 오른쪽, 또는 중앙에서 나는지 예측할 수 있습니다!")
+                st.write("📌 참고: '방향'은 소리가 어디서 들리는지를 알려줍니다. \n\n- 하지만 한쪽 소리만 들리는 파일(모노 타입)로는 방향을 알 수 없어요. \n\n -  양쪽 소리가 모두 담긴 파일(스테레오 타입)을 사용하면 소리가 왼쪽, 오른쪽, 또는 중앙에서 나는지 예측할 수 있습니다!")
 
                 st.subheader("4️⃣ 경고 및 알림 기능")
                 st.write("📫 사용자가 설정한 기준에 따라 경고 메시지를 제공합니다.")
@@ -425,22 +391,22 @@ class NoiseModel_page:
 🚨 위험 수준 소음 감지! 즉시 조치가 필요합니다 🚨
 ⚠️ 주의 요함! 소음이 높습니다 ⚠️
                         """)
-                st.info("📌 TTS (음성 안내 기능) 지원: \n\n - 경고 메시지는 음성으로 자동 안내됩니다. \n\n - '소음 분류기 사용 방법' 아래의 'TTS 알림' 토글로 켜거나 끌 수 있으며, 설정은 다음 분석에도 유지됩니다!")
-                st.info("📌 긴급 메시지 기능: \n\n - 위험 수준 소음이 감지되면 '안전 확인' 버튼이 나타납니다. \n\n - 1분 이상 응답이 없으면 등록된 이메일로 긴급 알림이 자동 발송됩니다.")
+                st.write("📌 TTS (음성 안내 기능) 지원: \n\n - 경고 메시지는 음성으로 자동 안내됩니다. \n\n - '소음 분류기 사용 방법' 아래의 'TTS 알림' 토글로 켜거나 끌 수 있으며, 설정은 다음 분석에도 유지됩니다!")
+                st.write("📌 긴급 메시지 기능: \n\n - 위험 수준 소음이 감지되면 '안전 확인' 버튼이 나타납니다. \n\n - 1분 이상 응답이 없으면 등록된 이메일로 긴급 알림이 자동 발송됩니다.")
 
                 st.subheader("💡 자주하는 질문 (FAQ)")
                 st.write("**Q1. 분석 결과가 이상해요!**")
-                st.warning("녹음된 소리가 너무 짧거나 음질이 낮으면 분석이 부정확할 수 있어요. 배경 소음 없이 녹음해 주세요!")
+                st.write("👉 녹음된 소리가 너무 짧거나 음질이 낮으면 분석이 부정확할 수 있어요. 배경 소음 없이 녹음해 주세요!")
                 st.write("**Q2. MP3 파일도 업로드할 수 있나요?**")
-                st.warning("현재는 WAV 파일만 지원하고 있어요. MP3 파일을 변환한 뒤 업로드해 주세요.")
+                st.write("👉 현재는 WAV 파일만 지원하고 있어요. MP3 파일을 변환한 뒤 업로드해 주세요.")
                 st.write("**Q3. 실시간으로 소음을 분석할 수도 있나요?**")
-                st.warning("현재는 녹음된 소리만 분석 가능하지만, 향후 실시간 분석 기능을 추가할 예정이에요!")
+                st.write("👉 현재는 녹음된 소리만 분석 가능하지만, 향후 실시간 분석 기능을 추가할 예정이에요!")
                 st.write("**Q4: 소음 분류기가 작동하지 않을 때는 어떻게 하나요?**")
-                st.warning("인터넷 연결을 확인하고, WAV 파일이 16kHz인지 확인하세요. 문제가 지속되면 관리자에게 문의해주세요.")
+                st.write("👉 인터넷 연결을 확인하고, WAV 파일이 16kHz인지 확인하세요. 문제가 지속되면 관리자에게 문의해주세요.")
                 st.write("**Q5: 배경 소음은 꼭 녹음해야 하나요?**")
-                st.warning("필수는 아니지만, 배경 소음을 제공하면 분석 정확도가 높아집니다.")
+                st.write("👉 필수는 아니지만, 배경 소음을 제공하면 분석 정확도가 높아집니다.")
                 st.write("**Q6: SOS 메일이 오지 않아요. 어떻게 해야 하나요?**")
-                st.warning("SOS 메일 발송이 켜져 있는지 확인하고, 이메일 설정이 올바른지 점검하세요.")
+                st.write("👉 SOS 메일 발송이 켜져 있는지 확인하고, 이메일 설정이 올바른지 점검하세요.")
 
             col1, col2 = st.columns(2)
             with col1:
@@ -487,7 +453,6 @@ class NoiseModel_page:
                         if st.session_state['background_audio']:
                             files["background"] = ("background_audio.wav", st.session_state['background_audio'].getvalue(), "audio/wav")
                         response = requests.post(FASTAPI_URL, files=files)
-                        # user_id 추가
                         result, elapsed_time, _ = process_prediction(response, mode="recording", user_id=user_id)
                         status_placeholder.write("✅ 분석 완료!")
                         
@@ -538,7 +503,6 @@ class NoiseModel_page:
                         with status_placeholder:
                             st.spinner("🔊 분석 중...")
                         response = requests.post(FASTAPI_URL, files={"file": uploaded_file})
-                        # user_id 추가
                         result, elapsed_time, _ = process_prediction(response, mode="upload", user_id=user_id)
                         status_placeholder.write("✅ 분석 완료!")
                         
@@ -571,7 +535,7 @@ class NoiseModel_page:
                                     st.warning("1분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
                                     display_timer(st.session_state['danger_alert_time'], user_id, result)
 
-        with tab2:
+        with tab2:  # 소음 측정 기록 및 피드백
             st.subheader("소음 측정 기록")
             st.write("여기에서 최근 소음 분류 기록을 확인하고 피드백을 남길 수 있습니다.")
 
@@ -611,7 +575,7 @@ class NoiseModel_page:
                             pd.DataFrame([feedback_data]).to_csv("feedback.csv", mode="a", index=False, header=not pd.io.common.file_exists("feedback.csv"))
                             st.success("피드백이 저장되었습니다!")
 
-        with tab3:
+        with tab3:  # 알람 기준 설정
             st.subheader("알람 기준 설정")
             
             DEFAULT_ALARM_DISTANCE = {
