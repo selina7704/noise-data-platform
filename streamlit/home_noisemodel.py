@@ -219,8 +219,124 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+############ 소음 분류 측정 및 알람 기능 설정 
 
-#############
+## 1. 위치 정보 자동 추출 
+def get_location():
+    location_script = """
+    <script>
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+                window.parent.postMessage({latitude: latitude, longitude: longitude}, "*");
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    </script>
+    """
+    st.markdown(location_script, unsafe_allow_html=True)
+
+# 위치를 받을 때 사용
+def get_user_location():
+    # 위치 정보 초기화
+    latitude, longitude = None, None
+
+    # 위치를 받는 JavaScript 코드 삽입
+    get_location()
+
+    # 위치 정보가 담긴 메시지를 받기 위한 Listener
+    # 사용자 위치 정보는 클라이언트 측에서 받아서 처리
+    st.write(f"위도: {latitude}, 경도: {longitude}")
+
+    return latitude, longitude
+
+
+## MySQL 설정 및 소음 분류 결과 저장 
+def save_classification_result(user_id, noise_type, spl_peak, spl_rms, estimated_distance, direction, elapsed_time, latitude, longitude, alarm_triggered, audio_path):
+
+    conn = mysql.connector.connect(
+        host=config.DB_CONFIG['host'],
+        user=config.DB_CONFIG['user'],
+        password=config.DB_CONFIG['password'],
+        database=config.DB_CONFIG['database']
+    )
+    cursor = conn.cursor()
+
+    # SQL 쿼리: classification_results 테이블에 결과 저장
+    query = """
+        INSERT INTO classification_results (user_id, noise_type, spl_peak, spl_rms, estimated_distance, direction, elapsed_time, latitude, longitude, alarm_triggered, audio_path)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """
+    values = (user_id, noise_type, spl_peak, spl_rms, estimated_distance, direction, elapsed_time, latitude, longitude, alarm_triggered, audio_path)
+    cursor.execute(query, values)
+    conn.commit()
+
+    conn.close()
+ 
+## 소음 분석 및 알람 결과 처리     
+def process_prediction(response, mode):
+    if response.status_code == 200:
+        result = response.json()
+        if "error" in result:
+            show_alert("오디오 분석에 실패했습니다", "danger")
+            return None, None
+        
+        end_time = time.time()
+        elapsed_time = end_time - st.session_state['start_time']
+        
+        st.session_state[f'{mode}_result'] = result
+        st.session_state[f'{mode}_elapsed_time'] = elapsed_time
+        
+        # 분류 결과를 세션 상태에 저장
+        classification_result = {
+            "시간": datetime.now(),
+            "소음 유형": result.get('prediction', '알 수 없음'),
+            "소음 강도(dB)": result.get('spl_peak', 0),
+            "평균 강도(dB)": result.get('spl_rms', 0),
+            "추정 거리": result.get('estimated_distance', 'N/A'),
+            "방향": result.get('direction', '알 수 없음'),
+            "분석 시간": elapsed_time
+        }
+        if "classification_results" not in st.session_state:
+            st.session_state["classification_results"] = []
+        st.session_state["classification_results"].append(classification_result)
+        
+        # 알람 트리거 처리
+        spl_peak = result.get('spl_peak', 0)
+        user_id = 1  # 예시: 사용자 ID (세션 ID 또는 로그인 ID로 대체)
+        noise_type = result.get('prediction', '알 수 없음')
+        
+        # 위치 정보 (여기서는 임시로 0,0을 사용)
+        latitude, longitude = 0, 0
+        
+        # 알람 기준과 비교 후 알람 처리
+        check_alarm_trigger(spl_peak, user_id, noise_type)
+        
+        # 분석 결과 MySQL에 저장
+        save_classification_result(
+            user_id=user_id,
+            noise_type=noise_type,
+            spl_peak=spl_peak,
+            spl_rms=result.get('spl_rms', 0),
+            estimated_distance=result.get('estimated_distance', 'N/A'),
+            direction=result.get('direction', '알 수 없음'),
+            elapsed_time=elapsed_time,
+            latitude=latitude,
+            longitude=longitude,
+            alarm_triggered=spl_peak >= 70,
+            audio_path='path/to/audio.wav'  # 예시로 경로
+        )
+        
+        return result, elapsed_time
+    return None, None
+
+
+
+############
+
+#############  알람 기준 설정 
 def get_alarm_settings(user_id, noise_type):
     # MySQL 연결 설정
     conn = mysql.connector.connect(
@@ -284,34 +400,39 @@ def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivi
     # MySQL 연결 종료
     conn.close()
 
-
+## 알람기준 설정 및 적용 
+# 알람 트리거 확인
 def check_alarm_trigger(spl_peak, user_id, noise_type):
     # 사용자 알람 기준 가져오기
     alarm_settings = get_alarm_settings(user_id, noise_type)
     
     if alarm_settings:
-        alarm_distance, alarm_db, sensitivity_level = alarm_settings
+        alarm_db, sensitivity_level = alarm_settings
+        
+        # 감도에 따른 알람 기준 조정
+        if sensitivity_level == "약(🔵)":
+            alarm_db -= 10  # 약: 알람 기준 -10 dB
+        elif sensitivity_level == "강(🔴)":
+            alarm_db += 10  # 강: 알람 기준 +10 dB
         
         # 소음 강도가 알람 기준 데시벨 이상이면 알람 트리거
         if spl_peak >= alarm_db:
             # 경고 메시지 생성
-            if spl_peak >= 70:
+            if spl_peak >= alarm_db + 10:  # 위험 수준 (기본 데시벨 + 10)
                 alert_message = f"🚨 위험 수준 소음 감지! 최대 소음 강도는 {spl_peak} dB입니다."
-                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
                 send_alert(alert_message)
-            elif spl_peak >= 50:
+            elif spl_peak >= alarm_db:  # 주의 요함
                 alert_message = f"⚠️ 주의 요함! 소음 강도가 {spl_peak} dB입니다."
-                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
                 send_alert(alert_message)
+
+            return True  # 알람 트리거됨
+    return False  # 알람 트리거 안됨
 
 def send_alert(message):
     # TTS 음성 안내, 이메일 발송 등의 경고 알림 구현
-    print(message)  # 여기서는 알림 메시지를 콘솔에 출력
-
-
+    print(message)  # 여기서는 알림 메시지를 콘솔에 출력    
 
 ###################
-
 
 
 
