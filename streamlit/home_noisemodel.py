@@ -9,29 +9,25 @@ from email.mime.text import MIMEText
 import pandas as pd
 from datetime import datetime
 import mysql.connector
+from streamlit_javascript import st_javascript
 import config
 from config import DB_CONFIG
 
-# .env 로드 제거하고 config에서 직접 사용
 sender_email = config.SENDER_EMAIL
 sender_password = config.SENDER_PASSWORD
 
-# 저장 디렉토리 설정
 upload_folder = "uploads"
 audio_save_path = "recorded_audio"
 os.makedirs(upload_folder, exist_ok=True)
 os.makedirs(audio_save_path, exist_ok=True)
 
-# FastAPI 서버 주소
 FASTAPI_URL = "http://15.168.145.74:8008/predict/"
 
-# TTS 음성 생성 함수
 def generate_tts(text, filename="alert.wav"):
     tts = gTTS(text=text, lang='ko', slow=False)
     tts.save(filename)
     return filename
 
-# 오디오 자동 재생 함수
 def autoplay_audio(file_path):
     with open(file_path, "rb") as f:
         data = f.read()
@@ -41,7 +37,6 @@ def autoplay_audio(file_path):
         """
         st.markdown(audio_html, unsafe_allow_html=True)
 
-# 유저 정보 조회 함수
 def get_user_info(user_id):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor(dictionary=True)
@@ -51,7 +46,70 @@ def get_user_info(user_id):
     conn.close()
     return user
 
-# 이메일 발송 함수
+def geocode_address(address):
+    url = f"https://nominatim.openstreetmap.org/search?format=json&q={address}"
+    headers = {"User-Agent": "DamassoNoiseApp/1.0"}
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            if data:
+                return float(data[0]["lat"]), float(data[0]["lon"])
+            else:
+                st.error(f"❌ 주소 검색 실패: '{address}'에 대한 결과가 없습니다.")
+                return None, None
+        else:
+            st.error(f"❌ Nominatim API 오류: 상태 코드 {response.status_code}")
+            return None, None
+    except Exception as e:
+        st.error(f"❌ 주소 변환 중 오류: {str(e)}")
+        return None, None
+
+def save_to_classification_results(user_id, result, latitude, longitude, audio_path, elapsed_time, timestamp):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+    query = """
+        INSERT INTO classification_results 
+        (user_id, noise_type, spl_peak, spl_rms, estimated_distance, direction, alarm_trigger, latitude, longitude, alarm_triggered, audio_path, elapsed_time, timestamp)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """
+    distance = result.get('estimated_distance', 'N/A')
+    if isinstance(distance, (int, float)):
+        estimated_distance = float(distance)
+    elif isinstance(distance, str) and distance != 'N/A':
+        try:
+            estimated_distance = float(''.join(filter(str.isdigit, distance)))
+        except ValueError:
+            estimated_distance = None
+    else:
+        estimated_distance = None
+
+    alarm_trigger = datetime.now() if result.get('spl_peak', 0) >= 50 else None
+    alarm_triggered = 1 if result.get('spl_peak', 0) >= 70 else 0
+    values = (
+        user_id,
+        result.get('prediction', '알 수 없음'),
+        result.get('spl_peak', 0),
+        result.get('spl_rms', 0),
+        estimated_distance,
+        result.get('direction', '알 수 없음'),
+        alarm_trigger,
+        latitude,
+        longitude,
+        alarm_triggered,
+        audio_path,
+        elapsed_time,
+        timestamp
+    )
+    try:
+        cursor.execute(query, values)
+        conn.commit()
+        st.success("✅ DB에 저장 완료")
+    except mysql.connector.Error as e:
+        st.error(f"❌ DB 저장 오류: {str(e)}")
+    finally:
+        conn.close()
+
 def send_email(to_email, subject, message):
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
@@ -86,7 +144,7 @@ def send_email(to_email, subject, message):
         st.error(f"❌ 기타 오류: {str(e)}")
         return False
 
-def send_sos_email(user_id, result, latitude=None, longitude=None):
+def send_sos_email(user_id, result, address=None, latitude=None, longitude=None):
     user_info = get_user_info(user_id)
     if not user_info or not user_info.get('guardian_email'):
         st.error("❌ 보호자 이메일이 등록되지 않았습니다.")
@@ -97,8 +155,8 @@ def send_sos_email(user_id, result, latitude=None, longitude=None):
     spl_rms = result.get('spl_rms', 0)
     distance = result.get('estimated_distance', 'N/A')
     direction = result.get('direction', '알 수 없음')
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    location = f"위도: {latitude}, 경도: {longitude}" if latitude and longitude else "위치 정보 없음"
+    timestamp = result.get('timestamp', datetime.now()).strftime('%Y-%m-%d %H:%M:%S')
+    location = f"{address} (위도: {latitude}, 경도: {longitude})" if address else "위치 정보 없음"
 
     subject = "📢 긴급 SOS 알림"
     message = f"""
@@ -123,7 +181,6 @@ def send_sos_email(user_id, result, latitude=None, longitude=None):
 """
     return send_email(user_info['guardian_email'], subject, message)
 
-# 경고 메시지 표시 함수
 def show_alert(message, level="warning", play_tts=True):
     color = "#ffcc00" if level == "warning" else "#ff4d4d"
     text_color = "black" if level == "warning" else "white"
@@ -141,7 +198,6 @@ def show_alert(message, level="warning", play_tts=True):
     if play_tts and st.session_state['tts_enabled']:
         st.session_state['tts_queue'].append(message)
 
-# 소음 강도 게이지 함수
 def display_noise_gauge(label, value, max_value=120):
     if value <= 50:
         color = "#3498db"
@@ -166,8 +222,7 @@ def display_noise_gauge(label, value, max_value=120):
         unsafe_allow_html=True,
     )
 
-# 예측 결과 표시 함수
-def display_prediction_result(result, elapsed_time):
+def display_prediction_result(result, elapsed_time, address=None, latitude=None, longitude=None):
     st.markdown("### 📋 분석 결과", unsafe_allow_html=True)
     st.write(f"🔊 **예측된 소음 유형:** {result.get('prediction', '알 수 없음')}")
     spl_peak = result.get('spl_peak', 0)
@@ -177,9 +232,12 @@ def display_prediction_result(result, elapsed_time):
     st.write(f"📏 **추정 거리:** {result.get('estimated_distance', 'N/A')} 미터")
     st.write(f"📡 **방향:** {result.get('direction', '알 수 없음')}")
     st.write(f"⏱️ **분석 소요 시간:** {elapsed_time:.2f} 초")
+    if address:
+        st.write(f"📍 **위치:** {address} (위도: {latitude}, 경도: {longitude})")
+        df = pd.DataFrame({"lat": [latitude], "lon": [longitude]})
+        st.map(df)
     return spl_peak
 
-# TTS 순차 재생 함수
 def play_tts_queue():
     if 'tts_queue' in st.session_state and st.session_state['tts_queue']:
         for text in st.session_state['tts_queue']:
@@ -189,8 +247,7 @@ def play_tts_queue():
             time.sleep(5)
         st.session_state['tts_queue'] = []
 
-# 타이머 표시 함수
-def display_timer(start_time, user_id, result, duration=60):
+def display_timer(start_time, user_id, result, address, latitude, longitude, duration=60):
     timer_container = st.empty()
     bar_container = st.empty()
     
@@ -208,14 +265,13 @@ def display_timer(start_time, user_id, result, duration=60):
         time.sleep(1)
     
     if remaining_time <= 1 and not st.session_state['email_sent'] and st.session_state['sos_email_enabled']:
-        send_sos_email(user_id, result)
+        send_sos_email(user_id, result, address, latitude, longitude)
         st.session_state['email_sent'] = True
         st.session_state['danger_alert_time'] = None
         timer_container.empty()
         bar_container.empty()
 
-# 예측 결과 처리 함수
-def process_prediction(response, mode, user_id, audio_data=None, latitude=None, longitude=None):
+def process_prediction(response, mode, user_id, audio_data=None, address=None, latitude=None, longitude=None, timestamp=None):
     if response.status_code == 200:
         result = response.json()
         if "error" in result:
@@ -228,23 +284,34 @@ def process_prediction(response, mode, user_id, audio_data=None, latitude=None, 
         st.session_state[f'{mode}_result'] = result
         st.session_state[f'{mode}_elapsed_time'] = elapsed_time
         
+        audio_path = os.path.join(audio_save_path, "recorded_audio.wav") if mode == "recording" else os.path.join(upload_folder, "uploaded_audio.wav")
+        if audio_data:
+            with open(audio_path, "wb") as f:
+                f.write(audio_data.getvalue() if mode == "recording" else audio_data.read())
+        
+        result['timestamp'] = timestamp
+        result['address'] = address  # 주소 저장
         classification_result = {
-            "시간": datetime.now(),
+            "시간": timestamp,
             "소음 유형": result.get('prediction', '알 수 없음'),
             "소음 강도(dB)": result.get('spl_peak', 0),
             "평균 강도(dB)": result.get('spl_rms', 0),
             "추정 거리": result.get('estimated_distance', 'N/A'),
             "방향": result.get('direction', '알 수 없음'),
-            "분석 시간": elapsed_time
+            "분석 시간": elapsed_time,
+            "주소": address
         }
         if "classification_results" not in st.session_state:
             st.session_state["classification_results"] = []
         st.session_state["classification_results"].append(classification_result)
         
-        return result, elapsed_time, None
-    return None, None, None
+        save_to_classification_results(user_id, result, latitude, longitude, audio_path, elapsed_time, timestamp)
+        
+        return result, elapsed_time, audio_path
+    else:
+        st.error(f"❌ FastAPI 요청 실패: 상태 코드 {response.status_code}")
+        return None, None, None
 
-# 커스텀 스타일
 st.markdown("""
     <style>
     div.stButton > button {
@@ -264,50 +331,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-#############
-# 알람 설정 관련 함수
 def get_alarm_settings(user_id, noise_type):
-    # MySQL 연결 설정
-    conn = mysql.connector.connect(
-        host=DB_CONFIG['host'],
-        user=DB_CONFIG['user'],
-        password=DB_CONFIG['password'],
-        database=DB_CONFIG['database'],
-        port=DB_CONFIG['port']
-    )
+    conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
-
-    # 알람 기준 조회 쿼리 실행
     query = """
         SELECT alarm_distance, alarm_db, sensitivity_level
         FROM alarm_settings
         WHERE user_id = %s AND noise_type = %s
     """
     cursor.execute(query, (user_id, noise_type))
-    
     result = cursor.fetchone()
-    
-    # MySQL 연결 종료
     conn.close()
-    
     return result
 
 def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivity_level):
-    # MySQL 연결 설정
-    conn = mysql.connector.connect(
-        host=config.DB_CONFIG['host'],
-        user=config.DB_CONFIG['user'],
-        password=config.DB_CONFIG['password'],
-        database=config.DB_CONFIG['database']
-    )
+    conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
-
-    # 1. `user_id`가 `alarm_settings` 테이블에 존재하는지 확인
     cursor.execute("SELECT user_id FROM alarm_settings WHERE user_id = %s AND noise_type = %s", (user_id, noise_type))
     existing_record = cursor.fetchone()
 
-    if existing_record is not None:
-        # 2. 기존 데이터가 있으면 업데이트
+    if existing_record:
         query = """
             UPDATE alarm_settings
             SET alarm_distance = %s, alarm_db = %s, sensitivity_level = %s
@@ -315,50 +358,28 @@ def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivi
         """
         values = (alarm_distance, alarm_db, sensitivity_level, user_id, noise_type)
         cursor.execute(query, values)
-        conn.commit()
     else:
-        # 3. 기존 데이터가 없으면 새로운 데이터 삽입
         query = """
             INSERT INTO alarm_settings (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
             VALUES (%s, %s, %s, %s, %s)
         """
         values = (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
         cursor.execute(query, values)
-        conn.commit()
-
-    # MySQL 연결 종료
+    conn.commit()
     conn.close()
 
-
 def check_alarm_trigger(spl_peak, user_id, noise_type):
-    # 사용자 알람 기준 가져오기
     alarm_settings = get_alarm_settings(user_id, noise_type)
-    
     if alarm_settings:
-        alarm_distance, alarm_db, sensitivity_level = alarm_settings
-        
-        # 소음 강도가 알람 기준 데시벨 이상이면 알람 트리거
+        _, alarm_db, _ = alarm_settings
         if spl_peak >= alarm_db:
-            # 경고 메시지 생성
             if spl_peak >= 70:
                 alert_message = f"🚨 위험 수준 소음 감지! 최대 소음 강도는 {spl_peak} dB입니다."
-                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
-                send_alert(alert_message)
+                show_alert(alert_message, "danger")
             elif spl_peak >= 50:
                 alert_message = f"⚠️ 주의 요함! 소음 강도가 {spl_peak} dB입니다."
-                # 경고 알림 호출 (예: TTS 음성 안내, 이메일 발송 등)
-                send_alert(alert_message)
+                show_alert(alert_message, "warning")
 
-def send_alert(message):
-    # TTS 음성 안내, 이메일 발송 등의 경고 알림 구현
-    print(message)  # 여기서는 알림 메시지를 콘솔에 출력
-
-
-
-###################
-
-
-# NoiseModel_page 클래스
 class NoiseModel_page:
     def noisemodel_page(self):
         if 'user_info' not in st.session_state or 'id' not in st.session_state['user_info']:
@@ -383,6 +404,8 @@ class NoiseModel_page:
             st.session_state['email_sent'] = False
         if 'tts_queue' not in st.session_state:
             st.session_state['tts_queue'] = []
+        if 'gps_coords' not in st.session_state:
+            st.session_state['gps_coords'] = None
 
         tab1, tab2, tab3 = st.tabs(['소음 분류기', '소음 측정 기록', '알람 기준 설정'])
 
@@ -401,11 +424,11 @@ class NoiseModel_page:
                 st.subheader("2️⃣ 사용 방법 (단계별 가이드)")
                 st.write("**🎙 1. 소음 녹음 방식**")
                 st.write("""직접 소리를 녹음해 분석하는 방법입니다. 👉 녹음 버튼을 누르고, 원하는 소리를 녹음한 뒤 정지하세요.""")
-                st.write("  ①  ***배경 소음 녹음 (5초 이상 권장)***")
+                st.write("  ①  ***배경 소음 녹음 (5초 이상 권장)***")
                 st.write("- 기본적인 주변 소음을 녹음하면 분석 정확도를 높일 수 있습니다.")
-                st.write("  ② ***목표 소음 녹음***")
+                st.write("  ② ***목표 소음 녹음***")
                 st.write("- 분석하고 싶은 소리를 녹음하세요. 50cm~1m 거리에서 녹음하는 것이 가장 정확합니다.")
-                st.info("""📌 녹음할 때 유의할 점\n\n        ✔ 녹음 환경: 너무 시끄러운 곳에서는 원하는 소음이 묻힐 수 있어요.\n\n        ✔ 마이크 품질: 이어폰 마이크보다는 스마트폰 내장 마이크를 사용하는 것이 더 좋아요.""")
+                st.info("""📌 녹음할 때 유의할 점\n\n        ✔ 녹음 환경: 너무 시끄러운 곳에서는 원하는 소음이 묻힐 수 있어요.\n\n        ✔ 마이크 품질: 이어폰 마이크보다는 스마트폰 내장 마이크를 사용하는 것이 더 좋아요.""")
                 
                 st.subheader("3️⃣ 분석 결과 확인하기")
                 st.code("""
@@ -474,12 +497,31 @@ class NoiseModel_page:
                     with open(file_path, "wb") as f:
                         f.write(audio_data.getvalue())
                     st.success(f"📂 오디오 저장: {file_path}")
+                    recording_timestamp = datetime.now()
+                    st.write(f"⏰ 녹음 완료 시간: {recording_timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
 
-                    if st.button("🎙 음성 예측하기", key="predict_recording_tab1", use_container_width=True):
+                    location = st_javascript("navigator.geolocation.getCurrentPosition((pos) => pos.coords.latitude + ',' + pos.coords.longitude)")
+                    latitude, longitude, address = None, None, None
+                    if location and isinstance(location, str):
+                        lat, lon = location.split(",")
+                        latitude, longitude = float(lat), float(lon)
+                        st.session_state['gps_coords'] = (latitude, longitude)
+                        st.success(f"📍 GPS 위치: 위도 {latitude}, 경도 {longitude}")
+                    else:
+                        st.warning("❌ GPS 위치를 가져올 수 없습니다. 주소를 입력해주세요.")
+                        address = st.text_input("📍 주소를 입력하세요 (예: 서울특별시 강남구 역삼동) *필수*", "", key="recording_address")
+                        if address:
+                            latitude, longitude = geocode_address(address)
+                            if latitude and longitude:
+                                st.success(f"📍 주소 위치: {address} (위도: {latitude}, 경도: {longitude})")
+
+                    predict_button = st.button("🎙 음성 예측하기", key="predict_recording_tab1", use_container_width=True, disabled=not (latitude and longitude and address))
+                    if predict_button and latitude and longitude and address:
                         st.session_state['start_time'] = time.time()
                         st.session_state['danger_alert_time'] = None
                         st.session_state['email_sent'] = False
                         st.session_state['tts_queue'] = []
+
                         status_placeholder = st.empty()
                         with status_placeholder:
                             st.spinner("🔊 분석 중...")
@@ -487,12 +529,14 @@ class NoiseModel_page:
                         if st.session_state['background_audio']:
                             files["background"] = ("background_audio.wav", st.session_state['background_audio'].getvalue(), "audio/wav")
                         response = requests.post(FASTAPI_URL, files=files)
-                        # user_id 추가
-                        result, elapsed_time, _ = process_prediction(response, mode="recording", user_id=user_id)
+                        result, elapsed_time, audio_path = process_prediction(
+                            response, mode="recording", user_id=user_id, audio_data=audio_data,
+                            address=address, latitude=latitude, longitude=longitude, timestamp=recording_timestamp
+                        )
                         status_placeholder.write("✅ 분석 완료!")
                         
                         if result:
-                            spl_peak = display_prediction_result(result, elapsed_time)
+                            spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
                             check_alarm_trigger(spl_peak, user_id, result.get('prediction', '알 수 없음'))
                             
                             if spl_peak >= 70:
@@ -518,7 +562,7 @@ class NoiseModel_page:
                                     st.success("✅ 안전 확인됨")
                                 else:
                                     st.warning("1분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
-                                    display_timer(st.session_state['danger_alert_time'], user_id, result)
+                                    display_timer(st.session_state['danger_alert_time'], user_id, result, address, latitude, longitude)
 
             with st.expander("📁 파일 업로드 방식", expanded=True):
                 uploaded_file = st.file_uploader("📂 음성 파일 업로드", type=["wav"], key="uploader_tab1")
@@ -528,22 +572,51 @@ class NoiseModel_page:
                     with open(upload_path, "wb") as f:
                         f.write(uploaded_file.getvalue())
                     st.success(f"📂 파일 저장: {upload_path}")
-                    
-                    if st.button("🎙 음성 예측하기", key="predict_upload_tab1", use_container_width=True):
+
+                    st.subheader("📅 시간 및 위치 입력")
+                    custom_timestamp = st.text_input(
+                        "⏰ 소음 발생 시간 (예: 2025-03-23 14:30:00)", 
+                        value=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        help="소음이 발생한 시간을 입력하세요."
+                    )
+                    address = st.text_input(
+                        "📍 주소를 입력하세요 (예: 서울특별시 강남구 역삼동) *필수*", 
+                        "",
+                        help="소음이 발생한 위치를 입력하세요."
+                    )
+                    latitude, longitude = None, None
+                    if address:
+                        latitude, longitude = geocode_address(address)
+                        if latitude and longitude:
+                            st.success(f"📍 주소 위치: {address} (위도: {latitude}, 경도: {longitude})")
+                            df = pd.DataFrame({"lat": [latitude], "lon": [longitude]})
+                            st.map(df)
+
+                    predict_button = st.button("🎙 음성 예측하기", key="predict_upload_tab1", use_container_width=True, disabled=not (address and latitude))
+                    if predict_button and latitude and longitude and address:
                         st.session_state['start_time'] = time.time()
                         st.session_state['danger_alert_time'] = None
                         st.session_state['email_sent'] = False
                         st.session_state['tts_queue'] = []
+                        
+                        try:
+                            upload_timestamp = datetime.strptime(custom_timestamp, '%Y-%m-%d %H:%M:%S')
+                        except ValueError:
+                            st.error("❌ 시간 형식이 잘못되었습니다. 'YYYY-MM-DD HH:MM:SS' 형식을 사용하세요.")
+                            upload_timestamp = datetime.now()
+
                         status_placeholder = st.empty()
                         with status_placeholder:
                             st.spinner("🔊 분석 중...")
                         response = requests.post(FASTAPI_URL, files={"file": uploaded_file})
-                        # user_id 추가
-                        result, elapsed_time, _ = process_prediction(response, mode="upload", user_id=user_id)
+                        result, elapsed_time, audio_path = process_prediction(
+                            response, mode="upload", user_id=user_id, audio_data=uploaded_file,
+                            address=address, latitude=latitude, longitude=longitude, timestamp=upload_timestamp
+                        )
                         status_placeholder.write("✅ 분석 완료!")
                         
                         if result:
-                            spl_peak = display_prediction_result(result, elapsed_time)
+                            spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
                             check_alarm_trigger(spl_peak, user_id, result.get('prediction', '알 수 없음'))
                             
                             if spl_peak >= 70:
@@ -569,7 +642,7 @@ class NoiseModel_page:
                                     st.success("✅ 안전 확인됨")
                                 else:
                                     st.warning("1분 동안 안전 확인 버튼을 누르지 않으면 SOS 메일이 발송됩니다.")
-                                    display_timer(st.session_state['danger_alert_time'], user_id, result)
+                                    display_timer(st.session_state['danger_alert_time'], user_id, result, address, latitude, longitude)
 
         with tab2:
             st.subheader("소음 측정 기록")
@@ -586,6 +659,8 @@ class NoiseModel_page:
                         st.write(f"**추정 거리**: {result['추정 거리']} 미터")
                         st.write(f"**방향**: {result['방향']}")
                         st.write(f"**분석 시간**: {result['분석 시간']:.2f} 초")
+                        if result.get('주소'):
+                            st.write(f"**위치**: {result['주소']}")
 
                         feedback_key = f"feedback_{i}_{result['시간']}"
                         feedback = st.selectbox(
