@@ -18,18 +18,6 @@ class Home_page:
         self.Edit = Edit_page()
 
     def main(self, choose=None):
-        # menu = ["홈","로그인","회원가입", "마이페이지"]
-
-        # # 메뉴 선택에 따라 페이지 전환
-        # if choose == menu[0]: # 메인 홈화면
-        #     self.bar() 
-        # elif choose == menu[1]: #login
-        #     self.Login.run()
-        # elif choose == menu[2]: #회원가입
-        #     self.Signup.run()   
-        # elif choose == menu[3]:  # 마이페이지 선택
-        #     self.Edit.run()  # Mypage_page 실행
-        # 메뉴 선택에 따라 페이지 전환
         if choose == "홈":  # 메인 홈화면
             self.bar()
         elif choose == "로그인":  # 로그인
@@ -45,23 +33,20 @@ class Home_page:
         col, col1, col2, col3 = st.columns([2, 3, 1.5, 1])
         # 상단 중앙: 로고
         with col1:
-            st.image("logo.png", width=200)
-        # 상단 오른쪽: 반려묘 선택
-        # with col3:
-        #     self.petsv.printMyCat(print1=False)
+            st.image("logo2.png", width=450)
 
         st.write('#')
         # 사이드바 홈 안의 네비게이션바 설정
         nav = ["About", "소음 분류기", "통계 분석"]
         select = option_menu(None, nav,
-                             icons=['house', 'camera fill', 'book'], #사진 추후 수정 
+                             icons=['house', 'volume-up-fill', 'bar-chart-fill'], #사진 추후 수정 
                              default_index=0,
                              styles={
                                  "container": {"padding": "5!important", "background-color": "#fafafa"},
-                                 "icon": {"color": "orange", "font-size": "25px"},
+                                 "icon": {"color": "#eebb44", "font-size": "20px"},
                                  "nav-link": {"font-size": "16px", "text-align": "left", "margin": "0px",
                                               "--hover-color": "#eee"},
-                                 "nav-link-selected": {"background-color": "#02ab21"}
+                                 "nav-link-selected": {"background-color": "#009874"}
                              }, orientation="horizontal"
                              )
         
@@ -104,7 +89,10 @@ class Home_page:
 
             choose = option_menu("", menu,
                                  icons=['house', 'bi-clipboard-check', 'gear', 'person lines fill'],
-                                 default_index=0
+                                 default_index=0,
+                                 styles={
+                                        "nav-link-selected": {"background-color": "#009874"}  
+                                        }
                                  )
         # 네비게이션바에 선택된 페이지 출력
         self.main(choose)
