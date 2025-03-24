@@ -17,10 +17,10 @@ class Signup_page():
                 port=DB_CONFIG['port'], # MySQL 포트
                 #charset='utf8mb4' 
             )
-            if self.db_connection.is_connected():
-                st.success("MySQL 데이터베이스에 연결되었습니다.")
-                # st.write("MySQL 데이터베이스에 연결되었습니다.")  
-                # st.write(f"DB 연결 상태: {self.db_connection.is_connected()}")
+        #     if self.db_connection.is_connected():
+        #         st.success("MySQL 데이터베이스에 연결되었습니다.")
+        #         # st.write("MySQL 데이터베이스에 연결되었습니다.")  
+        #         # st.write(f"DB 연결 상태: {self.db_connection.is_connected()}")
         except Error as e:
             st.error(f"DB 연결 오류: {e}")
             self.db_connection = None
@@ -34,7 +34,6 @@ class Signup_page():
                 cursor.execute(query, (user_info['username'], user_info['password'], user_info['name'], user_info['age'],
                                        user_info['email'], user_info['guardian_email'], user_info['phone_number'], user_info['usage_purpose']))
                 self.db_connection.commit()
-                st.success("회원가입 정보가 저장되었습니다.")
             except Error as e:
                 st.error(f"DB에 저장하는 중 오류 발생: {e}")
             finally:
@@ -45,15 +44,29 @@ class Signup_page():
         
         # 회원가입 폼 구현
         with st.form(key='signup_form'):
-            username = st.text_input('아이디')
-            password = st.text_input('비밀번호', type='password')
-            confirm_password = st.text_input('비밀번호 확인', type='password')
-            name = st.text_input('이름')
+            username = st.text_input('아이디', placeholder="아이디를 입력하세요")
+            password = st.text_input('비밀번호', type='password', placeholder="비밀번호를 입력하세요")
+            confirm_password = st.text_input('비밀번호 확인', type='password', placeholder="비밀번호를 다시 입력하세요")
+            name = st.text_input('이름', placeholder="이름을 입력하세요")
             age_options = ["0-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71+"]
             age = st.selectbox('나이', age_options)
-            email = st.text_input('이메일')
-            guardian_email = st.text_input('보호자 이메일')
-            phone_number = st.text_input('전화번호')
+                            
+            options=['@gmail.com', '@naver.com', '@daum.net', '@nate.com']
+            col1, col2 = st.columns(2)
+            with col1:
+                email = st.text_input('이메일', placeholder="이메일을 입력하세요")
+            with col2:
+                types = st.selectbox('도메인', options, key='email_domain')
+            email = email + types
+        
+            col1, col2 = st.columns(2)
+            with col1:
+                guardian_email = st.text_input('보호자 이메일', placeholder="보호자 이메일을 입력하세요")  
+            with col2:
+                types2 = st.selectbox('도메인',options, key='guardian_email_domain')
+            guardian_email = guardian_email + types2 
+                        
+            phone_number = st.text_input('전화번호', placeholder="전화번호를 입력하세요")
             usage_purpose = st.selectbox('사용 목적', ['노이즈캔슬링 보조 장치', '청각 보조 장치', '기타'])
 
             signup_button = st.form_submit_button('가입하기')
@@ -96,11 +109,9 @@ class Signup_page():
                 'phone_number': phone_number,
                 'usage_purpose': usage_purpose
             }
-            st.write(st.session_state.user_info)  
             
             # DB에 저장
             user_info = st.session_state.user_info
-            st.write(user_info)
             self.connect_db()  
             self.save_to_db(user_info)  
             
