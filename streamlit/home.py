@@ -91,7 +91,7 @@ class Home_page:
             if 'user_info' in st.session_state:
                 name = st.session_state.user_info['name']
                 # 사용자 이름을 사이드바 상단에 표시
-                st.markdown(f"<p style='text-align: center; font-weight: bold;'>😊 안녕하세요, {name}님</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='text-align: center; font-weight: bold;'> 안녕하세요, {name}님</p>", unsafe_allow_html=True)
                 st.write("---")  # 구분선 추가
 
             choose = option_menu("", menu,
