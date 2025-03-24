@@ -343,10 +343,14 @@ def get_alarm_settings(user_id, noise_type):
         FROM alarm_settings
         WHERE user_id = %s AND noise_type = %s
     """
+    
     cursor.execute(query, (user_id, noise_type))
     result = cursor.fetchone()
+    
+    
     conn.close()
     return result
+
 
 # 알람 설정 저장
 def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivity_level):
@@ -376,16 +380,26 @@ def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivi
 # 알림 트리거 체크
 def check_alarm_trigger(spl_peak, user_id, noise_type):
     alarm_settings = get_alarm_settings(user_id, noise_type)
+    st.write("알람 설정 값:", alarm_settings)
+    
+    if alarm_settings is None:
+        st.error("알람 설정이 없습니다. 알람 설정을 확인해주세요.")
+        return  # 알람 설정이 없으면 더 이상 진행하지 않음
+
     if alarm_settings:
         _, alarm_db, _ = alarm_settings
+        warning_threshold = alarm_db * 0.8
         if spl_peak >= alarm_db:
-            if spl_peak >= 70:
+            if spl_peak >= alarm_db:
                 alert_message = f"🚨 위험 수준 소음 감지! 최대 소음 강도는 {spl_peak} dB입니다."
                 show_alert(alert_message, "danger")
-            elif spl_peak >= 50:
+            elif spl_peak >= warning_threshold:
                 alert_message = f"⚠️ 주의 요함! 소음 강도가 {spl_peak} dB입니다."
                 show_alert(alert_message, "warning")
-
+    else:
+            st.error("알람 설정을 가져오는 데 실패했습니다. 사용자 ID 또는 소음 유형이 잘못되었을 수 있습니다.")
+            
+            
 # DB에서 사용자 소음 기록 가져오기
 def get_classification_results(user_id, start_date=None, end_date=None, noise_type=None, page=1, per_page=10):
     conn = mysql.connector.connect(**DB_CONFIG)
@@ -459,6 +473,9 @@ def save_feedback(result_id, user_id, noise_type, spl_peak, feedback, wrong_nois
         st.error(f"❌ 피드백 저장 오류: {str(e)}")
     finally:
         conn.close()
+
+
+
 
 class NoiseModel_page:
     def noisemodel_page(self):
@@ -706,22 +723,26 @@ class NoiseModel_page:
                         
                         if result:
                             spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
-                            check_alarm_trigger(spl_peak, user_id, result.get('prediction', '알 수 없음'))
                             
-                            if spl_peak >= 70:
+                            alarm_settings = get_alarm_settings(user_id, result.get('prediction', '알 수 없음'))
+                            
+                            if alarm_settings:
+                                alarm_db = alarm_settings[1]  
+                                                        
+                            if spl_peak >= alarm_db:
                                 show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
                                 if st.session_state['tts_enabled']:
                                     tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
-                            elif spl_peak >= 50:
+                            elif spl_peak >= alarm_db:
                                 show_alert("주의 요함: 지속적 노출 위험", "warning")
                                 if st.session_state['tts_enabled']:
                                     tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
-                            
+                         
                             play_tts_queue()
 
-                            if spl_peak >= 70 and st.session_state['sos_email_enabled']:
+                            if spl_peak >= alarm_db and st.session_state['sos_email_enabled']:
                                 if not st.session_state['danger_alert_time']:
                                     st.session_state['danger_alert_time'] = time.time()
                                 
@@ -825,20 +846,20 @@ class NoiseModel_page:
             st.subheader("알람 기준 설정")
             
             DEFAULT_ALARM_DISTANCE = {
-                "차량 경적": 10,
-                "이륜차 경적": 10,
-                "차량 사이렌": 20,
-                "차량 주행음": 5,
-                "이륜차 주행음": 5,
-                "기타 소음": 10
+                "차량경적": 10,
+                "이륜차경적": 10,
+                "차량사이렌": 20,
+                "차량주행음": 5,
+                "이륜차주행음": 5,
+                "기타소음": 10
             }
             DEFAULT_ALARM_DB = {
-                "차량 경적": 100,
-                "이륜차 경적": 100,
-                "차량 사이렌": 110,
-                "차량 주행음": 90,
-                "이륜차 주행음": 90,
-                "기타 소음": 85
+                "차량경적": 100,
+                "이륜차경적": 100,
+                "차량사이렌": 110,
+                "차량주행음": 90,
+                "이륜차주행음": 90,
+                "기타소음": 85
             }
             SENSITIVITY_MULTIPLIER = {
                 "약(🔵)": {"distance": 0.5, "db": -10},
