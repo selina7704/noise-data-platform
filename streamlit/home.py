@@ -7,6 +7,13 @@ from home_noisemodel import NoiseModel_page
 from home_statistics import Statistics_page
 from mypage_edit import Edit_page
 
+# 페이지 설정
+st.set_page_config(
+    page_title="담았소",  # 앱의 제목
+    page_icon="🔊",  # 앱 아이콘 (이모지나 이미지 파일 사용 가능)
+    layout="wide",  # 페이지 레이아웃을 'wide'로 설정
+    initial_sidebar_state="expanded"  # 사이드바를 확장된 상태로 시작
+)
 
 class Home_page:
     def __init__(self):
@@ -77,7 +84,7 @@ class Home_page:
         else:
             menu = ["홈", "로그인", "회원가입", "마이페이지"]
             icons = ['house', 'bi-clipboard-check', 'gear', 'person lines fill']
-
+        
         # 사이드바
         with st.sidebar:
             # 세션 상태에서 사용자 이름 가져오기
