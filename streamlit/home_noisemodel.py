@@ -350,7 +350,7 @@ def get_alarm_settings(user_id, noise_type):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
     query = """
-        SELECT alarm_distance, alarm_db, sensitivity_level
+        SELECT alarm_db, sensitivity_level
         FROM alarm_settings
         WHERE user_id = %s AND noise_type = %s
     """
@@ -364,7 +364,7 @@ def get_alarm_settings(user_id, noise_type):
 
 
 # 알람 설정 저장
-def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivity_level):
+def save_alarm_settings(user_id, noise_type, alarm_db, sensitivity_level):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
     cursor.execute("SELECT user_id FROM alarm_settings WHERE user_id = %s AND noise_type = %s", (user_id, noise_type))
@@ -373,17 +373,17 @@ def save_alarm_settings(user_id, noise_type, alarm_distance, alarm_db, sensitivi
     if existing_record:
         query = """
             UPDATE alarm_settings
-            SET alarm_distance = %s, alarm_db = %s, sensitivity_level = %s
+            SET alarm_db = %s, sensitivity_level = %s
             WHERE user_id = %s AND noise_type = %s
         """
-        values = (alarm_distance, alarm_db, sensitivity_level, user_id, noise_type)
+        values = (alarm_db, sensitivity_level, user_id, noise_type)
         cursor.execute(query, values)
     else:
         query = """
-            INSERT INTO alarm_settings (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
+            INSERT INTO alarm_settings (user_id, noise_type, alarm_db, sensitivity_level)
             VALUES (%s, %s, %s, %s, %s)
         """
-        values = (user_id, noise_type, alarm_distance, alarm_db, sensitivity_level)
+        values = (user_id, noise_type, alarm_db, sensitivity_level)
         cursor.execute(query, values)
     conn.commit()
     conn.close()
@@ -877,14 +877,6 @@ class NoiseModel_page:
         with tab3:
             st.subheader("알람 기준 설정")
             
-            DEFAULT_ALARM_DISTANCE = {
-                "차량경적": 10,
-                "이륜차경적": 10,
-                "차량사이렌": 20,
-                "차량주행음": 5,
-                "이륜차주행음": 5,
-                "기타소음": 10
-            }
             DEFAULT_ALARM_DB = {
                 "차량경적": 100,
                 "이륜차경적": 100,
@@ -894,37 +886,32 @@ class NoiseModel_page:
                 "기타소음": 85
             }
             SENSITIVITY_MULTIPLIER = {
-                "약(🔵)": {"distance": 0.5, "db": -10},
-                "중(🟡)": {"distance": 1.0, "db": 0},
-                "강(🔴)": {"distance": 1.5, "db": 10}
+                "약(🔵)": {"db": -10},
+                "중(🟡)": {"db": 0},
+                "강(🔴)": {"db": 10}
             }
 
             selected_sensitivity = st.radio("📢 감도 선택", ["약(🔵)", "중(🟡)", "강(🔴)"], index=1)
+            # 알람 데시벨 조정
             adjusted_alarm_settings = {
                 noise_type: {
-                    "거리": int(DEFAULT_ALARM_DISTANCE[noise_type] * SENSITIVITY_MULTIPLIER[selected_sensitivity]["distance"]),
                     "데시벨": DEFAULT_ALARM_DB[noise_type] + SENSITIVITY_MULTIPLIER[selected_sensitivity]["db"]
                 }
-                for noise_type in DEFAULT_ALARM_DISTANCE
+                for noise_type in DEFAULT_ALARM_DB
             }
 
             st.subheader("📌 소음 유형별 알람 기준 조정")
-            st.write("감도를 선택하면 거리 & 데시벨 값이 자동 설정됩니다. 필요하면 개별적으로 조정하세요.")
+            st.write("감도를 선택하면 데시벨 값이 자동 설정됩니다. 필요하면 개별적으로 조정하세요.")
             user_alarm_settings = {}
             for noise_type, values in adjusted_alarm_settings.items():
-                col1, col2 = st.columns(2)
-                with col1:
-                    user_distance = st.slider(f"📏 {noise_type} (m)", 1, 25, values["거리"], key=f"{noise_type}_distance")
-                with col2:
-                    user_db = st.slider(f"🔊 {noise_type} (dB)", 50, 120, values["데시벨"], key=f"{noise_type}_db")
-                user_alarm_settings[noise_type] = {"거리": user_distance, "데시벨": user_db}
+                user_db = st.slider(f"🔊 {noise_type} (dB)", 50, 120, values["데시벨"], key=f"{noise_type}_db")
+                user_alarm_settings[noise_type] = {"데시벨": user_db}
 
             if st.button("📌 설정 저장"):
                 for noise_type, settings in user_alarm_settings.items():
                     save_alarm_settings(
                         user_id=user_id,
                         noise_type=noise_type,
-                        alarm_distance=settings["거리"],
                         alarm_db=settings["데시벨"],
                         sensitivity_level=selected_sensitivity
                     )
