@@ -92,8 +92,19 @@ def save_to_classification_results(user_id, result, latitude, longitude, audio_p
     else:
         estimated_distance = None
 
-    alarm_trigger = datetime.now() if result.get('spl_peak', 0) >= 50 else None
-    alarm_triggered = 1 if result.get('spl_peak', 0) >= 70 else 0
+    # 사용자 설정값 가져오기
+    predicted_noise_type = result.get('prediction', '알 수 없음')
+    alarm_settings = get_alarm_settings(user_id, predicted_noise_type)
+
+    # `alarm_db` 설정값이 없으면 기본값(70dB) 사용
+    if alarm_settings:
+        _, alarm_db, _ = alarm_settings
+    else:
+        alarm_db = 70  # 기본값
+        st.warning(f"🚨 `{predicted_noise_type}`에 대한 사용자 설정값이 없음. 기본값 {alarm_db}dB 사용")
+
+    alarm_trigger = datetime.now() if result.get('spl_peak', 0) >= alarm_db else None
+    alarm_triggered = 1 if result.get('spl_peak', 0) >= alarm_db else 0
     values = (
         user_id,
         result.get('prediction', '알 수 없음'),
@@ -212,11 +223,11 @@ def show_alert(message, level="warning", play_tts=True):
 # 소음 게이지 표시
 def display_noise_gauge(label, value, max_value=120):
     if value <= 50:
-        color = "#3498db"
+        color = "#009874"
     elif value <= 70:
-        color = "#ffcc00"
+        color = "#009874"
     else:
-        color = "#ff4d4d"
+        color = "#009874"
     
     st.write(f"{label}: {value} dB")
     st.markdown(
@@ -641,24 +652,44 @@ class NoiseModel_page:
                         )
                         status_placeholder.write("✅ 분석 완료!")
                         
+                        # if result:
+                        #     spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
+                        #     check_alarm_trigger(spl_peak, user_id, result.get('prediction', '알 수 없음'))
+                            
+                        #     if spl_peak >= 70:
+                        #         show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
+                        #         if st.session_state['tts_enabled']:
+                        #             tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                        #             st.session_state['tts_queue'].append(tts_text)
+                        #     elif spl_peak >= 50:
+                        #         show_alert("주의 요함: 지속적 노출 위험", "warning")
+                        #         if st.session_state['tts_enabled']:
+                        #             tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                        #             st.session_state['tts_queue'].append(tts_text)
+
                         if result:
                             spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
-                            check_alarm_trigger(spl_peak, user_id, result.get('prediction', '알 수 없음'))
                             
-                            if spl_peak >= 70:
+                            alarm_settings = get_alarm_settings(user_id, result.get('prediction', '알 수 없음'))
+                            
+                            if alarm_settings:
+                                alarm_db = alarm_settings[1]  
+                            warning_threshold = alarm_db * 0.8
+
+                            if spl_peak >= alarm_db:
                                 show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
                                 if st.session_state['tts_enabled']:
                                     tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
-                            elif spl_peak >= 50:
+                            elif spl_peak >= warning_threshold: 
                                 show_alert("주의 요함: 지속적 노출 위험", "warning")
                                 if st.session_state['tts_enabled']:
                                     tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
-                            
+
                             play_tts_queue()
 
-                            if spl_peak >= 70 and st.session_state['sos_email_enabled']:
+                            if spl_peak >= alarm_db and st.session_state['sos_email_enabled']:
                                 if not st.session_state['danger_alert_time']:
                                     st.session_state['danger_alert_time'] = time.time()
                                 
@@ -728,13 +759,14 @@ class NoiseModel_page:
                             
                             if alarm_settings:
                                 alarm_db = alarm_settings[1]  
-                                                        
+                            warning_threshold = alarm_db * 0.8
+
                             if spl_peak >= alarm_db:
                                 show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
                                 if st.session_state['tts_enabled']:
                                     tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
-                            elif spl_peak >= alarm_db:
+                            elif spl_peak >= warning_threshold:
                                 show_alert("주의 요함: 지속적 노출 위험", "warning")
                                 if st.session_state['tts_enabled']:
                                     tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
