@@ -98,7 +98,7 @@ def save_to_classification_results(user_id, result, latitude, longitude, audio_p
 
     # `alarm_db` 설정값이 없으면 기본값(70dB) 사용
     if alarm_settings:
-        _, alarm_db, _ = alarm_settings
+        alarm_db, sensitivity_level = alarm_settings
     else:
         alarm_db = 70  # 기본값
         st.warning(f"🚨 `{predicted_noise_type}`에 대한 사용자 설정값이 없음. 기본값 {alarm_db}dB 사용")
@@ -398,7 +398,7 @@ def check_alarm_trigger(spl_peak, user_id, noise_type):
         return  # 알람 설정이 없으면 더 이상 진행하지 않음
 
     if alarm_settings:
-        _, alarm_db, _ = alarm_settings
+        alarm_db, sensitivity_level = alarm_settings
         warning_threshold = alarm_db * 0.8
         if spl_peak >= alarm_db:
             if spl_peak >= alarm_db:
@@ -673,7 +673,7 @@ class NoiseModel_page:
                             alarm_settings = get_alarm_settings(user_id, result.get('prediction', '알 수 없음'))
                             
                             if alarm_settings:
-                                alarm_db = alarm_settings[1]  
+                                alarm_db = alarm_settings[0]  
                             warning_threshold = alarm_db * 0.8
 
                             if spl_peak >= alarm_db:
@@ -758,7 +758,8 @@ class NoiseModel_page:
                             alarm_settings = get_alarm_settings(user_id, result.get('prediction', '알 수 없음'))
                             
                             if alarm_settings:
-                                alarm_db = alarm_settings[1]  
+                                alarm_db = alarm_settings[0] 
+                            
                             warning_threshold = alarm_db * 0.8
 
                             if spl_peak >= alarm_db:
