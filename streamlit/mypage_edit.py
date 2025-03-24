@@ -138,5 +138,5 @@ class Edit_page:
                 st.error("올바른 확인 문구를 입력해주세요.")
 
 
-        # 디버깅을 위한 세션 상태 출력
-        st.write("Current session state:", st.session_state)
+        # # 디버깅을 위한 세션 상태 출력
+        # st.write("Current session state:", st.session_state)
