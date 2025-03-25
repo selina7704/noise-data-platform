@@ -137,9 +137,9 @@ class Statistics_page:
 
     # 통계 페이지의 메인 함수 (웹 UI 구성)
     def statistics_page(self):
-        if 'user_info' not in st.session_state or 'id' not in st.session_state['user_info']:
-            st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
-            return
+        # if 'user_info' not in st.session_state or 'id' not in st.session_state['user_info']:
+        #     st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
+        #     return
 
         user_id = st.session_state['user_info']['id']
 
