@@ -3,6 +3,63 @@ import mysql.connector
 from mysql.connector import Error
 from config import DB_CONFIG
 
+
+def set_default_alarm_settings(user_id):
+    DEFAULT_ALARM_DB = {
+        "차량경적": 100,
+        "이륜차경적": 100,
+        "차량사이렌": 110,
+        "차량주행음": 90,
+        "이륜차주행음": 90,
+        "기타소음": 85
+    }
+    
+    selected_sensitivity = "중(🟡)"  # 기본 감도 "중(🟡)"로 설정
+    
+    # 기본 데시벨 값 적용 (감도에 따라 값이 조정됨)
+    adjusted_alarm_settings = {
+        noise_type: {
+            "데시벨": DEFAULT_ALARM_DB[noise_type] + {"약(🔵)": -10, "중(🟡)": 0, "강(🔴)": 10}[selected_sensitivity]
+        }
+        for noise_type in DEFAULT_ALARM_DB
+    }
+    
+    # 기본 알람 설정 DB 저장 (save_alarm_settings 함수 사용)
+    for noise_type, values in adjusted_alarm_settings.items():
+        save_alarm_settings(
+            user_id=user_id,
+            noise_type=noise_type,
+            alarm_db=values["데시벨"],
+            sensitivity_level=selected_sensitivity
+        )
+
+# 알람 설정 저장 함수
+def save_alarm_settings(user_id, noise_type, alarm_db, sensitivity_level):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+    # 이미 존재하는지 확인
+    cursor.execute("SELECT user_id FROM alarm_settings WHERE user_id = %s AND noise_type = %s", (user_id, noise_type))
+    existing_record = cursor.fetchone()
+
+    if existing_record:
+        query = """
+            UPDATE alarm_settings
+            SET alarm_db = %s, sensitivity_level = %s
+            WHERE user_id = %s AND noise_type = %s
+        """
+        values = (alarm_db, sensitivity_level, user_id, noise_type)
+        cursor.execute(query, values)
+    else:
+        query = """
+            INSERT INTO alarm_settings (user_id, noise_type, alarm_db, sensitivity_level)
+            VALUES (%s, %s, %s, %s)
+        """
+        values = (user_id, noise_type, alarm_db, sensitivity_level)
+        cursor.execute(query, values)
+    conn.commit()
+    conn.close()
+
+
 class Signup_page():
     def __init__(self):
         self.db_connection = None
@@ -17,10 +74,7 @@ class Signup_page():
                 port=DB_CONFIG['port'], # MySQL 포트
                 #charset='utf8mb4' 
             )
-        #     if self.db_connection.is_connected():
-        #         st.success("MySQL 데이터베이스에 연결되었습니다.")
-        #         # st.write("MySQL 데이터베이스에 연결되었습니다.")  
-        #         # st.write(f"DB 연결 상태: {self.db_connection.is_connected()}")
+            
         except Error as e:
             st.error(f"DB 연결 오류: {e}")
             self.db_connection = None
@@ -29,15 +83,27 @@ class Signup_page():
         if self.db_connection:
             cursor = self.db_connection.cursor()
             query = """INSERT INTO users (username, password, name, age, email, guardian_email, phone_number, usage_purpose)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             try:
-                cursor.execute(query, (user_info['username'], user_info['password'], user_info['name'], user_info['age'],
-                                       user_info['email'], user_info['guardian_email'], user_info['phone_number'], user_info['usage_purpose']))
+                cursor.execute(query, (
+                    user_info['username'], 
+                    user_info['password'], 
+                    user_info['name'], 
+                    user_info['age'],
+                    user_info['email'], 
+                    user_info['guardian_email'], 
+                    user_info['phone_number'], 
+                    user_info['usage_purpose']
+                ))
                 self.db_connection.commit()
+                # 새로 생성된 사용자 ID를 가져와서 user_info에 저장
+                new_id = cursor.lastrowid
+
+                user_info['id'] = new_id
             except Error as e:
                 st.error(f"DB에 저장하는 중 오류 발생: {e}")
             finally:
-                cursor.close() 
+                cursor.close()
 
     def run(self):        
         st.header("📝 회원가입")
@@ -110,11 +176,20 @@ class Signup_page():
                 'usage_purpose': usage_purpose
             }
             
-            # DB에 저장
             user_info = st.session_state.user_info
             self.connect_db()  
             self.save_to_db(user_info)  
+            st.session_state.user_info = user_info
             
+            # user_info에 'id' 키가 있는지 확인
+            if 'id' in user_info:
+                st.session_state.user_id = user_info['id']
+                # 기본 알람 설정 자동 저장 (기본 감도 '중(🟡)'으로 저장)
+                set_default_alarm_settings(user_info['id'])
+            else:
+                st.error("사용자 ID가 저장되지 않았습니다.")
+                    
+                    
             # 자동 로그인 처리
             st.success(f'{name}님, 회원가입을 축하합니다!')
             st.session_state.logged_in = True
