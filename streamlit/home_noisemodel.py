@@ -13,10 +13,6 @@ from streamlit_javascript import st_javascript
 import config
 from config import DB_CONFIG
 
-# 이메일 발송에 사용할 sender 정보
-sender_email = config.SENDER_EMAIL
-sender_password = config.SENDER_PASSWORD
-
 # 파일 저장 경로 설정
 upload_folder = "uploads"
 audio_save_path = "recorded_audio"
