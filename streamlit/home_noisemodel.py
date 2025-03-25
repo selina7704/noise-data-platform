@@ -310,8 +310,8 @@ def process_prediction(response, mode, user_id, audio_data=None, address=None, l
         
         st.session_state[f'{mode}_result'] = result
         st.session_state[f'{mode}_elapsed_time'] = elapsed_time
-        
-        audio_path = os.path.join(audio_save_path, "recorded_audio.wav") if mode == "recording" else os.path.join(upload_folder, "uploaded_audio.wav")
+        timestamp_str = timestamp.strftime('%Y%m%d_%H%M%S') if timestamp else datetime.now().strftime('%Y%m%d_%H%M%S')
+        audio_path = os.path.join(audio_save_path, f"{user_id}_{timestamp_str}.wav") if mode == "recording" else os.path.join(upload_folder, f"{user_id}_{timestamp_str}.wav")
         if audio_data:
             with open(audio_path, "wb") as f:
                 f.write(audio_data.getvalue() if mode == "recording" else audio_data.read())
@@ -324,6 +324,9 @@ def process_prediction(response, mode, user_id, audio_data=None, address=None, l
     else:
         st.error(f"❌ FastAPI 요청 실패: 상태 코드 {response.status_code}")
         return None, None, None
+
+
+
 
 # 버튼 스타일링
 st.markdown("""
@@ -381,7 +384,7 @@ def save_alarm_settings(user_id, noise_type, alarm_db, sensitivity_level):
     else:
         query = """
             INSERT INTO alarm_settings (user_id, noise_type, alarm_db, sensitivity_level)
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
         """
         values = (user_id, noise_type, alarm_db, sensitivity_level)
         cursor.execute(query, values)
