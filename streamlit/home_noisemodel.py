@@ -330,6 +330,8 @@ def process_prediction(response, mode, user_id, audio_data=None, address=None, l
         st.error(f"❌ FastAPI 요청 실패: 상태 코드 {response.status_code}")
         return None, None, None
 
+
+
 # 버튼 스타일링
 st.markdown("""
     <style>
@@ -524,7 +526,7 @@ class NoiseModel_page:
         with tab1:
             st.markdown("### 소음 분류기 사용 방법", unsafe_allow_html=True)
             st.write("이곳에서 소음을 녹음하거나 파일을 업로드해 분석할 수 있습니다.")
-            st.write("분석 결과로 소음 유형과 강도를 확인할 수 있어요!")
+            st.write("분석 결과로 소음 유형, 강도과 방향을 확인할 수 있어요!")
             st.write("""🚗 도로에서 나는 소음을 확인하고 싶나요? \n
                  🔔 경적, 사이렌, 주행음, 기타 소음을 구분해 분석해 줍니다!""")
             with st.expander("📖 소음 분류기 사용 매뉴얼 자세히 보기"):
@@ -618,7 +620,7 @@ class NoiseModel_page:
                     file_path = os.path.join(audio_save_path, "recorded_audio.wav")
                     with open(file_path, "wb") as f:
                         f.write(audio_data.getvalue())
-                    st.success(f"📂 오디오 저장: {file_path}")
+                    #st.success(f"📂 오디오 저장: {file_path}")
                     recording_timestamp = datetime.now()
                     st.write(f"⏰ 녹음 완료 시간: {recording_timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -631,7 +633,7 @@ class NoiseModel_page:
                         st.success(f"📍 GPS 위치: 위도 {latitude}, 경도 {longitude}")
                     else:
                         st.warning("❌ GPS 위치를 가져올 수 없습니다. 주소를 입력해주세요.")
-                        address = st.text_input("📍 주소를 입력하세요 (예: 서울특별시 강남구 역삼동) *필수*", "", key="recording_address")
+                        address = st.text_input("📍 주소를 입력하세요 (예: 서울특별시 강남구 역삼동) *필수*", "", help="소음이 발생한 위치를 입력 후 엔터키를 눌러주세요.", key="recording_address")
                         if address:
                             latitude, longitude = geocode_address(address)
                             if latitude and longitude:
@@ -707,13 +709,13 @@ class NoiseModel_page:
                                     display_timer(st.session_state['danger_alert_time'], user_id, result, address, latitude, longitude)
 
             with st.expander("📁 파일 업로드 방식", expanded=True):
-                uploaded_file = st.file_uploader("📂 음성 파일 업로드", type=["wav"], key="uploader_tab1")
+                uploaded_file = st.file_uploader("", type=["wav"], key="uploader_tab1")
                 if uploaded_file:
                     st.audio(uploaded_file, format='audio/wav')
                     upload_path = os.path.join(upload_folder, uploaded_file.name)
                     with open(upload_path, "wb") as f:
                         f.write(uploaded_file.getvalue())
-                    st.success(f"📂 파일 저장: {upload_path}")
+                    #st.success(f"📂 파일 저장: {upload_path}")
 
                     st.subheader("📅 시간 및 위치 입력")
                     custom_timestamp = st.text_input(
@@ -724,7 +726,7 @@ class NoiseModel_page:
                     address = st.text_input(
                         "📍 주소를 입력하세요 (예: 서울특별시 강남구 역삼동) *필수*", 
                         "",
-                        help="소음이 발생한 위치를 입력하세요."
+                        help="소음이 발생한 위치를 입력 후 엔터키를 눌러주세요."
                     )
                     latitude, longitude = None, None
                     if address:
@@ -897,7 +899,10 @@ class NoiseModel_page:
                 "강(🔴)": {"db": 10}
             }
 
+            #selected_sensitivity = st.radio("📢 감도 선택", ["약(🔵)", help="작은 소리에도 알람을 제공해요", "중(🟡)", help="일반적인 안전 기준이에요", "강(🔴)", help="큰 소리에만 알람을 제공해요"], index=1)        
             selected_sensitivity = st.radio("📢 감도 선택", ["약(🔵)", "중(🟡)", "강(🔴)"], index=1)
+            st.caption("🔵 작은 소리에도 알람을 제공해요, 🟡 일반적인 안전 기준이에요, 🔴 큰 소리에만 알람을 제공해요")
+
             # 알람 데시벨 조정
             adjusted_alarm_settings = {
                 noise_type: {

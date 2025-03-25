@@ -109,9 +109,9 @@ class Edit_page:
                 if self.update_user_info(updated_user_info):
                     st.session_state["user_info"] = updated_user_info
                     st.success("회원 정보가 성공적으로 수정되었습니다! 😊")
-                    with st.expander("수정된 정보 보기"):
-                        for key, value in updated_user_info.items():
-                            st.write(f"**{key}**: {value}")
+                    # with st.expander("수정된 정보 보기"):
+                    #     for key, value in updated_user_info.items():
+                    #         st.write(f"**{key}**: {value}")
                 else:
                     st.error("회원 정보 수정 중 오류가 발생했습니다.")
             else:

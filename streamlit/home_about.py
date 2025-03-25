@@ -370,13 +370,11 @@ class About_page:
                         <div class="hover-content">
                             <p><strong>🩵 데이터 마술사 (ESFJ)</strong></p>
                             <p>AI 모델링과 웹 개발을 자유자재로!<br>따뜻한 ESFJ 잇몸으로 팀을 감싸줍니다!</p>
-                            <p>🔹 프로젝트 역할: 데이터 엔지니어 / AI 엔지니어 / 웹 개발자</p>
                             <ul class="no-bullets">
-                                <li>🔹 담당 업무</li>
-                                <li> - 개발 환경 구축 및 관리</li>
-                                <li> - CNN 모델링</li>
-                                <li> - 이상탐지 기능 제작 (Autoencoder)</li>
-                                <li> - 웹 페이지 구현 (로그인, 마이페이지, 알람 기준 설정)</li>
+                                <li>🔹 프로젝트 역할</li>
+                                <li> - 데이터 엔지니어</li>
+                                <li> - AI 엔지니어</li>
+                                <li> - 웹 개발자</li>
                             </ul>
                             <a href="https://github.com/selina7704" target="_blank" class="github-btn">
                                 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 노은비의 GitHub
@@ -390,14 +388,12 @@ class About_page:
                         <div class="hover-content">
                             <p><strong>🩵 잇몸의 두뇌 (INTJ)</strong></p>
                             <p>데이터 분석, AI, 웹 개발, 로고 디자인, 품질관리까지!<br>INTJ의 전략으로 모든 걸 완벽히!</p>
-                            <p>🔹 프로젝트 역할: 데이터 분석가 / AI 엔지니어 / 웹 개발자 / 품질 관리자</p>
                             <ul class="no-bullets">
-                                <li>🔹 담당 업무</li>
-                                <li> - 데이터 전처리 및 데이터 품질관리</li>
-                                <li> - CapsNet, RESNET 모델링 및 모델 테스트(9종), 이상탐지 기능 제작(OOD 탐지 코드)</li>
-                                <li> - 웹 페이지 구현(모델 및 데이터셋 소개, 개발진 소개, 소음분류기, 소음측정기록, 통계분석)</li>
-                                <li> - 프로젝트 로고 및 팀 캐릭터 디자인</li>
-                                <li> - 회의록 및 산출물 관리리(Notion)</li>
+                                <li>🔹 프로젝트 역할</li>
+                                <li> - 데이터 분석가</li>
+                                <li> - AI 엔지니어</li>
+                                <li> - 로고 디자인</li>
+                                <li> - 품질관리</li>
                             </ul>
                             <a href="https://github.com/JiwonDu" target="_blank" class="github-btn">
                                 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 두지원의 GitHub
@@ -411,12 +407,11 @@ class About_page:
                         <div class="hover-content">
                             <p><strong>🩵 잇몸 리더 (ENTP)</strong></p>
                             <p>데이터와 AI로 팀을 이끄는 ENTP!<br>웹 개발까지 가능한 만능 잇몸 파워!</p>
-                            <p>🔹 프로젝트 역할: 데이터 엔지니어 / AI 엔지니어 / 웹 개발자 </p>
                             <ul class="no-bullets">
-                                <li>🔹 담당 업무</li>
-                                <li> - 개발 환경 구축 및 관리</li>
-                                <li> - Lightgbm 모델링</li>
-                                <li> - 웹 페이지 구현 (로그인, 마이페이지, 알람 기준 설정)</li>
+                                <li>🔹 프로젝트 역할</li>
+                                <li> - 데이터 엔지니어</li>
+                                <li> - AI 엔지니어</li>
+                                <li> - 웹 개발자</li>
                             </ul>
                             <a href="https://github.com/EunSeo35" target="_blank" class="github-btn">
                                 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 박은서의 GitHub
@@ -430,13 +425,12 @@ class About_page:
                         <div class="hover-content">
                             <p><strong>🩵 잇몸의 에너지 (ENFP)</strong></p>
                             <p>데이터 분석과 발표로 팀을 북돋는 ENFP!<br>일정도 잇몸처럼 튼튼하게 관리!</p>
-                            <p>🔹 프로젝트 역할: 데이터 분석가 / 웹 개발자 / 일정 관리자 / 발표자</p>
                             <ul class="no-bullets">
-                                <li>🔹 담당 업무</li>
-                                <li> - 탐색적 데이터 분석 및 HDFS 데이터 적재</li>
-                                <li> - 소음 방향, 거리, 데시벨 판정 코드 제작</li>
-                                <li> - 프로젝트 일정 관리 (WBS)</li>
-                                <li> - 발표자료 제작 및 발표</li>
+                                <li>🔹 프로젝트 역할</li>
+                                <li> - 데이터 분석가</li>
+                                <li> - 웹 개발자</li>
+                                <li> - 일정 관리자</li>
+                                <li> - 발표자</li>
                             </ul>
                             <a href="https://github.com/Eomcoco" target="_blank" class="github-btn">
                                 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 엄기영의 GitHub
@@ -458,24 +452,25 @@ class About_page:
                     "- *DA:MASSO 프로젝트*\n"
                     "  - ✔️ 도시 소음 문제 해결\n✔️ AI 기반 소음 분석\n✔️ 데이터 기반 웹 서비스 제안\n"
                     "  - 목표: 소음을 분석해 안전한 환경 제공\n"
-                    "  - 기술 스택: Python, Streamlit, FastAPI\n"
+                    "  - 기술 스택: Python, MySQL, HDFS, Streamlit, FastAPI, Spark, AWS EC2, Git 등\n"
                     "  - 기대 효과: 소음 모니터링으로 사용자 안전 강화"
                 )
                 st.subheader("향후 프로젝트")
                 st.markdown(
                     "- To be continued"
+                    "- 불러주시면 어디든지 갑니다!!"
                 )
 
             # 4. 성장 과정 (Expander)
             with st.expander("📈 잇몸단의 성장"):
                 st.write(
-                    "우리는 **Multicampus 데이터 엔지니어 부트캠프**에서 처음 만났어요."
+                    "우리는 Multicampus 데이터 엔지니어 부트캠프에서 처음 만났어요."
                 )
                 st.write(
-                    "프로젝트를 시작하며 **우리에게 꼭 필요한 문제**들을 찾는 것부터 시작했어요."
+                    "프로젝트를 시작하며 우리에게 꼭 필요한 문제들을 찾는 것부터 시작했어요."
                 )
                 st.write(
-                    "점점 더 큰 문제에 **도전하고, 성공**을 만들어가고 있습니다! 💡"
+                    "점점 더 큰 문제에 도전하고, 성공을 만들어가고 있습니다! 💡"
                 )
                 st.markdown("**🔹비하인드 스토리**: 잇몸단은 팀원의 부재를 극복하고 '완벽주의가 아닌 완료주의'라는 다짐으로 시작됐어요.")
                 st.markdown("**🔹위기를 극복한 사례**: DB 해킹 사태를 빠른 DB 재건으로 해결! 팀워크가 빛난 순간이었죠.")
