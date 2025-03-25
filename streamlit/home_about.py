@@ -371,7 +371,7 @@ class About_page:
                             <p><strong>🩵 데이터 마술사 (ESFJ)</strong></p>
                             <p>AI 모델링과 웹 개발을 자유자재로!<br>따뜻한 ESFJ 잇몸으로 팀을 감싸줍니다!</p>
                             <ul class="no-bullets">
-                                <li>🔹 프로젝트 역할</li>
+                                <pa>🔹 프로젝트 역할</pa>
                                 <li> - 데이터 엔지니어</li>
                                 <li> - AI 엔지니어</li>
                                 <li> - 웹 개발자</li>
@@ -389,8 +389,9 @@ class About_page:
                             <p><strong>🩵 잇몸의 두뇌 (INTJ)</strong></p>
                             <p>데이터 분석, AI, 웹 개발, 로고 디자인, 품질관리까지!<br>INTJ의 전략으로 모든 걸 완벽히!</p>
                             <ul class="no-bullets">
-                                <li>🔹 프로젝트 역할</li>
+                                <pa>🔹 프로젝트 역할</pa>
                                 <li> - 데이터 분석가</li>
+                                <li> - 웹 개발자</li>
                                 <li> - AI 엔지니어</li>
                                 <li> - 로고 디자인</li>
                                 <li> - 품질관리</li>
@@ -408,7 +409,7 @@ class About_page:
                             <p><strong>🩵 잇몸 리더 (ENTP)</strong></p>
                             <p>데이터와 AI로 팀을 이끄는 ENTP!<br>웹 개발까지 가능한 만능 잇몸 파워!</p>
                             <ul class="no-bullets">
-                                <li>🔹 프로젝트 역할</li>
+                                <pa>🔹 프로젝트 역할</pa>
                                 <li> - 데이터 엔지니어</li>
                                 <li> - AI 엔지니어</li>
                                 <li> - 웹 개발자</li>
@@ -426,7 +427,7 @@ class About_page:
                             <p><strong>🩵 잇몸의 에너지 (ENFP)</strong></p>
                             <p>데이터 분석과 발표로 팀을 북돋는 ENFP!<br>일정도 잇몸처럼 튼튼하게 관리!</p>
                             <ul class="no-bullets">
-                                <li>🔹 프로젝트 역할</li>
+                                <pa>🔹 프로젝트 역할</pa>
                                 <li> - 데이터 분석가</li>
                                 <li> - 웹 개발자</li>
                                 <li> - 일정 관리자</li>
