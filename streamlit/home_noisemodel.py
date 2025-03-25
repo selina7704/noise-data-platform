@@ -26,6 +26,7 @@ os.makedirs(audio_save_path, exist_ok=True)
 # FastAPI 엔드포인트 URL
 FASTAPI_URL = "http://15.168.145.74:8008/predict/"
 
+
 # TTS 생성 함수
 def generate_tts(text, filename="alert.wav"):
     tts = gTTS(text=text, lang='ko', slow=False)
@@ -310,6 +311,7 @@ def process_prediction(response, mode, user_id, audio_data=None, address=None, l
         
         st.session_state[f'{mode}_result'] = result
         st.session_state[f'{mode}_elapsed_time'] = elapsed_time
+        
         timestamp_str = timestamp.strftime('%Y%m%d_%H%M%S') if timestamp else datetime.now().strftime('%Y%m%d_%H%M%S')
         audio_path = os.path.join(audio_save_path, f"{user_id}_{timestamp_str}.wav") if mode == "recording" else os.path.join(upload_folder, f"{user_id}_{timestamp_str}.wav")
         if audio_data:
@@ -320,13 +322,13 @@ def process_prediction(response, mode, user_id, audio_data=None, address=None, l
         result['address'] = address
         save_to_classification_results(user_id, result, latitude, longitude, audio_path, elapsed_time, timestamp)
         
+        # 저장된 오디오 경로를 세션에 저장하여 피드백 페이지 등에서 재생할 수 있도록 함
+        st.session_state['audio_path'] = audio_path
+        
         return result, elapsed_time, audio_path
     else:
         st.error(f"❌ FastAPI 요청 실패: 상태 코드 {response.status_code}")
         return None, None, None
-
-
-
 
 # 버튼 스타일링
 st.markdown("""
@@ -829,16 +831,16 @@ class NoiseModel_page:
                         st.write(f"**추정 거리**: {result['estimated_distance'] if result['estimated_distance'] is not None else 'N/A'} 미터")
                         st.write(f"**방향**: {result['direction']}")
                         st.write(f"**분석 시간**: {result['elapsed_time']:.2f} 초")
-                        if result['latitude'] and result['longitude']:
-                            address = f"위도: {result['latitude']}, 경도: {result['longitude']}"
-                            st.write(f"**위치**: {address}")
-                            df = pd.DataFrame({"lat": [result['latitude']], "lon": [result['longitude']]})
-                            st.map(df)
+                        # if result['latitude'] and result['longitude']:
+                        #     address = f"위도: {result['latitude']}, 경도: {result['longitude']}"
+                        #     st.write(f"**위치**: {address}")
+                        #     df = pd.DataFrame({"lat": [result['latitude']], "lon": [result['longitude']]})
+                        #     st.map(df)
 
-                        if result['audio_path'] and os.path.exists(result['audio_path']):
-                            st.audio(result['audio_path'], format='audio/wav')
-                        else:
-                            st.warning("⚠️ 오디오 파일을 찾을 수 없습니다.")
+                        # if result['audio_path'] and os.path.exists(result['audio_path']):
+                        #     st.audio(result['audio_path'], format='audio/wav')
+                        # else:
+                        #     st.warning("⚠️ 오디오 파일을 찾을 수 없습니다.")
 
                         feedback_key = f"feedback_{i}_{result['timestamp']}"
                         feedback = st.selectbox(
