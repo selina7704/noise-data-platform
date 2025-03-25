@@ -5,12 +5,15 @@ import plotly.graph_objects as go
 import numpy as np
 import os
 
+# 페이지 설정
+st.set_page_config(page_title="About", page_icon="Home", layout="wide")
+
 class About_page:
     def about_page(self):
         # 탭 생성
         tab1, tab2, tab3 = st.tabs(['About', '모델 및 데이터셋 소개', '개발진 소개'])
-        
-        # 탭 1: About (기존 유지)
+
+        # 탭 1: About (담았소 프로젝트 소개)
         with tab1:
             st.subheader('🔊 담았소 프로젝트: 우리 주변 위험 소리를 똑똑하게 감지하는 AI')
             st.write(' ')
@@ -21,7 +24,7 @@ class About_page:
                 담았소 프로젝트는 실시간으로 소음을 듣고 분석하고 알려주는 AI 서비스예요.    
                 이 소리가 경적인지, 사이렌인지, 아니면 나에게 위험한 소리인지 판단하고, 거리와 방향까지 계산해서 실시간으로 알려드려요!
             """)
-
+            st.image("main.png", use_container_width=True)
             st.subheader("🚀 주요 기능")
             st.markdown("""
             - **이 소리는 뭐지?** AI가 경적, 사이렌, 주행음 까지 알아서 구분해요! 
@@ -32,7 +35,7 @@ class About_page:
             - **내 하루 소음 리포트:** 하루 동안 접한 소음을 분석해서 알려드려요.
             """)
 
-        # 탭 2: 모델 훈련 데이터셋 통계 (expander로 분리)
+        # 탭 2: 모델 및 데이터셋 소개 (기존 유지)
         with tab2:
             st.subheader('모델 및 데이터셋 소개')
 
@@ -244,65 +247,254 @@ class About_page:
                 fig_cm.update_layout(height=500, width=600)
                 st.plotly_chart(fig_cm, use_container_width=True, key="cm_tab2")
 
-        # 탭 3: 개발진 소개 (기존 유지)
+
+# 탭 3: 개발진 소개 (잇몸단 전체 내용)
         with tab3:
-            # 박은서 소개
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                st.image("https://avatars.githubusercontent.com/EunSeo35", width=100)
-            with col2:
-                st.markdown("""
-                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">박은서</h3>
-                <a href="https://github.com/EunSeo35" target="_blank">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
-                </a>                   
-                <p style="font-size: 16px;margin-top: 10px;">데이터 엔지니어, 웹 개발자 </p>
-                """, unsafe_allow_html=True)
+            # CSS 스타일 정의 (수정된 벤토 그리드)
+            st.markdown("""
+            <style>
+            .bento-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            .bento-card {
+                background-color: #E0F2F1;
+                border-radius: 15px;
+                padding: 20px;
+                text-align: center;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                position: relative;
+                height: 400px; /* 기존 300px에서 확대 */
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* 수평 중앙 정렬 */
+                justify-content: center; /* 수직 중앙 정렬 */
+                overflow: hidden;
+            }
+            .bento-card h3 {
+                position: relative; /* 기존 absolute 제거 */
+                margin-top: 10px;
+                font-size: 20px;
+                font-weight: bold;
+                color: #00796B
+            }
+            .bento-card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+            .bento-card img {
+                border-radius: 50%;
+                width: 120px; /* 기존보다 크기 확대 */
+                height: 120px;
+                margin-bottom: 10px; /* 이름과의 간격 조정 */
+                border: 3px solid #009874;
+            }
+            .hover-content {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #B2DFDB; /* 밝은 민트색 */
+                color: #004D40; /* 어두운 청록색으로 대비 유지 */
+                color: #333;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                padding: 20px; /* 내부 여백 증가 */
+                overflow: hidden; /* 스크롤 방지 */
+            }
+            .bento-card:hover .hover-content {
+                opacity: 1;
+            }
+            .github-btn {
+                margin-top: 15px;
+                display: inline-block;
+                text-decoration: none;
+                color: #004D40;
+                font-weight: bold;
+                z-index: 10;
+            }
+            .github-btn img {
+                width: 24px;
+                height: 24px;
+                vertical-align: middle;
+                margin-right: 5px;
+                display: inline-block;
+            }
+            ul.no-bullets {
+            list-style-type: none; 
+            padding: 0; 
+            }
+            ul.no-bullets li {
+            text-align: left;
+            }
+            </style>
+            """, unsafe_allow_html=True)
 
-            st.write("---")
+            # 1. 홈 (왼쪽 이미지, 오른쪽 설명 - Expander)
+            with st.expander("🦷 잇몸단 - 이가 없어도 버틴다!", expanded=True):
+                col1, col2 = st.columns([1, 2])
+                with col1:
+                    st.image("itmomdan.png", caption="잇몸단 캐릭터", use_container_width=True)
+                with col2:
+                    st.write(
+                        "세상에 쉬운 문제란 없다! 하지만 우리는 함께 해결한다!"
+                    )
+                    
+                    st.markdown("**이가 없으면 잇몸으로!💪🏻 우리는 어떤 문제도 함께 해결하는 잇몸단입니다.**")
+                    st.markdown("**팀 철학 & 목표**: 어려운 문제가 닥쳐도 포기하지 않고, 팀워크로 해결합니다. 도전적인 태도와 해결 중심 사고로 늘 성장하는 팀이 목표예요.")
+                    st.markdown("**한 줄 소개**: 기술과 창의력으로 문제를 해결하는 팀, 잇몸단!")
+                    st.markdown("""**팀 그라운드 룰**:  
+                                1. 바른 말 고운 말 사용하자  
+                                2. 사소한 내용이라도 슬랙에 공유하자  
+                                3. 감사 표현 등 솔직한 감정 표현을 많이 하자  
+                                4. 모르는 것은 모른다고 말하자 모르는 건 창피한 게 아니다!  
+                                5. 리액션을 잘하자  
+                                6. 일정 공유는 미리미리 하자  
+                                7. 가끔은 잡담 시간도 가지자""")
 
-            # 노은비 소개
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                st.image("https://avatars.githubusercontent.com/selina7704", width=100)
-            with col2:
+            # 2. 팀원 소개 (Expander)
+            with st.expander("👥 잇몸단 멤버들", expanded=True):
                 st.markdown("""
-                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">노은비</h3>
-                <a href="https://github.com/selina7704" target="_blank">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
-                </a>                   
-                <p style="font-size: 16px;margin-top: 10px;">데이터 엔지니어, 웹 개발자 </p>
+                <div class="bento-container">
+                    <!-- 노은비 -->
+                    <div class="bento-card">
+                        <img src="https://avatars.githubusercontent.com/selina7704" alt="노은비">
+                        <h3>노은비</h3>
+                        <div class="hover-content">
+                            <p><strong>🩵 데이터 마술사 (ESFJ)</strong></p>
+                            <p>AI 모델링과 웹 개발을 자유자재로!<br>따뜻한 ESFJ 잇몸으로 팀을 감싸줍니다!</p>
+                            <p>🔹 프로젝트 역할: 데이터 엔지니어 / AI 엔지니어 / 웹 개발자</p>
+                            <ul class="no-bullets">
+                                <li>🔹 담당 업무</li>
+                                <li> - 개발 환경 구축 및 관리</li>
+                                <li> - CNN 모델링</li>
+                                <li> - 이상탐지 기능 제작 (Autoencoder)</li>
+                                <li> - 웹 페이지 구현 (로그인, 마이페이지, 알람 기준 설정)</li>
+                            </ul>
+                            <a href="https://github.com/selina7704" target="_blank" class="github-btn">
+                                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 노은비의 GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 두지원 -->
+                    <div class="bento-card">
+                        <img src="https://avatars.githubusercontent.com/JiwonDu" alt="두지원">
+                        <h3>두지원</h3>
+                        <div class="hover-content">
+                            <p><strong>🩵 잇몸의 두뇌 (INTJ)</strong></p>
+                            <p>데이터 분석, AI, 웹 개발, 로고 디자인, 품질관리까지!<br>INTJ의 전략으로 모든 걸 완벽히!</p>
+                            <p>🔹 프로젝트 역할: 데이터 분석가 / AI 엔지니어 / 웹 개발자 / 품질 관리자</p>
+                            <ul class="no-bullets">
+                                <li>🔹 담당 업무</li>
+                                <li> - 데이터 전처리 및 데이터 품질관리</li>
+                                <li> - CapsNet, RESNET 모델링 및 모델 테스트(9종), 이상탐지 기능 제작(OOD 탐지 코드)</li>
+                                <li> - 웹 페이지 구현(모델 및 데이터셋 소개, 개발진 소개, 소음분류기, 소음측정기록, 통계분석)</li>
+                                <li> - 프로젝트 로고 및 팀 캐릭터 디자인</li>
+                                <li> - 회의록 및 산출물 관리리(Notion)</li>
+                            </ul>
+                            <a href="https://github.com/JiwonDu" target="_blank" class="github-btn">
+                                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 두지원의 GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 박은서 -->
+                    <div class="bento-card">
+                        <img src="https://avatars.githubusercontent.com/EunSeo35" alt="박은서">
+                        <h3>박은서</h3>
+                        <div class="hover-content">
+                            <p><strong>🩵 잇몸 리더 (ENTP)</strong></p>
+                            <p>데이터와 AI로 팀을 이끄는 ENTP!<br>웹 개발까지 가능한 만능 잇몸 파워!</p>
+                            <p>🔹 프로젝트 역할: 데이터 엔지니어 / AI 엔지니어 / 웹 개발자 </p>
+                            <ul class="no-bullets">
+                                <li>🔹 담당 업무</li>
+                                <li> - 개발 환경 구축 및 관리</li>
+                                <li> - Lightgbm 모델링</li>
+                                <li> - 웹 페이지 구현 (로그인, 마이페이지, 알람 기준 설정)</li>
+                            </ul>
+                            <a href="https://github.com/EunSeo35" target="_blank" class="github-btn">
+                                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 박은서의 GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 엄기영 -->
+                    <div class="bento-card">
+                        <img src="https://avatars.githubusercontent.com/Eomcoco" alt="엄기영">
+                        <h3>엄기영</h3>
+                        <div class="hover-content">
+                            <p><strong>🩵 잇몸의 에너지 (ENFP)</strong></p>
+                            <p>데이터 분석과 발표로 팀을 북돋는 ENFP!<br>일정도 잇몸처럼 튼튼하게 관리!</p>
+                            <p>🔹 프로젝트 역할: 데이터 분석가 / 웹 개발자 / 일정 관리자 / 발표자</p>
+                            <ul class="no-bullets">
+                                <li>🔹 담당 업무</li>
+                                <li> - 탐색적 데이터 분석 및 HDFS 데이터 적재</li>
+                                <li> - 소음 방향, 거리, 데시벨 판정 코드 제작</li>
+                                <li> - 프로젝트 일정 관리 (WBS)</li>
+                                <li> - 발표자료 제작 및 발표</li>
+                            </ul>
+                            <a href="https://github.com/Eomcoco" target="_blank" class="github-btn">
+                                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub"> 엄기영의 GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 """, unsafe_allow_html=True)
-            
-            st.write("---")
-            
-            # 엄기영 소개
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                st.image("https://avatars.githubusercontent.com/Eomcoco", width=100)
-            with col2:
-                st.markdown("""
-                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">엄기영</h3>
-                <a href="https://github.com/Eomcoco" target="_blank">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
-                </a>               
-                <p style="font-size: 16px;margin-top: 10px;">데이터 분석가, 웹 개발자</p>
-                """, unsafe_allow_html=True)
-                
-            st.write("---")
-            
-            # 두지원 소개
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                st.image("https://avatars.githubusercontent.com/JiwonDu", width=100)
-            with col2:
-                st.markdown("""
-                <h3 style="color: #000000; font-family: 'Arial', sans-serif;">두지원</h3>
-                <a href="https://github.com/JiwonDu" target="_blank">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="25" alt="GitHub Logo" />
-                </a>               
-                <p style="font-size: 16px;margin-top: 10px;">데이터 분석가, 웹 개발자</p>
-                """, unsafe_allow_html=True)
+                st.write("**우리는 이렇게 협업해요!**")
+                st.markdown("- 매주 월요일 스크럼 회의로 목표 정렬\n- 매주 금요일 스프린트 회의로 진행상황 관리\n- Notion으로 진행 상황 공유 및 산출물 관리\n- Zoom과 Slack으로 빠른 소통과 피드백")
+
+            # 3. 프로젝트 소개 (Expander)
+            with st.expander("🚀 우리의 프로젝트"):
+                st.write(
+                    "잇몸단이 해결해온 프로젝트들을 소개합니다."
+                )
+                st.subheader("진행 중인 프로젝트")
+                st.markdown(
+                    "- *DA:MASSO 프로젝트*\n"
+                    "  - ✔️ 도시 소음 문제 해결\n✔️ AI 기반 소음 분석\n✔️ 데이터 기반 웹 서비스 제안\n"
+                    "  - 목표: 소음을 분석해 안전한 환경 제공\n"
+                    "  - 기술 스택: Python, Streamlit, FastAPI\n"
+                    "  - 기대 효과: 소음 모니터링으로 사용자 안전 강화"
+                )
+                st.subheader("향후 프로젝트")
+                st.markdown(
+                    "- To be continued"
+                )
+
+            # 4. 성장 과정 (Expander)
+            with st.expander("📈 잇몸단의 성장"):
+                st.write(
+                    "우리는 **Multicampus 데이터 엔지니어 부트캠프**에서 처음 만났어요."
+                )
+                st.write(
+                    "프로젝트를 시작하며 **우리에게 꼭 필요한 문제**들을 찾는 것부터 시작했어요."
+                )
+                st.write(
+                    "점점 더 큰 문제에 **도전하고, 성공**을 만들어가고 있습니다! 💡"
+                )
+                st.markdown("**🔹비하인드 스토리**: 잇몸단은 팀원의 부재를 극복하고 '완벽주의가 아닌 완료주의'라는 다짐으로 시작됐어요.")
+                st.markdown("**🔹위기를 극복한 사례**: DB 해킹 사태를 빠른 DB 재건으로 해결! 팀워크가 빛난 순간이었죠.")
+                st.markdown("**🔹팀 문화 & 가치**: 잇몸단이 되는 법\n- 책임감: 맡은 일을 끝까지\n- 소통: 의견을 자유롭게\n- 도전: 실패를 두려워하지 않기")
+
+            # 5. 연락 & 참여 (Expander)
+            with st.expander("📩 우리와 함께하세요!"):
+                st.write("문의 & 협업 제안은 아래로 연락 주세요!")
+                st.markdown(
+                    "**함께하고 싶다면?**\n"
+                    "잇몸단과 협업하고 싶다면 언제든 연락 주세요!\n"
+                    "- Email: itmomdan0328@gmail.com\n"
+                )
+                st.markdown(
+                    "**잇몸단 커뮤니티**\n"
+                    "- GitHub: https://github.com/Itmomdan\n"
+                    "- Notion: https://fire-dill-6f6.notion.site/18573c57995f8048ab9add1556b598c3?pvs=74"
+                )
+
 
 if __name__ == '__main__':
     m = About_page()
