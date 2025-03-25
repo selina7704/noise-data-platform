@@ -24,7 +24,7 @@ class About_page:
                 담았소 프로젝트는 실시간으로 소음을 듣고 분석하고 알려주는 AI 서비스예요.    
                 이 소리가 경적인지, 사이렌인지, 아니면 나에게 위험한 소리인지 판단하고, 거리와 방향까지 계산해서 실시간으로 알려드려요!
             """)
-            st.image("main.png", use_container_width=True)
+            #st.image("main.png", use_container_width=True)
             st.subheader("🚀 주요 기능")
             st.markdown("""
             - **이 소리는 뭐지?** AI가 경적, 사이렌, 주행음 까지 알아서 구분해요! 
