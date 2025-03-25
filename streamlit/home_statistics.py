@@ -194,7 +194,7 @@ class Statistics_page:
                                                    domain={'x': [0, 1], 'y': [0, 1]}, title={'text': "위험 소음 횟수"},
                                                    gauge={'axis': {'range': [0, max(10, danger_count+1)]}, 'bar': {'color': "#FF4D4D"}}))
                 st.plotly_chart(fig_gauge, use_container_width=True)
-                st.info("ℹ️ 70dB 이상 위험 소음 발생 횟수를 게이지로 표시합니다.")
+                st.info("ℹ️ 위험 소음 발생 횟수를 게이지로 표시합니다.")
             st.markdown(f"📝 *분석 리포트*: 가장 자주 감지된 소음은 '{type_counts.index[0]}' (일 평균 {type_counts[0]/time_range:.1f}회)입니다.")
 
 
@@ -238,7 +238,7 @@ class Statistics_page:
                     )
 
                 st.plotly_chart(fig_radar, use_container_width=True)
-                st.info("ℹ️ 소음이 들리는 방향별 빈도를 레이더 차트로 보여줍니다. (중앙: 위, 왼쪽: 왼쪽, 오른쪽: 오른쪽, 없음: 아래)")
+                st.info("ℹ️ 소음이 들리는 방향별 빈도를 레이더 차트로 보여줍니다.")
 
             with col2:
                 # 추정 거리별 분포를 막대 차트로 표시 (0-25m 범위, 5m 단위)
@@ -255,7 +255,7 @@ class Statistics_page:
                     title="추정 거리 분포"
                 )
                 st.plotly_chart(fig_bar, use_container_width=True)
-                st.info("ℹ️ 소음 발생 추정 거리 구간별 분포를 막대 차트로 표시합니다. (최대 25m 반영)")
+                st.info("ℹ️ 소음 발생 추정 거리 구간별 분포를 막대 차트로 표시합니다.")
 
             # 지도 데이터 표시
             map_df = filtered_df.dropna(subset=["latitude", "longitude"])
@@ -298,19 +298,19 @@ class Statistics_page:
             col1, col2 = st.columns([2, 1])
             with col1:
                 st.markdown(
-                    f"<h3 style='text-align: center;'>🚨 SOS 발송: <span style='color: #FF6B6B;'>{sos_count}회</span></h3>",
+                    f"<h3 style='text-align: left;'>🚨 SOS 발송: <span style='color: #FF6B6B;'>{sos_count}회</span></h3>",
                     unsafe_allow_html=True
                 )
             with col2:
                 if sos_count > 0:
                     latest_sos = filtered_df[(filtered_df["warning"] == "위험") & (filtered_df["safety_check"] == False)].iloc[0]["timestamp"]
                     st.markdown(
-                        f"<p style='text-align: center;'>최근 발송: {latest_sos.strftime('%Y-%m-%d %H:%M')}</p>",
+                        f"<p style='text-align: right;'>최근 발송: {latest_sos.strftime('%Y-%m-%d %H:%M')}</p>",
                         unsafe_allow_html=True
                     )
                 else:
                     st.markdown(
-                        f"<p style='text-align: center;'>최근 발송: 없음</p>",
+                        f"<p style='text-align: right;'>최근 발송: 없음</p>",
                         unsafe_allow_html=True
                     )
             st.info("ℹ️ 응답 없는 위험 경고로 발송된 SOS 횟수와 가장 최근 발송 시점입니다.")
@@ -390,7 +390,7 @@ class Statistics_page:
                 weekly_df['week_label'] = weekly_df.apply(lambda row: f"{int(row['year'])}-W{int(row['week']):02d}", axis=1)
                 fig_trend = px.line(weekly_df, x="week_label", y="spl_peak", title="주간 소음 트렌드")
                 increase = (weekly_df["spl_peak"].iloc[-1] - weekly_df["spl_peak"].iloc[0]) / weekly_df["spl_peak"].iloc[0] * 100 if len(weekly_df) > 1 else 0
-                st.markdown(f"📝 *분석 리포트*: 소음 강도 {increase:.1f}% {'증가' if increase > 0 else '감소'}.")
+                st.markdown(f"📝 *분석 리포트*: 지난주 대비 소음 강도 {increase:.1f}% {'증가' if increase > 0 else '감소'}.")
             st.plotly_chart(fig_trend, use_container_width=True)
             st.info("ℹ️ 주 단위로 평균 소음 강도의 변화를 선 그래프로 보여줍니다.")
             st.warning("⚠️ 내일 18:00-20:00에 소음 증가 예상 (AI 예측, 개발 중)")
