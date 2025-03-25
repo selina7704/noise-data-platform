@@ -13,7 +13,7 @@ class Edit_page:
         try:
             self.db_connection = mysql.connector.connect(**DB_CONFIG)
             self.cursor = self.db_connection.cursor(dictionary=True)
-            st.success("데이터베이스에 성공적으로 연결되었습니다.")
+            #st.success("데이터베이스에 성공적으로 연결되었습니다.")
         except mysql.connector.Error as e:
             st.error(f"DB 연결 오류: {e}")
             self.db_connection = None
@@ -41,7 +41,7 @@ class Edit_page:
             )
             self.cursor.execute(query, values)
             self.db_connection.commit()
-            st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 업데이트되었습니다.")
+            #st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 업데이트되었습니다.")
             return True
         except mysql.connector.Error as e:
             st.error(f"DB 업데이트 오류: {e}")
@@ -57,7 +57,7 @@ class Edit_page:
             query = "DELETE FROM users WHERE username = %s"
             self.cursor.execute(query, (username,))
             self.db_connection.commit()
-            st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 삭제되었습니다.")
+            #st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 삭제되었습니다.")
             return True
         except mysql.connector.Error as e:
             st.error(f"DB 삭제 오류: {e}")
