@@ -7,14 +7,6 @@ from home_noisemodel import NoiseModel_page
 from home_statistics import Statistics_page
 from mypage_edit import Edit_page
 
-# # 페이지 설정
-# st.set_page_config(
-#     page_title="담았소",  # 앱의 제목
-#     page_icon="🔊",  # 앱 아이콘 (이모지나 이미지 파일 사용 가능)
-#     layout="wide",  # 페이지 레이아웃을 'wide'로 설정
-#     initial_sidebar_state="expanded"  # 사이드바를 확장된 상태로 시작
-# )
-
 class Home_page:
     def __init__(self):
         self.Login = Login_page()
@@ -25,14 +17,14 @@ class Home_page:
         self.Edit = Edit_page()
 
     def main(self, choose=None):
-        if choose == "홈":  # 메인 홈화면
+        if choose == "홈":
             self.bar()
-        elif choose == "로그인":  # 로그인
+        elif choose == "로그인":
             self.Login.run()
-        elif choose == "회원가입":  # 회원가입
+        elif choose == "회원가입":
             self.Signup.run()
-        elif choose == "마이페이지":  # 마이페이지 선택
-            self.Edit.run()  # Mypage_page 실행
+        elif choose == "마이페이지":
+            self.Edit.run()
         elif choose == "로그아웃":
             self.logout()
 

@@ -493,10 +493,6 @@ def save_feedback(result_id, user_id, noise_type, spl_peak, feedback, wrong_nois
 
 class NoiseModel_page:
     def noisemodel_page(self):
-        # if 'user_info' not in st.session_state or 'id' not in st.session_state['user_info']:
-        #     st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
-        #     return
-
         user_id = st.session_state['user_info']['username']
         user_info = get_user_info(user_id)
 
@@ -654,21 +650,6 @@ class NoiseModel_page:
                             address=address, latitude=latitude, longitude=longitude, timestamp=recording_timestamp
                         )
                         status_placeholder.write("✅ 분석 완료!")
-                        
-                        # if result:
-                        #     spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
-                        #     check_alarm_trigger(spl_peak, user_id, result.get('prediction', '알 수 없음'))
-                            
-                        #     if spl_peak >= 70:
-                        #         show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
-                        #         if st.session_state['tts_enabled']:
-                        #             tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
-                        #             st.session_state['tts_queue'].append(tts_text)
-                        #     elif spl_peak >= 50:
-                        #         show_alert("주의 요함: 지속적 노출 위험", "warning")
-                        #         if st.session_state['tts_enabled']:
-                        #             tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
-                        #             st.session_state['tts_queue'].append(tts_text)
 
                         if result:
                             spl_peak = display_prediction_result(result, elapsed_time, address, latitude, longitude)
@@ -829,16 +810,6 @@ class NoiseModel_page:
                         st.write(f"**추정 거리**: {result['estimated_distance'] if result['estimated_distance'] is not None else 'N/A'} 미터")
                         st.write(f"**방향**: {result['direction']}")
                         st.write(f"**분석 시간**: {result['elapsed_time']:.2f} 초")
-                        # if result['latitude'] and result['longitude']:
-                        #     address = f"위도: {result['latitude']}, 경도: {result['longitude']}"
-                        #     st.write(f"**위치**: {address}")
-                        #     df = pd.DataFrame({"lat": [result['latitude']], "lon": [result['longitude']]})
-                        #     st.map(df)
-
-                        # if result['audio_path'] and os.path.exists(result['audio_path']):
-                        #     st.audio(result['audio_path'], format='audio/wav')
-                        # else:
-                        #     st.warning("⚠️ 오디오 파일을 찾을 수 없습니다.")
 
                         feedback_key = f"feedback_{i}_{result['timestamp']}"
                         feedback = st.selectbox(
