@@ -493,7 +493,7 @@ def save_feedback(result_id, user_id, noise_type, spl_peak, feedback, wrong_nois
 
 class NoiseModel_page:
     def noisemodel_page(self):
-        user_id = st.session_state['user_info']['username']
+        user_id = st.session_state['user_info']['id']
         user_info = get_user_info(user_id)
 
         if 'tts_enabled' not in st.session_state:
