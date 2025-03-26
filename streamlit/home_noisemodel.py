@@ -249,7 +249,7 @@ def display_noise_gauge(label, value, max_value=120):
 # 예측 결과 표시
 def display_prediction_result(result, elapsed_time, address=None, latitude=None, longitude=None):
     st.markdown("### 📋 분석 결과", unsafe_allow_html=True)
-    st.write(f"🔊 **예측된 소음 유형:** {result.get('prediction', '알 수 없음')}")
+    st.write(f"🔊 **분석된 소음 유형:** {result.get('prediction', '알 수 없음')}")
     spl_peak = result.get('spl_peak', 0)
     display_noise_gauge("📊 최대 소음 강도", spl_peak)
     spl_rms = result.get('spl_rms', 0)
@@ -497,7 +497,7 @@ class NoiseModel_page:
         #     st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
         #     return
 
-        user_id = st.session_state['user_info']['id']
+        user_id = st.session_state['user_info']['username']
         user_info = get_user_info(user_id)
 
         if 'tts_enabled' not in st.session_state:
@@ -552,7 +552,7 @@ class NoiseModel_page:
                 st.write("분석 후 아래와 같은 정보를 제공합니다:")
                 st.code("""
 예시)
-🔊 예측된 소음 유형: 차량경적
+🔊 분석된 소음 유형: 차량경적
 📊 최대 소음 강도 (dB): 85.3
 📊 평균 소음 강도 (dB): 62.1
 📏 추정 거리: 15.7 미터
@@ -560,7 +560,7 @@ class NoiseModel_page:
 ⏱️ 분석 소요 시간: 0.25 초
 📍 위치: 서울특별시 강남구 역삼동 (위도: 37.501, 경도: 127.037)
             """)
-                st.info("📌 참고: '방향'은 소리가 어디서 들리는지를 알려줍니다. \n\n- 한쪽 소리만 들리는 파일(모노 타입)로는 방향을 알 수 없어요. \n\n - 양쪽 소리가 모두 담긴 파일(스테레오 타입)을 사용하면 소리가 왼쪽, 오른쪽, 또는 중앙에서 나는지 예측할 수 있습니다!")
+                st.info("📌 참고: '방향'은 소리가 어디서 들리는지를 알려줍니다. \n\n- 한쪽 소리만 들리는 파일(모노 타입)로는 방향을 알 수 없어요. \n\n - 양쪽 소리가 모두 담긴 파일(스테레오 타입)을 사용하면 소리가 왼쪽, 오른쪽, 또는 중앙에서 나는지 분석할 수 있습니다!")
 
                 st.subheader("4️⃣ 경고 및 알림 기능")
                 st.write("📫 사용자가 설정한 기준에 따라 경고 메시지를 제공합니다:")
@@ -635,7 +635,7 @@ class NoiseModel_page:
                             if latitude and longitude:
                                 st.success(f"📍 주소 위치: {address} (위도: {latitude}, 경도: {longitude})")
 
-                    predict_button = st.button("🎙 음성 예측하기", key="predict_recording_tab1", use_container_width=True, disabled=not (latitude and longitude and address))
+                    predict_button = st.button("🎙 음성 분석하기", key="predict_recording_tab1", use_container_width=True, disabled=not (latitude and longitude and address))
                     if predict_button and latitude and longitude and address:
                         st.session_state['start_time'] = time.time()
                         st.session_state['danger_alert_time'] = None
@@ -662,12 +662,12 @@ class NoiseModel_page:
                         #     if spl_peak >= 70:
                         #         show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
                         #         if st.session_state['tts_enabled']:
-                        #             tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                        #             tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                         #             st.session_state['tts_queue'].append(tts_text)
                         #     elif spl_peak >= 50:
                         #         show_alert("주의 요함: 지속적 노출 위험", "warning")
                         #         if st.session_state['tts_enabled']:
-                        #             tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                        #             tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                         #             st.session_state['tts_queue'].append(tts_text)
 
                         if result:
@@ -682,12 +682,12 @@ class NoiseModel_page:
                             if spl_peak >= alarm_db:
                                 show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
                                 if st.session_state['tts_enabled']:
-                                    tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                                    tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
                             elif spl_peak >= warning_threshold: 
                                 show_alert("주의 요함: 지속적 노출 위험", "warning")
                                 if st.session_state['tts_enabled']:
-                                    tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                                    tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
 
                             play_tts_queue()
@@ -732,7 +732,7 @@ class NoiseModel_page:
                             df = pd.DataFrame({"lat": [latitude], "lon": [longitude]})
                             st.map(df)
 
-                    predict_button = st.button("🎙 음성 예측하기", key="predict_upload_tab1", use_container_width=True, disabled=not (address and latitude))
+                    predict_button = st.button("🎙 음성 분석하기", key="predict_upload_tab1", use_container_width=True, disabled=not (address and latitude))
                     if predict_button and latitude and longitude and address:
                         st.session_state['start_time'] = time.time()
                         st.session_state['danger_alert_time'] = None
@@ -768,12 +768,12 @@ class NoiseModel_page:
                             if spl_peak >= alarm_db:
                                 show_alert("위험 수준 소음 감지! 즉시 조치가 필요합니다", "danger")
                                 if st.session_state['tts_enabled']:
-                                    tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                                    tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
                             elif spl_peak >= warning_threshold:
                                 show_alert("주의 요함: 지속적 노출 위험", "warning")
                                 if st.session_state['tts_enabled']:
-                                    tts_text = f"예측된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
+                                    tts_text = f"분석된 소음 유형은 {result.get('prediction', '알 수 없음')}입니다. 최대 소음 강도는 {spl_peak} 데시벨, 평균 소음 강도는 {result.get('spl_rms', 0)} 데시벨입니다."
                                     st.session_state['tts_queue'].append(tts_text)
                          
                             play_tts_queue()

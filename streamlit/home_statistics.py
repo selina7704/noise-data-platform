@@ -141,7 +141,7 @@ class Statistics_page:
         #     st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
         #     return
 
-        user_id = st.session_state['user_info']['id']
+        user_id = st.session_state['user_info']['username']
 
         with st.expander("🔍 데이터 필터 설정", expanded=True):
             col1, col2 = st.columns(2)
@@ -150,6 +150,11 @@ class Statistics_page:
             with col2:
                 noise_types = ["차량경적", "이륜차경적", "차량사이렌", "차량주행음", "이륜차주행음", "기타소음"]
                 selected_types = st.multiselect("소음 유형", noise_types, default=noise_types, key="noise_types")
+
+            # 최소 하나의 선택값 유지
+            if not selected_types:
+                st.warning("소음 유형을 최소 1개 이상 선택해야 합니다.")
+                selected_types = [noise_types[0]]
 
         df = self.fetch_data_from_db(user_id, days=time_range)
         if df.empty:

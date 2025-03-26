@@ -120,17 +120,17 @@ class Signup_page():
             options=['@gmail.com', '@naver.com', '@daum.net', '@nate.com']
             col1, col2 = st.columns(2)
             with col1:
-                email = st.text_input('이메일', placeholder="이메일을 입력하세요")
+                email_local = st.text_input('이메일', placeholder="이메일을 입력하세요")
             with col2:
                 types = st.selectbox('도메인', options, key='email_domain')
-            email = email + types
+            email = email_local + types
         
             col1, col2 = st.columns(2)
             with col1:
-                guardian_email = st.text_input('보호자 이메일', placeholder="보호자 이메일을 입력하세요")  
+                guardian_local = st.text_input('보호자 이메일', placeholder="보호자 이메일을 입력하세요")  
             with col2:
                 types2 = st.selectbox('도메인',options, key='guardian_email_domain')
-            guardian_email = guardian_email + types2 
+            guardian_email = guardian_local + types2 
                         
             phone_number = st.text_input('전화번호', placeholder="전화번호를 입력하세요")
             usage_purpose = st.selectbox('사용 목적', ['노이즈캔슬링 보조 장치', '청각 보조 장치', '기타'])
@@ -148,9 +148,9 @@ class Signup_page():
                 missing_fields.append("비밀번호 확인")
             if not name:
                 missing_fields.append("이름")
-            if not email:
+            if not email_local:
                 missing_fields.append("이메일")
-            if not guardian_email:
+            if not guardian_local:
                 missing_fields.append("보호자 이메일")
             if not phone_number:
                 missing_fields.append("전화번호")
