@@ -72,7 +72,6 @@ class Signup_page():
                 password=DB_CONFIG['password'],# MySQL 비밀번호
                 database=DB_CONFIG['database'],# 데이터베이스 이름
                 port=DB_CONFIG['port'], # MySQL 포트
-                #charset='utf8mb4' 
             )
             
         except Error as e:
@@ -120,17 +119,17 @@ class Signup_page():
             options=['@gmail.com', '@naver.com', '@daum.net', '@nate.com']
             col1, col2 = st.columns(2)
             with col1:
-                email = st.text_input('이메일', placeholder="이메일을 입력하세요")
+                email_local = st.text_input('이메일', placeholder="이메일을 입력하세요")
             with col2:
                 types = st.selectbox('도메인', options, key='email_domain')
-            email = email + types
+            email = email_local + types
         
             col1, col2 = st.columns(2)
             with col1:
-                guardian_email = st.text_input('보호자 이메일', placeholder="보호자 이메일을 입력하세요")  
+                guardian_local = st.text_input('보호자 이메일', placeholder="보호자 이메일을 입력하세요")  
             with col2:
                 types2 = st.selectbox('도메인',options, key='guardian_email_domain')
-            guardian_email = guardian_email + types2 
+            guardian_email = guardian_local + types2 
                         
             phone_number = st.text_input('전화번호', placeholder="전화번호를 입력하세요")
             usage_purpose = st.selectbox('사용 목적', ['노이즈캔슬링 보조 장치', '청각 보조 장치', '기타'])
@@ -148,9 +147,9 @@ class Signup_page():
                 missing_fields.append("비밀번호 확인")
             if not name:
                 missing_fields.append("이름")
-            if not email:
+            if not email_local:
                 missing_fields.append("이메일")
-            if not guardian_email:
+            if not guardian_local:
                 missing_fields.append("보호자 이메일")
             if not phone_number:
                 missing_fields.append("전화번호")
@@ -184,14 +183,10 @@ class Signup_page():
             # user_info에 'id' 키가 있는지 확인
             if 'id' in user_info:
                 st.session_state.user_id = user_info['id']
-                # 기본 알람 설정 자동 저장 (기본 감도 '중(🟡)'으로 저장)
                 set_default_alarm_settings(user_info['id'])
             else:
                 st.error("사용자 ID가 저장되지 않았습니다.")
-                    
-                    
+                                        
             # 자동 로그인 처리
             st.success(f'{name}님, 회원가입을 축하합니다!')
             st.session_state.logged_in = True
-            # st.session_state.page = 'Home'  # 홈 페이지로 이동
-            # st.rerun()  # 페이지 새로 고침 (홈 페이지로 이동)

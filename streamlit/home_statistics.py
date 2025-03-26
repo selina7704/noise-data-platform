@@ -1,18 +1,10 @@
-# Streamlit: 웹 앱을 만들기 위한 라이브러리
 import streamlit as st
-# Pandas: 데이터프레임으로 데이터를 다루기 위한 라이브러리
 import pandas as pd
-# Plotly Express: 간단한 인터랙티브 그래프 생성
 import plotly.express as px
-# Plotly Graph Objects: 복잡한 그래프를 위한 도구
 import plotly.graph_objects as go
-# NumPy: 수치 연산을 위한 라이브러리
 import numpy as np
-# Datetime: 날짜와 시간 처리
 from datetime import datetime, timedelta
-# MySQL Connector: MySQL 데이터베이스 연결
 import mysql.connector
-# config.py에서 DB 설정 가져오기 (예: 사용자 이름, 비밀번호, DB 이름 등)
 from config import DB_CONFIG
 
 # 통계 페이지를 위한 클래스 정의
@@ -137,11 +129,7 @@ class Statistics_page:
 
     # 통계 페이지의 메인 함수 (웹 UI 구성)
     def statistics_page(self):
-        # if 'user_info' not in st.session_state or 'id' not in st.session_state['user_info']:
-        #     st.warning("로그인이 필요합니다. 로그인 페이지로 이동해주세요.")
-        #     return
-
-        user_id = st.session_state['user_info']['id']
+        user_id = st.session_state['user_info']['username']
 
         with st.expander("🔍 데이터 필터 설정", expanded=True):
             col1, col2 = st.columns(2)
@@ -150,6 +138,11 @@ class Statistics_page:
             with col2:
                 noise_types = ["차량경적", "이륜차경적", "차량사이렌", "차량주행음", "이륜차주행음", "기타소음"]
                 selected_types = st.multiselect("소음 유형", noise_types, default=noise_types, key="noise_types")
+
+            # 최소 하나의 선택값 유지
+            if not selected_types:
+                st.warning("소음 유형을 최소 1개 이상 선택해야 합니다.")
+                selected_types = [noise_types[0]]
 
         df = self.fetch_data_from_db(user_id, days=time_range)
         if df.empty:
@@ -196,9 +189,6 @@ class Statistics_page:
                 st.plotly_chart(fig_gauge, use_container_width=True)
                 st.info("ℹ️ 위험 소음 발생 횟수를 게이지로 표시합니다.")
             st.markdown(f"📝 *분석 리포트*: 가장 자주 감지된 소음은 '{type_counts.index[0]}' (일 평균 {type_counts[0]/time_range:.1f}회)입니다.")
-
-
-
 
         with tab2:
             st.subheader("소음 위치와 방향")

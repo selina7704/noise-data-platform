@@ -1,7 +1,6 @@
 import streamlit as st
 import mysql.connector
 from config import DB_CONFIG
-import uuid
 
 class Edit_page:
     def __init__(self):
@@ -13,7 +12,6 @@ class Edit_page:
         try:
             self.db_connection = mysql.connector.connect(**DB_CONFIG)
             self.cursor = self.db_connection.cursor(dictionary=True)
-            #st.success("데이터베이스에 성공적으로 연결되었습니다.")
         except mysql.connector.Error as e:
             st.error(f"DB 연결 오류: {e}")
             self.db_connection = None
@@ -41,7 +39,6 @@ class Edit_page:
             )
             self.cursor.execute(query, values)
             self.db_connection.commit()
-            #st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 업데이트되었습니다.")
             return True
         except mysql.connector.Error as e:
             st.error(f"DB 업데이트 오류: {e}")
@@ -57,7 +54,6 @@ class Edit_page:
             query = "DELETE FROM users WHERE username = %s"
             self.cursor.execute(query, (username,))
             self.db_connection.commit()
-            #st.success(f"SQL 쿼리 실행 성공: {self.cursor.rowcount} 행이 삭제되었습니다.")
             return True
         except mysql.connector.Error as e:
             st.error(f"DB 삭제 오류: {e}")
@@ -71,7 +67,7 @@ class Edit_page:
         
         st.header("📝 회원 정보 수정")
 
-        # ✅ 세션에서 `user_info` 가져오기 (없으면 빈 dict 반환)
+        # 세션에서 `user_info` 가져오기 (없으면 빈 dict 반환)
         user_info = st.session_state.get("user_info", {})
 
         with st.form(key="edit_form"):
@@ -109,9 +105,6 @@ class Edit_page:
                 if self.update_user_info(updated_user_info):
                     st.session_state["user_info"] = updated_user_info
                     st.success("회원 정보가 성공적으로 수정되었습니다! 😊")
-                    # with st.expander("수정된 정보 보기"):
-                    #     for key, value in updated_user_info.items():
-                    #         st.write(f"**{key}**: {value}")
                 else:
                     st.error("회원 정보 수정 중 오류가 발생했습니다.")
             else:
@@ -136,7 +129,3 @@ class Edit_page:
                     st.error("회원 탈퇴 중 오류가 발생했습니다.")
             else:
                 st.error("올바른 확인 문구를 입력해주세요.")
-
-
-        # # 디버깅을 위한 세션 상태 출력
-        # st.write("Current session state:", st.session_state)

@@ -491,7 +491,6 @@ class About_page:
                     "- Notion: https://fire-dill-6f6.notion.site/18573c57995f8048ab9add1556b598c3?pvs=74"
                 )
 
-
 if __name__ == '__main__':
     m = About_page()
     m.about_page()
