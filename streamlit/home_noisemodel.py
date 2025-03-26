@@ -13,6 +13,10 @@ from streamlit_javascript import st_javascript
 import config
 from config import DB_CONFIG
 
+# 이메일 발송에 사용할 sender 정보
+sender_email = config.SENDER_EMAIL
+sender_password = config.SENDER_PASSWORD
+
 # 파일 저장 경로 설정
 upload_folder = "uploads"
 audio_save_path = "recorded_audio"
@@ -43,7 +47,7 @@ def autoplay_audio(file_path):
 def get_user_info(user_id):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT id, name, guardian_email, phone_number FROM users WHERE id = %s"
+    query = "SELECT id, name, guardian_email FROM users WHERE id = %s"
     cursor.execute(query, (user_id,))
     user = cursor.fetchone()
     conn.close()
@@ -193,7 +197,6 @@ def send_sos_email(user_id, result, address=None, latitude=None, longitude=None)
 ⚠️ 즉시 확인이 필요합니다.
 
 필요 시 즉시 연락 부탁드립니다.
-📱 {user_info['name']}님의 연락처는 {user_info.get('phone_number', '연락처 정보 없음')} 입니다.
 
 감사합니다.
 [Damasso Noise Platform]
