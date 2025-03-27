@@ -126,16 +126,17 @@ class Signup_page():
         
             col1, col2 = st.columns(2)
             with col1:
-                guardian_local = st.text_input('보호자 이메일', placeholder="보호자 이메일을 입력하세요")  
+                guardian_local = st.text_input('보호자 이메일', placeholder="⚠️ 보호자 이메일을 정확히 입력해주세요", help="⚠️ 보호자 이메일을 정확히 입력해야 사용자 긴급 상황 발생 시 보호자에게 SOS 이메일이 정상적으로 전송됩니다.")  
             with col2:
                 types2 = st.selectbox('도메인',options, key='guardian_email_domain')
             guardian_email = guardian_local + types2 
                         
-            phone_number = st.text_input('전화번호', placeholder="전화번호를 입력하세요")
+            phone_number = st.text_input('전화번호', placeholder="⚠️ 전화번호를 정확히 입력해주세요", help="⚠️ 긴급 상황 발생 SOS 이메일 전송 시, 보호자에게 사용자의 전화번호 정보가 함께 제공됩니다.")
             usage_purpose = st.selectbox('사용 목적', ['노이즈캔슬링 보조 장치', '청각 보조 장치', '기타'])
 
             signup_button = st.form_submit_button('가입하기')
-
+            
+            
         if signup_button:
             # 빈 입력 필드 확인
             missing_fields = []
