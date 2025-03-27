@@ -103,6 +103,18 @@ class Signup_page():
                 st.error(f"DB에 저장하는 중 오류 발생: {e}")
             finally:
                 cursor.close()
+    
+    def is_username_taken(self, username):
+        """중복된 username이 있는지 확인"""
+        if not self.db_connection:
+            self.connect_db()
+        cursor = self.db_connection.cursor()
+        query = "SELECT COUNT(*) FROM users WHERE username = %s"
+        cursor.execute(query, (username,))
+        result = cursor.fetchone()[0]
+        cursor.close()
+        return result > 0
+
 
     def run(self):        
         st.header("📝 회원가입")
@@ -162,6 +174,9 @@ class Signup_page():
             # 비밀번호 일치 확인
             if password != confirm_password:
                 st.error('비밀번호가 일치하지 않습니다.')
+                return
+            if self.is_username_taken(username):
+                st.error("❌ 해당 아이디는 이미 사용 중입니다. 다른 아이디를 입력해주세요.")
                 return
 
             # 세션 상태에 사용자 정보 저장

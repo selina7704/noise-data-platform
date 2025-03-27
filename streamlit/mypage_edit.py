@@ -62,20 +62,44 @@ class Edit_page:
 
 
     def delete_user(self, username):
-        """사용자 계정을 데이터베이스에서 삭제"""
+        """사용자 계정 및 관련 데이터 모두 삭제"""
         if not self.db_connection:
             st.error("데이터베이스 연결이 필요합니다.")
             return False
 
         try:
-            query = "DELETE FROM users WHERE username = %s"
-            self.cursor.execute(query, (username,))
+            # 사용자 ID 먼저 가져오기
+            query_user_id = "SELECT id FROM users WHERE username = %s"
+            self.cursor.execute(query_user_id, (username,))
+            result = self.cursor.fetchone()
+            if not result:
+                st.error("사용자를 찾을 수 없습니다.")
+                return False
+
+            user_id = result['id']
+
+            # 먼저 result_id 리스트 가져오기
+            self.cursor.execute("SELECT result_id FROM classification_results WHERE user_id = %s", (user_id,))
+            result_ids = [row['result_id'] for row in self.cursor.fetchall()]
+
+            # feedback 삭제
+            for rid in result_ids:
+                self.cursor.execute("DELETE FROM feedback WHERE result_id = %s", (rid,))
+
+            # classification_results 삭제
+            self.cursor.execute("DELETE FROM classification_results WHERE user_id = %s", (user_id,))
+
+            # users 삭제
+            self.cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+
             self.db_connection.commit()
             return True
+
         except mysql.connector.Error as e:
-            st.error(f"DB 삭제 오류: {e}")
+            st.error(f"회원 탈퇴 중 오류 발생: {e}")
             return False
         
+    
     def run(self):
         # 로그인 여부 체크
         if "user_info" not in st.session_state or not st.session_state["user_info"]:
@@ -144,8 +168,8 @@ class Edit_page:
                 self.connect_db()
                 if self.delete_user(user_info['username']):
                     st.success("회원 탈퇴가 완료되었습니다.")
-                    # 세션에서 사용자 정보 삭제
                     del st.session_state['user_info']
+                    
                 else:
                     st.error("회원 탈퇴 중 오류가 발생했습니다.")
             else:

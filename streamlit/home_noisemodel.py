@@ -486,7 +486,7 @@ def save_feedback(result_id, user_id, noise_type, spl_peak, feedback, wrong_nois
     try:
         cursor.execute(query, values)
         conn.commit()
-        st.success("✅ 피드백이 DB에 저장되었습니다!")
+        st.success("피드백이 저장되었습니다")
     except mysql.connector.Error as e:
         st.error(f"❌ 피드백 저장 오류: {str(e)}")
     finally:
