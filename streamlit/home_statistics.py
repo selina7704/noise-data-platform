@@ -129,7 +129,7 @@ class Statistics_page:
 
     # 통계 페이지의 메인 함수 (웹 UI 구성)
     def statistics_page(self):
-        user_id = st.session_state['user_info']['username']
+        user_id = st.session_state['user_info']['id']
 
         with st.expander("🔍 데이터 필터 설정", expanded=True):
             col1, col2 = st.columns(2)
@@ -139,16 +139,24 @@ class Statistics_page:
                 noise_types = ["차량경적", "이륜차경적", "차량사이렌", "차량주행음", "이륜차주행음", "기타소음"]
                 selected_types = st.multiselect("소음 유형", noise_types, default=noise_types, key="noise_types")
 
-            # 최소 하나의 선택값 유지
-            if not selected_types:
-                st.warning("소음 유형을 최소 1개 이상 선택해야 합니다.")
-                selected_types = [noise_types[0]]
-
         df = self.fetch_data_from_db(user_id, days=time_range)
         if df.empty:
             st.warning("선택한 기간 내 데이터가 없습니다.")
             return
         filtered_df = df[df["noise_type"].isin(selected_types)]
+
+      # 선택된 소음 유형이 데이터프레임에 있는지 확인
+        valid_noise_types = [t for t in selected_types if t in df['noise_type'].unique()]
+
+        if not valid_noise_types:
+            st.warning("선택한 소음 유형에 대한 사용자 측정 기록이 없습니다.")
+            return
+
+        filtered_df = df[df["noise_type"].isin(valid_noise_types)]
+
+        if filtered_df.empty:
+          st.warning("선택하신 조건에 맞는 데이터가 없습니다.")
+          return
 
         with st.expander("📌 한눈에 보는 통계", expanded=True):
             col1, col2, col3 = st.columns(3)
