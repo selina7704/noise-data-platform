@@ -2,6 +2,7 @@ import streamlit as st
 import mysql.connector
 from config import DB_CONFIG
 
+
 class Edit_page:
     def __init__(self):
         self.db_connection = None
@@ -43,6 +44,22 @@ class Edit_page:
         except mysql.connector.Error as e:
             st.error(f"DB 업데이트 오류: {e}")
             return False
+   
+    
+    def fetch_user_info(self, username):
+        """DB에서 사용자 정보를 다시 읽어오기"""
+        if not self.db_connection:
+            st.error("데이터베이스 연결이 필요합니다.")
+            return None
+
+        try:
+            query = "SELECT * FROM users WHERE username = %s"
+            self.cursor.execute(query, (username,))
+            return self.cursor.fetchone()
+        except mysql.connector.Error as e:
+            st.error(f"사용자 정보 조회 오류: {e}")
+            return None
+
 
     def delete_user(self, username):
         """사용자 계정을 데이터베이스에서 삭제"""
@@ -103,8 +120,12 @@ class Edit_page:
                 }
                 self.connect_db()
                 if self.update_user_info(updated_user_info):
-                    st.session_state["user_info"] = updated_user_info
-                    st.success("회원 정보가 성공적으로 수정되었습니다! 😊")
+                    updated_data = self.fetch_user_info(username)
+                    if updated_data:
+                        st.session_state["user_info"] = updated_data
+                        st.success("회원 정보가 성공적으로 수정되었습니다! 😊")
+                    else:
+                        st.warning("정보는 수정됐지만 세션 갱신에 실패했습니다.")
                 else:
                     st.error("회원 정보 수정 중 오류가 발생했습니다.")
             else:
