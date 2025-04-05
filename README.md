@@ -7,7 +7,7 @@
 
 <br>
 
-> **멀티캠퍼스 데이터엔지니어**  <br/> **개발기간: 2025.01 ~ 2025.13**  <br/> **배포주소 : https://itmondan-noise-data-platform.streamlit.app/**
+> **멀티캠퍼스 데이터엔지니어**  <br/> **개발기간: 2025.01 ~ 2025.03**  <br/> **배포주소 : https://itmondan-noise-data-platform.streamlit.app/**
 
 <br>
 
